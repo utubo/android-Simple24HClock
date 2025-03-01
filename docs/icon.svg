@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 50 50">
+    <path
+        d="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+            a 20,20 0 1,0  40,0
+        "
+        fill="#00000099" />
+    <path
+        d="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+        "
+        fill="#FFFFFF99" />
+    <!-- circle -->
+    <path
+        d="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+            a 20,20 0 1,0  40,0
+        "
+fill="transparent"
+        strokeWidth="2"
+        stroke="#FFFFFFFF" />
+    <!-- sun -->
+    <path
+        fill="#FFFFFFFF"
+        d="
+            M 25, 15
+            m 4, 0
+            a 4,4 0 1,0 -8,0
+            a 4,4 0 1,0  8,0
+        " />
+    <path
+        d="
+            M 25, 15
+            m 5, 0 h 2
+            m -7, 5 v 2
+            m -5, -7 h-2
+            m 7, -5 v-2
+            m 3.4, 3.8 l 1.4, -1.4
+            m -1.4, 8 l 1.4, 1.4
+            m -8, -1.4 l -1.4, 1.4
+            m 1.4, -8 l -1.4, -1.4
+        "
+        strokeWidth="1"
+        stroke="#FFFFFFFF" />
+    <!-- moon -->
+    <path
+        fill="#FFFFFFFF"
+        d="
+            M 25, 35
+            m 0, -6
+            a 6,6 0 1,0 6,6
+            a 3,3 0 0,1 -6,-6
+            z
+        " />
+
+
+</svg>
