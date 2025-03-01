@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Simple24HClock.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/BackImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/back"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/BackDayImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/back_day"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/FaceImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/face"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text=""
+        android:textColor="#88FFFFFF"
+        android:textSize="32sp"
+        app:layout_constraintVertical_weight="1" />
+
+    <ImageView
+        android:id="@+id/DayOfYearHandImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/hand_day_of_year"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/HandImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/hand"
+        tools:ignore="ContentDescription" />
+
+</RelativeLayout>

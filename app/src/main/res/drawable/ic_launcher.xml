@@ -1,0 +1,66 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="50"
+    android:viewportHeight="50">
+    <!-- back -->
+    <path
+        android:pathData="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+            a 20,20 0 1,0  40,0
+        "
+        android:fillColor="#30000000" />
+    <path
+        android:pathData="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+        "
+        android:fillColor="#20FFFFFF" />
+    <!-- circle -->
+    <path
+        android:pathData="
+            M 5, 25
+            m 40, 0
+            a 20,20 0 1,0 -40,0
+            a 20,20 0 1,0  40,0
+        "
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFFFF" />
+    <!-- sun -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="
+            M 25, 15
+            m 4, 0
+            a 4,4 0 1,0 -8,0
+            a 4,4 0 1,0  8,0
+        " />
+    <path
+        android:pathData="
+            M 25, 15
+            m 5, 0 h 2
+            m -7, 5 v 2
+            m -5, -7 h-2
+            m 7, -5 v-2
+            m 3.4, 3.8 l 1.4, -1.4
+            m -1.4, 8 l 1.4, 1.4
+            m -8, -1.4 l -1.4, 1.4
+            m 1.4, -8 l -1.4, -1.4
+        "
+        android:strokeWidth="1"
+        android:strokeColor="#FFFFFFFF" />
+    <!-- moon -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="
+            M 25, 35
+            m 0, -6
+            a 6,6 0 1,0 6,6
+            a 3,3 0 0,1 -6,-6
+            z
+        " />
+
+</vector>

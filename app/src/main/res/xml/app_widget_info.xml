@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="utb.dip.jp.simple24hclock.AppWidgetSettingsActivity"
+    android:description="@string/app_widget_description"
+    android:initialKeyguardLayout="@layout/app_widget"
+    android:initialLayout="@layout/app_widget"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:previewImage="@drawable/face"
+    android:previewLayout="@layout/app_widget"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellWidth="3"
+    android:targetCellHeight="3"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable|configuration_optional" />
