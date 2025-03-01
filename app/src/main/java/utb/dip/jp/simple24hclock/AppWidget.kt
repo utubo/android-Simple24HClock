@@ -11,7 +11,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.yield
 import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -65,7 +64,6 @@ class AppWidget : AppWidgetProvider() {
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, id, newOptions)
         val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
-        val prefs = context.getSharedPreferences(WIDGET_IDS_KEY, Context.MODE_PRIVATE)
         layoutPrefs.edit().apply {
             calculateLayout(this, id, newOptions)
             apply()
