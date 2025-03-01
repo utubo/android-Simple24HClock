@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Simple 24H Clock</string>
-    <string name="app_widget_description">Simple 24H Clock</string>
+    <string name="app_widget_description" />
     <string name="title_activity_app_widget_settings">Simple 24H Clock</string>
     <string name="custom_text_note" formatted="false">See <a href="https://developers.google.com/j2objc/javadoc/jre/reference/java/text/SimpleDateFormat">SimpleDateFormat</a>.
         \nThe label is displayed in the center.
