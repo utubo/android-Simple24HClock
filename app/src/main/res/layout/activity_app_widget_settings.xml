@@ -12,8 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -28,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Label" />
+                    android:text="@string/label" />
 
                 <RadioGroup
                     android:id="@+id/labelGroup"
@@ -41,21 +40,21 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:minHeight="48dp"
-                        android:text="None" />
+                        android:text="@string/none" />
 
                     <RadioButton
                         android:id="@+id/textDefault"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Default (e.g. Sun  31)" />
+                        android:text="@string/recommended_e_g_sun_31" />
 
                     <RadioButton
                         android:id="@+id/textCustom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Custom" />
+                        android:text="@string/custom" />
                 </RadioGroup>
             </LinearLayout>
 
@@ -82,7 +81,7 @@
                         android:layout_height="match_parent"
                         android:background="#99000000"
                         android:gravity="center"
-                        android:hint="Edit here.\n\n\ne.g.\nE  dd"
+                        android:hint="@string/edit_here"
                         android:inputType="textMultiLine"
                         android:lines="14"
                         android:textColor="#FFFFFFFF"
@@ -107,14 +106,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Optional" />
+            android:text="@string/optional" />
 
         <CheckBox
             android:id="@+id/dayOfYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:text="Day of year hand" />
+            android:text="@string/day_of_year_hand" />
 
         <Button
             android:id="@+id/applyButton"
@@ -125,7 +124,7 @@
             app:cornerRadius="4dp"
             android:textColor="@color/design_default_color_on_primary"
             android:background="@color/design_default_color_primary"
-            android:text="Apply" />
+            android:text="@string/apply" />
 
     </LinearLayout>
 </ScrollView>

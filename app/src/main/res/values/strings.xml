@@ -7,4 +7,12 @@
         \nThe label is displayed in the center.
         \nUse line breaks to adjust position.
     </string>
+    <string name="label">Label</string>
+    <string name="none">None</string>
+    <string name="recommended_e_g_sun_31">Recommended (e.g. Sun 31)</string>
+    <string name="custom">Custom</string>
+    <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
+    <string name="optional">Optional</string>
+    <string name="day_of_year_hand">Day of year hand</string>
+    <string name="apply">Apply</string>
 </resources>
