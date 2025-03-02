@@ -2,7 +2,9 @@ package utb.dip.jp.simple24hclock
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.SizeF
@@ -69,6 +71,15 @@ class AppWidget : AppWidgetProvider() {
             apply()
         }
         updateAppWidget(context, appWidgetManager, id)
+    }
+}
+
+class ScreenOnReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == Intent.ACTION_SCREEN_ON) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            updateAllAppWidget(context, appWidgetManager)
+        }
     }
 }
 
