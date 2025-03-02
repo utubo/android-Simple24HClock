@@ -1,0 +1,4 @@
+<resources>
+    <!-- horizontal -->
+    <integer name="settings_radio_group_orientation">0</integer>
+</resources>

@@ -1,104 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:padding="30dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".AppWidgetSettingsActivity">
 
-    <RadioGroup
-        android:id="@+id/labelGroup"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Label" />
-
-        <RadioButton
-            android:id="@+id/textNone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="None" />
-
-        <RadioButton
-            android:id="@+id/textDefault"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Default (e.g. Sun  31)" />
-
-        <RadioButton
-            android:id="@+id/textCustom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Custom" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="30dp"
-            android:paddingEnd="0dp">
+            android:orientation="@integer/settings_radio_group_orientation">
 
-            <RelativeLayout
-                android:layout_width="224dp"
-                android:layout_height="224dp"
-                android:gravity="center">
-
-                <include
-                    layout="@layout/app_widget"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/textFormat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#99000000"
-                    android:gravity="center"
-                    android:hint="Edit here."
-                    android:inputType="textMultiLine"
-                    android:lines="14"
-                    android:textColor="#FFFFFFFF"
-                    android:textColorHint="#99FFFFFF"
-                    android:textSize="16dp"
-                    tools:ignore="SpUsage" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/custom_text_note"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.6"
-                android:linksClickable="true"
-                android:text="@string/custom_text_note" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Label" />
+
+                <RadioGroup
+                    android:id="@+id/labelGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/textNone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:minHeight="48dp"
+                        android:text="None" />
+
+                    <RadioButton
+                        android:id="@+id/textDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="Default (e.g. Sun  31)" />
+
+                    <RadioButton
+                        android:id="@+id/textCustom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="Custom" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="30dp"
+                android:paddingEnd="0dp">
+
+                <RelativeLayout
+                    android:layout_width="224dp"
+                    android:layout_height="224dp"
+                    android:gravity="center">
+
+                    <include
+                        layout="@layout/app_widget"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/textFormat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#99000000"
+                        android:gravity="center"
+                        android:hint="Edit here.\n\n\ne.g.\nE  dd"
+                        android:inputType="textMultiLine"
+                        android:lines="14"
+                        android:textColor="#FFFFFFFF"
+                        android:textColorHint="#99FFFFFF"
+                        android:textSize="16dp"
+                        tools:ignore="SpUsage" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/custom_text_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.6"
+                    android:linksClickable="true"
+                    android:text="@string/custom_text_note" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
-    </RadioGroup>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Optional" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Hand" />
+        <CheckBox
+            android:id="@+id/dayOfYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="Day of year hand" />
 
-    <CheckBox
-        android:id="@+id/dayOfYear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Day of Year" />
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            app:cornerRadius="4dp"
+            android:textColor="@color/design_default_color_on_primary"
+            android:background="@color/design_default_color_primary"
+            android:text="Apply" />
 
-    <Button
-        android:id="@+id/applyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:text="Apply" />
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

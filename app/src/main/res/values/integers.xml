@@ -1,0 +1,4 @@
+<resources>
+    <!-- vertical -->
+    <integer name="settings_radio_group_orientation">1</integer>
+</resources>
