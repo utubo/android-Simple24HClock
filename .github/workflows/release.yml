@@ -34,4 +34,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Signed app apk
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: /tmp/simple24hclock.apk
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          body: ${{ steps.release_notes.outputs.COMMITS }}
+          generate_release_notes: true
+          files: /tmp/simple24hclock.apk
