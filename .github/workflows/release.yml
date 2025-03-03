@@ -36,7 +36,7 @@ jobs:
           name: Signed app apk
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
       - name: Rename APK
-        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} /release/*.apk /tmp/simple24hclock.apk
+        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} /tmp/simple24hclock.apk
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
