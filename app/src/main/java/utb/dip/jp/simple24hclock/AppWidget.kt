@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.lang.Float.min
@@ -90,26 +91,28 @@ class WidgetUpdateWorker(
         private const val WORK_NAME = "Simple24HClockUpdateWorker"
         fun enqueue(context: Context, delay: Long = 0) {
             val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
-            if (delay != 0L) {
+            if (delay == 0L) {
+                request.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            } else {
                 request.setInitialDelay(delay, TimeUnit.MILLISECONDS)
             }
-            WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request.build())
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request.build())
         }
+
         fun cancel(context: Context) {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
         }
     }
 
     override suspend fun doWork(): Result {
+        // update widgets
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        updateAllAppWidget(context, appWidgetManager)
-        scheduleNextWork(context)
-        return Result.success()
-    }
-
-    private fun scheduleNextWork(context: Context) {
+        updateAllAppWidgets(context, appWidgetManager)
+        // schedule next
         val delay = 60000 - (System.currentTimeMillis() % 60000)
         enqueue(context, delay)
+        return Result.success()
     }
 }
 
@@ -135,7 +138,7 @@ internal fun calculateLayout(
     editor.putFloat("text_size_$id", s / 14F)
 }
 
-internal fun updateAllAppWidget(
+internal fun updateAllAppWidgets(
     context: Context,
     appWidgetManager: AppWidgetManager
 ) {
