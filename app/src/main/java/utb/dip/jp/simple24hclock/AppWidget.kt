@@ -16,6 +16,7 @@ import androidx.work.WorkerParameters
 import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 /**
@@ -44,18 +45,17 @@ class AppWidget : AppWidgetProvider() {
             }
             apply()
         }
-        updateAllAppWidget(context, appWidgetManager)
+        restart(context)
     }
 
     override fun onEnabled(context: Context) {
         super.onEnabled(context)
-        val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
-            .build()
-        WorkManager.getInstance(context).enqueue(request)
+        restart(context)
     }
 
     override fun onDisabled(context: Context) {
-        // Enter relevant functionality for when the last widget is disabled
+        super.onDisabled(context)
+        stop(context)
     }
 
     override fun onAppWidgetOptionsChanged(
@@ -77,8 +77,7 @@ class AppWidget : AppWidgetProvider() {
 class ScreenOnReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_SCREEN_ON) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            updateAllAppWidget(context, appWidgetManager)
+            restart(context)
         }
     }
 }
@@ -87,6 +86,10 @@ class WidgetUpdateWorker(
     private val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
+    companion object {
+        val WORK_ID: UUID = UUID.fromString("f685d38c-5bd6-4537-d2e0-afca217ec66d")
+    }
+
     override suspend fun doWork(): Result {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         updateAllAppWidget(context, appWidgetManager)
@@ -96,11 +99,23 @@ class WidgetUpdateWorker(
 
     private fun scheduleNextWork(context: Context) {
         val interval = 60000 - (System.currentTimeMillis() % 60000)
-        val nextWorkRequest = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
+        val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
             .setInitialDelay(interval, TimeUnit.MILLISECONDS)
+            .setId(WORK_ID)
             .build()
-        WorkManager.getInstance(context).enqueue(nextWorkRequest)
+        WorkManager.getInstance(context).updateWork(request)
     }
+}
+
+internal fun restart(context: Context) {
+    val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
+        .setId(WidgetUpdateWorker.WORK_ID)
+        .build()
+    WorkManager.getInstance(context).updateWork(request)
+}
+
+internal fun stop(context: Context) {
+    WorkManager.getInstance(context).cancelWorkById(WidgetUpdateWorker.WORK_ID)
 }
 
 internal fun calculateLayout(
@@ -133,23 +148,31 @@ internal fun updateAppWidget(
     appWidgetId: Int
 ) {
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+    val views = RemoteViews(context.packageName, R.layout.app_widget)
 
     // Hand
     val now = Calendar.getInstance()
-    val r = 360F / 24F * (now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60F)
-    val views = RemoteViews(context.packageName, R.layout.app_widget)
-    views.setFloat(R.id.HandImageView, "setRotation", r)
+    val h = 360F / 24F * (now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60F)
+    views.setFloat(R.id.HandImageView, "setRotation", h)
 
     // Day of year
+    val dayOfYearDots = widgetPrefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
+    views.setFloat(R.id.DayOfYearDotsImageView, "setAlpha", dayOfYearDots)
     val dayOfYear = widgetPrefs.getFloat("day_of_year_$appWidgetId", 0F)
     views.setFloat(R.id.DayOfYearHandImageView, "setAlpha", dayOfYear)
     if (0 < dayOfYear) {
-        val maxY = now.getMaximum(Calendar.DAY_OF_YEAR)
-        val y = 360F / maxY * (now.get(Calendar.DAY_OF_YEAR) - 1)
-        views.setFloat(R.id.DayOfYearHandImageView, "setRotation", y)
+        if (0 < dayOfYearDots) {
+            val m = now.get(Calendar.MONDAY).toFloat()
+            val dOfM =
+                (now.get(Calendar.DAY_OF_MONTH) - 1).toFloat() / now.getLeastMaximum(Calendar.DAY_OF_MONTH)
+            val d = 360F / 12 * (m + dOfM)
+            views.setFloat(R.id.DayOfYearHandImageView, "setRotation", d)
+        } else {
+            val maxDoY = now.getMaximum(Calendar.DAY_OF_YEAR)
+            val d = 360F / maxDoY * (now.get(Calendar.DAY_OF_YEAR) - 1)
+            views.setFloat(R.id.DayOfYearHandImageView, "setRotation", d)
+        }
     }
-    val dayOfYearDots = widgetPrefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
-    views.setFloat(R.id.DayOfYearDotsImageView, "setAlpha", dayOfYearDots)
 
     // Text
     val text = widgetPrefs.getString("text_$appWidgetId", "")
