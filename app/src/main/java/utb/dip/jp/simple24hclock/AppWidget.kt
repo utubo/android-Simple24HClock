@@ -145,7 +145,7 @@ internal fun updateAppWidget(
     views.setFloat(R.id.DayOfYearHandImageView, "setAlpha", dayOfYear)
     if (0 < dayOfYear) {
         val maxY = now.getMaximum(Calendar.DAY_OF_YEAR)
-        val y = 360F / maxY * now.get(Calendar.DAY_OF_YEAR)
+        val y = 360F / maxY * (now.get(Calendar.DAY_OF_YEAR) - 1)
         views.setFloat(R.id.DayOfYearHandImageView, "setRotation", y)
     }
     val dayOfYearDots = widgetPrefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
