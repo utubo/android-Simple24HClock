@@ -10,13 +10,13 @@ import android.os.Bundle
 import android.util.SizeF
 import android.widget.RemoteViews
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 /**
@@ -87,7 +87,17 @@ class WidgetUpdateWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
     companion object {
-        val WORK_ID: UUID = UUID.fromString("f685d38c-5bd6-4537-d2e0-afca217ec66d")
+        private const val WORK_NAME = "Simple24HClockUpdateWorker"
+        fun enqueue(context: Context, delay: Long = 0) {
+            val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
+            if (delay != 0L) {
+                request.setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            }
+            WorkManager.getInstance(context).enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request.build())
+        }
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+        }
     }
 
     override suspend fun doWork(): Result {
@@ -98,24 +108,17 @@ class WidgetUpdateWorker(
     }
 
     private fun scheduleNextWork(context: Context) {
-        val interval = 60000 - (System.currentTimeMillis() % 60000)
-        val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
-            .setInitialDelay(interval, TimeUnit.MILLISECONDS)
-            .setId(WORK_ID)
-            .build()
-        WorkManager.getInstance(context).updateWork(request)
+        val delay = 60000 - (System.currentTimeMillis() % 60000)
+        enqueue(context, delay)
     }
 }
 
 internal fun restart(context: Context) {
-    val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
-        .setId(WidgetUpdateWorker.WORK_ID)
-        .build()
-    WorkManager.getInstance(context).updateWork(request)
+    WidgetUpdateWorker.enqueue(context)
 }
 
 internal fun stop(context: Context) {
-    WorkManager.getInstance(context).cancelWorkById(WidgetUpdateWorker.WORK_ID)
+    WidgetUpdateWorker.cancel(context)
 }
 
 internal fun calculateLayout(
