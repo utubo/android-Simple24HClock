@@ -14,5 +14,6 @@
     <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
     <string name="optional">Optional</string>
     <string name="day_of_year_hand">Day of year hand</string>
+    <string name="day_of_year_dots">Day of year dots</string>
     <string name="apply">Apply</string>
 </resources>

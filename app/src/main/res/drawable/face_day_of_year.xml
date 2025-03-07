@@ -1,0 +1,52 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:tint="@color/white"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!--
+    for (let d = 0; d < 12; d ++) {
+      const r = 360 / 12 * d - 90;
+      const x = Math.cos(r * Math.PI / 180) * 55 + 100;
+      const y = Math.sin(r * Math.PI / 180) * 55 + 100;
+      console.log(`${d} ${r}: ${x} ${y}`);
+    }
+    -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 100, 45 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 127, 52 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 148, 72 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 155, 100 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 148, 127 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 127, 148 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 100, 155 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 72, 148 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 52, 127 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 45, 100 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 52, 72 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M 72, 52 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+
+</vector>

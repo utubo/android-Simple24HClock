@@ -27,6 +27,15 @@
         android:src="@drawable/face"
         tools:ignore="ContentDescription" />
 
+    <ImageView
+        android:id="@+id/DayOfYearDotsImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/face_day_of_year"
+        android:alpha="0"
+        tools:ignore="ContentDescription" />
+
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"

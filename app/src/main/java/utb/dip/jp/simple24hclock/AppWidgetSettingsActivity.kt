@@ -48,6 +48,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
             val customTextNote =  findViewById<TextView>(R.id.custom_text_note)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
+            val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
@@ -67,6 +68,8 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         )
         val dayOfYear = prefs.getFloat("day_of_year_$appWidgetId", 0F)
         v.dayOfYear.isChecked = 0 < dayOfYear
+        val dayOfYearDots = prefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
+        v.dayOfYearDots.isChecked = 0 < dayOfYearDots
 
         // setup events
         findViewById<RadioGroup>(R.id.labelGroup).setOnCheckedChangeListener { _, i ->
@@ -92,6 +95,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
                 putString("text_$appWidgetId", textValue)
                 putString("format_$appWidgetId", formatValue)
                 putFloat("day_of_year_$appWidgetId", if (v.dayOfYear.isChecked) 0.5F else 0F)
+                putFloat("day_of_year_dots_$appWidgetId", if (v.dayOfYearDots.isChecked) 0.5F else 0F)
                 apply()
             }
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
