@@ -6,15 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.RemoteViews
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.textfield.TextInputEditText
 
@@ -46,9 +50,10 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             val textDefault = findViewById<RadioButton>(R.id.textDefault)
             val textCustom = findViewById<RadioButton>(R.id.textCustom)
             val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
-            val customTextNote =  findViewById<TextView>(R.id.custom_text_note)
+            val customTextNote = findViewById<TextView>(R.id.custom_text_note)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
+            val preview = findViewById<FrameLayout>(R.id.preview)
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
@@ -71,8 +76,26 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         val dayOfYearDots = prefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
         v.dayOfYearDots.isChecked = 0 < dayOfYearDots
 
+        // preview
+        fun updatePreview() {
+            val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
+            views.setTextViewTextSize(R.id.textView, COMPLEX_UNIT_PX, v.textFormat.textSize)
+            updateAppWidgetContent(
+                views, AppWidgetContentProps(
+                    if (v.dayOfYear.isChecked) 0.5F else 0F,
+                    if (v.dayOfYearDots.isChecked) 0.5F else 0F,
+                    if (v.textDefault.isChecked) DEFAULT_TEXT else "",
+                )
+            )
+            v.preview.removeAllViews()
+            v.preview.addView(views.apply(applicationContext, v.preview))
+            v.textFormat.isVisible = v.textCustom.isChecked
+        }
+        updatePreview()
+
         // setup events
         findViewById<RadioGroup>(R.id.labelGroup).setOnCheckedChangeListener { _, i ->
+            updatePreview()
             if (i == R.id.textCustom) {
                 v.textFormat.requestFocus()
             } else {
@@ -95,12 +118,19 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
                 putString("text_$appWidgetId", textValue)
                 putString("format_$appWidgetId", formatValue)
                 putFloat("day_of_year_$appWidgetId", if (v.dayOfYear.isChecked) 0.5F else 0F)
-                putFloat("day_of_year_dots_$appWidgetId", if (v.dayOfYearDots.isChecked) 0.5F else 0F)
+                putFloat(
+                    "day_of_year_dots_$appWidgetId",
+                    if (v.dayOfYearDots.isChecked) 0.5F else 0F
+                )
                 apply()
             }
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             updateAppWidget(applicationContext, appWidgetManager, appWidgetId)
+            val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            setResult(Activity.RESULT_OK, resultValue)
             finish()
         }
+        v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
     }
 }

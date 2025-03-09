@@ -70,8 +70,8 @@
                     android:layout_height="224dp"
                     android:gravity="center">
 
-                    <include
-                        layout="@layout/app_widget"
+                    <FrameLayout
+                        android:id="@+id/preview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -79,12 +79,12 @@
                         android:id="@+id/textFormat"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#99000000"
+                        android:background="#00000000"
                         android:gravity="center"
                         android:hint="@string/edit_here"
                         android:inputType="textMultiLine"
                         android:lines="14"
-                        android:textColor="#FFFFFFFF"
+                        android:textColor="#99FFFFFF"
                         android:textColorHint="#99FFFFFF"
                         android:textSize="16dp"
                         tools:ignore="SpUsage" />
