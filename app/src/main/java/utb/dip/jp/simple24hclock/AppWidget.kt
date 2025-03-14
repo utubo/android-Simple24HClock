@@ -159,29 +159,41 @@ internal fun updateAppWidget(
         views.setFloat(R.id.textView, "setTextSize", textSize)
     }
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-    updateAppWidgetContent(views, AppWidgetContentProps(
-        widgetPrefs.getFloat("day_of_year_$appWidgetId", 0F),
-        widgetPrefs.getFloat("day_of_year_dots_$appWidgetId", 0F),
-        widgetPrefs.getString("text_$appWidgetId", "")
-    ))
+    updateAppWidgetContent(
+        views, AppWidgetContentProps(
+            widgetPrefs.getFloat("minute_$appWidgetId", 0F),
+            widgetPrefs.getFloat("day_of_year_$appWidgetId", 0F),
+            widgetPrefs.getFloat("day_of_year_dots_$appWidgetId", 0F),
+            widgetPrefs.getString("text_$appWidgetId", "")
+        )
+    )
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
 internal data class AppWidgetContentProps(
+    val minute: Float,
     val dayOfYear: Float,
     val dayOfYearDots: Float,
     val text: String?,
 )
 
 internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetContentProps) {
-    // Hand
     val now = Calendar.getInstance()
+
+    // Hour
     val h = 360F / 24F * (now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60F)
     views.setFloat(R.id.HandImageView, "setRotation", h)
 
+    // Minute
+    views.setFloat(R.id.MinuteHandImageView, "setAlpha", props.minute)
+    if (0 < props.minute) {
+        val m = 360F / 60F * now.get(Calendar.MINUTE)
+        views.setFloat(R.id.MinuteHandImageView, "setRotation", m)
+    }
+
     // Day of year
-    views.setFloat(R.id.DayOfYearDotsImageView, "setAlpha", props.dayOfYearDots)
     views.setFloat(R.id.DayOfYearHandImageView, "setAlpha", props.dayOfYear)
+    views.setFloat(R.id.DayOfYearDotsImageView, "setAlpha", props.dayOfYearDots)
     if (0 < props.dayOfYear) {
         if (0 < props.dayOfYearDots) {
             val m = now.get(Calendar.MONDAY).toFloat()

@@ -31,8 +31,8 @@
         android:id="@+id/DayOfYearDotsImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/face_day_of_year"
         android:alpha="0"
+        android:src="@drawable/face_day_of_year"
         tools:ignore="ContentDescription" />
 
 
@@ -51,6 +51,14 @@
         android:layout_height="match_parent"
         android:alpha="0"
         android:src="@drawable/hand_day_of_year"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/MinuteHandImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/hand_minute"
         tools:ignore="ContentDescription" />
 
     <ImageView

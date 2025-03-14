@@ -51,6 +51,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             val textCustom = findViewById<RadioButton>(R.id.textCustom)
             val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
             val customTextNote = findViewById<TextView>(R.id.custom_text_note)
+            val minute = findViewById<CheckBox>(R.id.minute)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
             val preview = findViewById<FrameLayout>(R.id.preview)
@@ -71,6 +72,8 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
                 ""
             )
         )
+        val minute = prefs.getFloat("minute_$appWidgetId", 0F)
+        v.minute.isChecked = 0 < minute
         val dayOfYear = prefs.getFloat("day_of_year_$appWidgetId", 0F)
         v.dayOfYear.isChecked = 0 < dayOfYear
         val dayOfYearDots = prefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
@@ -82,6 +85,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             views.setTextViewTextSize(R.id.textView, COMPLEX_UNIT_PX, v.textFormat.textSize)
             updateAppWidgetContent(
                 views, AppWidgetContentProps(
+                    if (v.minute.isChecked) 0.7F else 0F,
                     if (v.dayOfYear.isChecked) 0.5F else 0F,
                     if (v.dayOfYearDots.isChecked) 0.5F else 0F,
                     if (v.textDefault.isChecked) DEFAULT_TEXT else "",
@@ -106,6 +110,9 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             v.textCustom.toggle()
         }
         v.customTextNote.movementMethod = LinkMovementMethod.getInstance()
+        v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
         findViewById<Button>(R.id.applyButton).setOnClickListener {
             val formatValue = v.textFormat.text.toString()
             var textValue = ""
@@ -117,6 +124,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             prefs.edit().apply {
                 putString("text_$appWidgetId", textValue)
                 putString("format_$appWidgetId", formatValue)
+                putFloat("minute_$appWidgetId", if (v.minute.isChecked) 0.7F else 0F)
                 putFloat("day_of_year_$appWidgetId", if (v.dayOfYear.isChecked) 0.5F else 0F)
                 putFloat(
                     "day_of_year_dots_$appWidgetId",
@@ -130,7 +138,5 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK, resultValue)
             finish()
         }
-        v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
     }
 }
