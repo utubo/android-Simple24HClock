@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue.COMPLEX_UNIT_PX
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.RadioButton
@@ -20,6 +19,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
@@ -113,7 +113,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        findViewById<Button>(R.id.applyButton).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
             val formatValue = v.textFormat.text.toString()
             var textValue = ""
             if (v.textDefault.isChecked) {
