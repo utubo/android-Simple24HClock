@@ -59,6 +59,11 @@ class AppWidget : AppWidgetProvider() {
         stop(context)
     }
 
+    override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
+        super.onDeleted(context, appWidgetIds)
+        cleanupPrefs(context, appWidgetIds)
+    }
+
     override fun onAppWidgetOptionsChanged(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -214,5 +219,32 @@ internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetContentP
     } else {
         val fmt = SimpleDateFormat(props.text, java.util.Locale.getDefault())
         views.setTextViewText(R.id.textView, fmt.format(now.time))
+    }
+}
+
+internal fun cleanupPrefs(context: Context?, deletedIds: IntArray?) {
+    if (context == null) return
+    val idsPref = context.getSharedPreferences(WIDGET_IDS_KEY, Context.MODE_PRIVATE)
+    if (deletedIds != null) {
+        idsPref.edit().apply {
+            deletedIds.forEach { id ->
+                remove("widget_$id")
+            }
+            apply()
+        }
+    }
+    val ids = mutableSetOf<Int>()
+    idsPref.all.forEach { (_, id) ->
+        ids.add(id as Int)
+    }
+    val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+    prefs.edit().apply {
+        prefs.all.forEach { (key, _) ->
+            val id = key.split('_').last().toIntOrNull()
+            if (id != null && !ids.contains(id)) {
+                remove(key)
+            }
+        }
+        apply()
     }
 }
