@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         // Add the widget to home screen
         val context = this.applicationContext
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val myProvider = ComponentName(context, AppWidget::class.java)
+        val myProvider = ComponentName(context, MyAppWidgetProvider::class.java)
         if (appWidgetManager.isRequestPinAppWidgetSupported) {
             appWidgetManager.requestPinAppWidget(myProvider, null, null)
         }

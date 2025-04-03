@@ -58,7 +58,8 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-        val text = prefs.getString("text_$appWidgetId", "")
+        val wp = getAppWidgetProps(prefs, appWidgetId)
+        val text = wp.text
         if (text.isNullOrEmpty()) {
             v.textNone.toggle()
         } else if (text == DEFAULT_TEXT) {
@@ -66,29 +67,22 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         } else {
             v.textCustom.toggle()
         }
-        v.textFormat.setText(
-            prefs.getString(
-                "format_$appWidgetId",
-                ""
-            )
-        )
-        val minute = prefs.getFloat("minute_$appWidgetId", 0F)
-        v.minute.isChecked = 0 < minute
-        val dayOfYear = prefs.getFloat("day_of_year_$appWidgetId", 0F)
-        v.dayOfYear.isChecked = 0 < dayOfYear
-        val dayOfYearDots = prefs.getFloat("day_of_year_dots_$appWidgetId", 0F)
-        v.dayOfYearDots.isChecked = 0 < dayOfYearDots
+        v.textFormat.setText(wp.format)
+        v.minute.isChecked = 0 < wp.minute
+        v.dayOfYear.isChecked = 0 < wp.dayOfYear
+        v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
 
         // preview
         fun updatePreview() {
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
             views.setTextViewTextSize(R.id.textView, COMPLEX_UNIT_PX, v.textFormat.textSize)
             updateAppWidgetContent(
-                views, AppWidgetContentProps(
+                views, AppWidgetProps(
                     if (v.minute.isChecked) 0.7F else 0F,
                     if (v.dayOfYear.isChecked) 0.5F else 0F,
                     if (v.dayOfYearDots.isChecked) 0.5F else 0F,
                     if (v.textDefault.isChecked) DEFAULT_TEXT else "",
+                    "",
                 )
             )
             v.preview.removeAllViews()
@@ -115,21 +109,18 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
         findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
             val formatValue = v.textFormat.text.toString()
-            var textValue = ""
-            if (v.textDefault.isChecked) {
-                textValue = DEFAULT_TEXT
-            } else if (v.textCustom.isChecked) {
-                textValue = formatValue
-            }
+            val textValue =
+                if (v.textDefault.isChecked) DEFAULT_TEXT
+                else if (v.textCustom.isChecked) formatValue
+                else ""
             prefs.edit().apply {
-                putString("text_$appWidgetId", textValue)
-                putString("format_$appWidgetId", formatValue)
-                putFloat("minute_$appWidgetId", if (v.minute.isChecked) 0.7F else 0F)
-                putFloat("day_of_year_$appWidgetId", if (v.dayOfYear.isChecked) 0.5F else 0F)
-                putFloat(
-                    "day_of_year_dots_$appWidgetId",
-                    if (v.dayOfYearDots.isChecked) 0.5F else 0F
-                )
+                putAppWidgetProps(this, appWidgetId, AppWidgetProps(
+                    minute = if (v.minute.isChecked) 0.7F else 0F,
+                    dayOfYear = if (v.dayOfYear.isChecked) 0.5F else 0F,
+                    dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
+                    text = textValue,
+                    format = formatValue,
+                ))
                 apply()
             }
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
