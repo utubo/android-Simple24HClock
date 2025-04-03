@@ -64,6 +64,32 @@ class AppWidget : AppWidgetProvider() {
         cleanupPrefs(context, appWidgetIds)
     }
 
+    override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {
+        super.onRestored(context, oldWidgetIds, newWidgetIds)
+        if (context == null) return
+        val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+        val oldPrefs = widgetPrefs.all.toMap()
+        val newWidgetIdsSize = newWidgetIds?.size ?: 0
+        widgetPrefs.edit().apply {
+            oldPrefs.forEach { (key, value) ->
+                val id = key.split("_").last().toIntOrNull() ?: -1
+                val i = oldWidgetIds?.indexOf(id) ?: -1
+                if (i in 0..<newWidgetIdsSize) {
+                    remove(key)
+                    val newId = newWidgetIds?.get(i)
+                    val newKey = key.replace("_$id", "_$newId")
+                    when (value) {
+                        is Int -> putInt(newKey, value)
+                        is Float -> putFloat(newKey, value)
+                        is String -> putString(newKey, value)
+                        is Boolean -> putBoolean(newKey, value)
+                    }
+                }
+            }
+            apply()
+        }
+    }
+
     override fun onAppWidgetOptionsChanged(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -80,10 +106,12 @@ class AppWidget : AppWidgetProvider() {
     }
 }
 
-class ScreenOnReceiver : BroadcastReceiver() {
+class MyBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_SCREEN_ON) {
-            restart(context)
+        when (intent.action) {
+            Intent.ACTION_SCREEN_ON,
+            Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
+            Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
         }
     }
 }

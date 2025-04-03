@@ -40,10 +40,12 @@
                 android:resource="@xml/app_widget_info" />
         </receiver>
         <receiver
-            android:name=".ScreenOnReceiver"
+            android:name=".MyBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.MY_PACKAGE_UNSUSPENDED" />
             </intent-filter>
         </receiver>
     </application>
