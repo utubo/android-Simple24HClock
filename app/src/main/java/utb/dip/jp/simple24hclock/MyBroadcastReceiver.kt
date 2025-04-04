@@ -8,6 +8,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_SCREEN_ON,
+            Intent.ACTION_USER_PRESENT,
             Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
             Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
         }
