@@ -1,11 +1,16 @@
 package utb.dip.jp.simple24hclock
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.provider.AlarmClock.ACTION_SHOW_ALARMS
 import android.util.SizeF
 import android.widget.RemoteViews
+import androidx.core.net.toUri
 import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,7 +40,23 @@ internal fun updateAppWidget(
         views.setFloat(R.id.textView, "setTextSize", textSize)
     }
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-    updateAppWidgetContent(views, getAppWidgetProps(widgetPrefs, appWidgetId))
+    val props = getAppWidgetProps(widgetPrefs, appWidgetId)
+    updateAppWidgetContent(views, props)
+
+    // Tap
+    val intent = when (props.tapBehavior) {
+        "alarm" -> Intent(ACTION_SHOW_ALARMS)
+        "calendar" -> Intent(ACTION_VIEW).apply { data = "content://com.android.calendar/time".toUri() }
+        else -> Intent()
+    }
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    val pendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        intent,
+        PendingIntent.FLAG_IMMUTABLE
+    )
+    views.setOnClickPendingIntent(R.id.Container, pendingIntent)
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
@@ -78,3 +99,4 @@ internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetProps) {
         views.setTextViewText(R.id.textView, fmt.format(now.time))
     }
 }
+

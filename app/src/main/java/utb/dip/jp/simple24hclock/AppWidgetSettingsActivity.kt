@@ -1,5 +1,6 @@
 package utb.dip.jp.simple24hclock
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -25,6 +26,7 @@ import com.google.android.material.textfield.TextInputEditText
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
 class AppWidgetSettingsActivity : AppCompatActivity() {
+    @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,22 +57,25 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
             val preview = findViewById<FrameLayout>(R.id.preview)
+            val tapRadioGroup = findViewById<RadioGroup>(R.id.tapGroup)
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
         val wp = getAppWidgetProps(prefs, appWidgetId)
-        val text = wp.text
-        if (text.isNullOrEmpty()) {
-            v.textNone.toggle()
-        } else if (text == DEFAULT_TEXT) {
-            v.textDefault.toggle()
-        } else {
-            v.textCustom.toggle()
+        when(wp.text) {
+            null, "" -> v.textNone.toggle()
+            DEFAULT_TEXT -> v.textDefault.toggle()
+            else -> v.textCustom.toggle()
         }
         v.textFormat.setText(wp.format)
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
+        v.tapRadioGroup.check(when (wp.tapBehavior) {
+            "alarm" -> R.id.tapAlarm
+            "calendar" -> R.id.tapCalendar
+            else -> R.id.tapNone
+        })
 
         // preview
         fun updatePreview() {
@@ -107,6 +112,8 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
+
+        // Apply
         findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
             val formatValue = v.textFormat.text.toString()
             val textValue =
@@ -120,6 +127,11 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
                     dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
                     text = textValue,
                     format = formatValue,
+                    tapBehavior = when (v.tapRadioGroup.checkedRadioButtonId) {
+                        R.id.tapAlarm -> "alarm"
+                        R.id.tapCalendar -> "calendar"
+                        else -> ""
+                    },
                 ))
                 apply()
             }

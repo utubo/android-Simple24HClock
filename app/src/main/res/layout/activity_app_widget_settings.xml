@@ -136,6 +136,40 @@
                 android:minHeight="48dp"
                 android:text="@string/day_of_year_dots" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/tap_behavior" />
+
+            <RadioGroup
+                android:id="@+id/tapGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/tapNone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:minHeight="48dp"
+                    android:text="@string/none" />
+
+                <RadioButton
+                    android:id="@+id/tapAlarm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/alarm" />
+
+                <RadioButton
+                    android:id="@+id/tapCalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/calendar" />
+
+            </RadioGroup>
         </LinearLayout>
     </ScrollView>
 
