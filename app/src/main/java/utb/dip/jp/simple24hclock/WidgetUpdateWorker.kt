@@ -8,6 +8,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class WidgetUpdateWorker(
@@ -44,6 +45,16 @@ class WidgetUpdateWorker(
 }
 
 internal fun restart(context: Context) {
+    // Debounce
+    val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+    val lastTick = widgetPrefs.getLong("last_restart_time", 0L)
+    val now = Date().time
+    if (lastTick != 0L && now - lastTick < 100) return
+    widgetPrefs.edit().apply {
+        putLong("last_restart_time", now)
+        apply()
+    }
+    // Restart
     WidgetUpdateWorker.enqueue(context)
 }
 
