@@ -26,5 +26,6 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, id: Int, props:
     editor.putFloat("day_of_year_$id", props.dayOfYear)
     editor.putFloat("day_of_year_dots_$id", props.dayOfYearDots)
     editor.putString("text_$id", props.text)
+    editor.putString("format_$id", props.format)
     editor.putString("tap_behavior_$id", props.tapBehavior)
 }
