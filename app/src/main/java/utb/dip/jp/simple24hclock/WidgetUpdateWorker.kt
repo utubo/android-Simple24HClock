@@ -46,11 +46,11 @@ class WidgetUpdateWorker(
 
 internal fun restart(context: Context) {
     // Debounce
-    val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-    val lastTick = widgetPrefs.getLong("last_restart_time", 0L)
+    val workerPrefs = context.getSharedPreferences(WIDGET_WORKER_KEY, Context.MODE_PRIVATE)
+    val lastTick = workerPrefs.getLong("last_restart_time", 0L)
     val now = Date().time
     if (lastTick != 0L && now - lastTick < 100) return
-    widgetPrefs.edit().apply {
+    workerPrefs.edit().apply {
         putLong("last_restart_time", now)
         apply()
     }
