@@ -1,63 +1,41 @@
 package utb.dip.jp.simple24hclock
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import androidx.work.CoroutineWorker
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import android.content.Intent
 import java.util.Date
-import java.util.concurrent.TimeUnit
 
-class WidgetUpdateWorker(
-    private val context: Context,
-    params: WorkerParameters
-) : CoroutineWorker(context, params) {
-    companion object {
-        private const val WORK_NAME = "Simple24HClockUpdateWorker"
-        fun enqueue(context: Context, delay: Long = 0) {
-            val request = OneTimeWorkRequestBuilder<WidgetUpdateWorker>()
-            if (delay == 0L) {
-                request.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            } else {
-                request.setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            }
-            WorkManager.getInstance(context)
-                .enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request.build())
-        }
+fun createIntent(context: Context): PendingIntent {
+    val intent = Intent(context, MyAppWidgetProvider::class.java)
+    intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+    intent.putExtra("FROM_ALARM", true)
+    return PendingIntent.getBroadcast(
+        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+}
 
-        fun cancel(context: Context) {
-            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
-        }
-    }
-
-    override suspend fun doWork(): Result {
-        // update widgets
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        updateAllAppWidgets(context, appWidgetManager)
-        // schedule next
-        val delay = 60000 - (System.currentTimeMillis() % 60000)
-        enqueue(context, delay)
-        return Result.success()
-    }
+internal fun setupNext(context: Context) {
+    val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val now = Date().time
+    val interval = 60_000L
+    val next = now + (interval - now % interval)
+    val pendingIntent = createIntent(context)
+    manager.cancel(pendingIntent)
+    manager.set(
+        AlarmManager.RTC,
+        next,
+        createIntent(context)
+    )
 }
 
 internal fun restart(context: Context) {
-    // Debounce
-    val workerPrefs = context.getSharedPreferences(WIDGET_WORKER_KEY, Context.MODE_PRIVATE)
-    val lastTick = workerPrefs.getLong("last_restart_time", 0L)
-    val now = Date().time
-    if (lastTick != 0L && now - lastTick < 100) return
-    workerPrefs.edit().apply {
-        putLong("last_restart_time", now)
-        apply()
-    }
-    // Restart
-    WidgetUpdateWorker.enqueue(context)
+    updateAllAppWidgets(context, AppWidgetManager.getInstance(context))
+    setupNext(context)
 }
 
 internal fun stop(context: Context) {
-    WidgetUpdateWorker.cancel(context)
+    val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    manager.cancel(createIntent(context))
 }

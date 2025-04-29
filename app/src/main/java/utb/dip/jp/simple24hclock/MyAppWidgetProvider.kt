@@ -2,7 +2,9 @@ package utb.dip.jp.simple24hclock
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 
 class MyAppWidgetProvider : AppWidgetProvider() {
@@ -28,7 +30,19 @@ class MyAppWidgetProvider : AppWidgetProvider() {
             }
             apply()
         }
-        restart(context)
+        updateAllAppWidgets(context, appWidgetManager)
+        setupNext(context)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (AppWidgetManager.ACTION_APPWIDGET_UPDATE != intent.action) {
+            return
+        }
+        val appWidgetManager = AppWidgetManager.getInstance(context)
+        val thisWidget = ComponentName(context, MyAppWidgetProvider::class.java)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget)
+        onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
     override fun onEnabled(context: Context) {
