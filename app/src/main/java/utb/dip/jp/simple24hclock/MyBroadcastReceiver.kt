@@ -11,7 +11,8 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Intent.ACTION_USER_PRESENT,
             Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
             Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
+            // Intent.ACTION_SCREEN_OFF -> stop(context)
+            INTENT_UPDATE_ALL -> doWork(context)
         }
     }
 }
-

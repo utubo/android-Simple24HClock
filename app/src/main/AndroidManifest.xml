@@ -47,6 +47,7 @@
                 <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.MY_PACKAGE_UNSUSPENDED" />
+                <action android:name="utb.dip.jp.simple24hclock.UPDATE_ALL" />
             </intent-filter>
         </receiver>
     </application>
