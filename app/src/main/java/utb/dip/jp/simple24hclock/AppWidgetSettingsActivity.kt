@@ -14,8 +14,8 @@ import android.widget.RemoteViews
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -25,7 +25,7 @@ import com.google.android.material.textfield.TextInputEditText
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
-class AppWidgetSettingsActivity : AppCompatActivity() {
+class AppWidgetSettingsActivity : ComponentActivity() {
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
