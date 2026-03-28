@@ -41,12 +41,15 @@ internal fun updateAppWidget(
     }
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
-    updateAppWidgetContent(views, props)
+    updateAppWidgetContent(context, views, props)
 
     // Tap
     val intent = when (props.tapBehavior) {
         "alarm" -> Intent(ACTION_SHOW_ALARMS)
-        "calendar" -> Intent(ACTION_VIEW).apply { data = "content://com.android.calendar/time".toUri() }
+        "calendar" -> Intent(ACTION_VIEW).apply {
+            data = "content://com.android.calendar/time".toUri()
+        }
+
         else -> Intent()
     }
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -60,7 +63,7 @@ internal fun updateAppWidget(
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
-internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetProps) {
+internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props: AppWidgetProps) {
     val now = Calendar.getInstance()
 
     // Hour
@@ -91,6 +94,14 @@ internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetProps) {
         }
     }
 
+    // Back
+    val metrics = context.resources.displayMetrics
+    val maxSize = minOf(metrics.widthPixels, metrics.heightPixels)
+    val bgBitmap =
+        SunCycleManager.getOrUpdateBackground(context, props, maxSize) // size in pixels
+    views.setImageViewBitmap(R.id.BackImageView, bgBitmap)
+    views.setFloat(R.id.BackImageView, "setAlpha", props.backgroundAlpha)
+
     // Text
     if (props.text.isNullOrEmpty()) {
         views.setTextViewText(R.id.textView, "")
@@ -99,4 +110,3 @@ internal fun updateAppWidgetContent(views: RemoteViews, props: AppWidgetProps) {
         views.setTextViewText(R.id.textView, fmt.format(now.time))
     }
 }
-

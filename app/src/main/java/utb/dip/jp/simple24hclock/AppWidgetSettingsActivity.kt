@@ -1,9 +1,7 @@
 package utb.dip.jp.simple24hclock
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -13,6 +11,8 @@ import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.RemoteViews
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -43,7 +43,7 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setResult(Activity.RESULT_CANCELED, resultValue)
+            setResult(RESULT_CANCELED, resultValue)
             finish()
         }
         // views
@@ -58,11 +58,12 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
             val preview = findViewById<FrameLayout>(R.id.preview)
             val tapRadioGroup = findViewById<RadioGroup>(R.id.tapGroup)
+            val backgroundAlpha = findViewById<SeekBar>(R.id.backgroundAlpha)
         }
         // load prefs
-        val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+        val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
         val wp = getAppWidgetProps(prefs, appWidgetId)
-        when(wp.text) {
+        when (wp.text) {
             null, "" -> v.textNone.toggle()
             DEFAULT_TEXT -> v.textDefault.toggle()
             else -> v.textCustom.toggle()
@@ -71,23 +72,29 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
-        v.tapRadioGroup.check(when (wp.tapBehavior) {
-            "alarm" -> R.id.tapAlarm
-            "calendar" -> R.id.tapCalendar
-            else -> R.id.tapNone
-        })
+        v.tapRadioGroup.check(
+            when (wp.tapBehavior) {
+                "alarm" -> R.id.tapAlarm
+                "calendar" -> R.id.tapCalendar
+                else -> R.id.tapNone
+            }
+        )
+        v.backgroundAlpha.progress = (wp.backgroundAlpha * 100).toInt()
 
         // preview
         fun updatePreview() {
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
             views.setTextViewTextSize(R.id.textView, COMPLEX_UNIT_PX, v.textFormat.textSize)
             updateAppWidgetContent(
-                views, AppWidgetProps(
+                applicationContext, views, AppWidgetProps(
+                    id = appWidgetId,
                     if (v.minute.isChecked) 0.7F else 0F,
                     if (v.dayOfYear.isChecked) 0.5F else 0F,
                     if (v.dayOfYearDots.isChecked) 0.5F else 0F,
                     if (v.textDefault.isChecked) DEFAULT_TEXT else "",
                     "",
+                    "",
+                    v.backgroundAlpha.progress.toFloat() / 100F,
                 )
             )
             v.preview.removeAllViews()
@@ -112,6 +119,17 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.backgroundAlpha.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                updatePreview()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+            }
+        })
 
         // Apply
         findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
@@ -121,24 +139,28 @@ class AppWidgetSettingsActivity : AppCompatActivity() {
                 else if (v.textCustom.isChecked) formatValue
                 else ""
             prefs.edit().apply {
-                putAppWidgetProps(this, appWidgetId, AppWidgetProps(
-                    minute = if (v.minute.isChecked) 0.7F else 0F,
-                    dayOfYear = if (v.dayOfYear.isChecked) 0.5F else 0F,
-                    dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
-                    text = textValue,
-                    format = formatValue,
-                    tapBehavior = when (v.tapRadioGroup.checkedRadioButtonId) {
-                        R.id.tapAlarm -> "alarm"
-                        R.id.tapCalendar -> "calendar"
-                        else -> ""
-                    },
-                ))
+                putAppWidgetProps(
+                    this, AppWidgetProps(
+                        id = appWidgetId,
+                        minute = if (v.minute.isChecked) 0.7F else 0F,
+                        dayOfYear = if (v.dayOfYear.isChecked) 0.5F else 0F,
+                        dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
+                        text = textValue,
+                        format = formatValue,
+                        tapBehavior = when (v.tapRadioGroup.checkedRadioButtonId) {
+                            R.id.tapAlarm -> "alarm"
+                            R.id.tapCalendar -> "calendar"
+                            else -> ""
+                        },
+                        backgroundAlpha = v.backgroundAlpha.progress.toFloat() / 100F,
+                    )
+                )
                 apply()
             }
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             updateAppWidget(applicationContext, appWidgetManager, appWidgetId)
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setResult(Activity.RESULT_OK, resultValue)
+            setResult(RESULT_OK, resultValue)
             finish()
         }
     }

@@ -12,8 +12,8 @@ android {
         applicationId = "utb.dip.jp.simple24hclock"
         minSdk = 31
         targetSdk = 35
-        versionCode = 12
-        versionName = "1.3"
+        versionCode = 13
+        versionName = "2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
+    //noinspection UseTomlInstead
+    implementation("org.shredzone.commons:commons-suncalc:3.11")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
