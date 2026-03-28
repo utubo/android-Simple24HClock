@@ -1,16 +1,21 @@
+@file:Suppress("DEPRECATION")
+
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "utb.dip.jp.simple24hclock"
-    compileSdk = 35
+    //noinspection GradleDependency
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "utb.dip.jp.simple24hclock"
         minSdk = 31
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 13
         versionName = "2.0"
@@ -31,8 +36,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
