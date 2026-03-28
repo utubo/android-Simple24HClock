@@ -111,10 +111,11 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     }
 
     // Rotation
-    if (props.rotate == 180) {
-        views.setFloat(R.id.RotateBg, "setRotation", 180F)
-        views.setFloat(R.id.RotateFg, "setRotation", 180F)
-        views.setImageViewResource(R.id.MoonView, R.drawable.moon_top)
-    }
+    views.setFloat(R.id.RotateBg, "setRotation", props.rotate)
+    views.setFloat(R.id.RotateFg, "setRotation", props.rotate)
+    views.setImageViewResource(
+        R.id.MoonView,
+        if (props.rotate == 180F) R.drawable.moon_top else R.drawable.moon
+    )
 
 }

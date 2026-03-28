@@ -70,7 +70,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             else -> v.textCustom.toggle()
         }
         v.textFormat.setText(wp.format)
-        v.rotate.isChecked = wp.rotate == 180
+        v.rotate.isChecked = wp.rotate == 180F
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
@@ -97,7 +97,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
                     format = "",
                     tapBehavior = "",
                     backgroundAlpha = v.backgroundAlpha.progress.toFloat() / 100F,
-                    rotate = if (v.rotate.isChecked) 180 else 0,
+                    rotate = if (v.rotate.isChecked) 180F else 0F,
                 )
             )
             v.preview.removeAllViews()
@@ -157,7 +157,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
                             else -> ""
                         },
                         backgroundAlpha = v.backgroundAlpha.progress.toFloat() / 100F,
-                        rotate = if (v.rotate.isChecked) 180 else 0,
+                        rotate = if (v.rotate.isChecked) 180F else 0F,
                     )
                 )
                 apply()
