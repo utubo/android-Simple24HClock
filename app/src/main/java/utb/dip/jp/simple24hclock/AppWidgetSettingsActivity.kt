@@ -53,6 +53,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             val textCustom = findViewById<RadioButton>(R.id.textCustom)
             val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
             val customTextNote = findViewById<TextView>(R.id.custom_text_note)
+            val rotate = findViewById<CheckBox>(R.id.rotate)
             val minute = findViewById<CheckBox>(R.id.minute)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
@@ -69,6 +70,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             else -> v.textCustom.toggle()
         }
         v.textFormat.setText(wp.format)
+        v.rotate.isChecked = wp.rotate == 180
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
@@ -88,13 +90,14 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             updateAppWidgetContent(
                 applicationContext, views, AppWidgetProps(
                     id = appWidgetId,
-                    if (v.minute.isChecked) 0.7F else 0F,
-                    if (v.dayOfYear.isChecked) 0.5F else 0F,
-                    if (v.dayOfYearDots.isChecked) 0.5F else 0F,
-                    if (v.textDefault.isChecked) DEFAULT_TEXT else "",
-                    "",
-                    "",
-                    v.backgroundAlpha.progress.toFloat() / 100F,
+                    minute = if (v.minute.isChecked) 0.7F else 0F,
+                    dayOfYear = if (v.dayOfYear.isChecked) 0.5F else 0F,
+                    dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
+                    text = if (v.textDefault.isChecked) DEFAULT_TEXT else "",
+                    format = "",
+                    tapBehavior = "",
+                    backgroundAlpha = v.backgroundAlpha.progress.toFloat() / 100F,
+                    rotate = if (v.rotate.isChecked) 180 else 0,
                 )
             )
             v.preview.removeAllViews()
@@ -116,6 +119,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             v.textCustom.toggle()
         }
         v.customTextNote.movementMethod = LinkMovementMethod.getInstance()
+        v.rotate.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
@@ -153,6 +157,7 @@ class AppWidgetSettingsActivity : ComponentActivity() {
                             else -> ""
                         },
                         backgroundAlpha = v.backgroundAlpha.progress.toFloat() / 100F,
+                        rotate = if (v.rotate.isChecked) 180 else 0,
                     )
                 )
                 apply()

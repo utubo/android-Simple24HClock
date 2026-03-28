@@ -7,18 +7,31 @@
     android:id="@+id/Container">
 
 
-    <ImageView
-        android:id="@+id/BackImageView"
+    <RelativeLayout
+        android:id="@+id/RotateBg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/back"
-        tools:ignore="ContentDescription" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/BackImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/back"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/FaceImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/face"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
 
     <ImageView
-        android:id="@+id/FaceImageView"
+        android:id="@+id/MoonView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/face"
+        android:src="@drawable/moon"
         tools:ignore="ContentDescription" />
 
     <ImageView
@@ -29,7 +42,6 @@
         android:src="@drawable/face_day_of_year"
         tools:ignore="ContentDescription" />
 
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
@@ -39,27 +51,33 @@
         android:textColor="#88FFFFFF"
         app:layout_constraintVertical_weight="1" />
 
-    <ImageView
-        android:id="@+id/DayOfYearHandImageView"
+    <RelativeLayout
+        android:id="@+id/RotateFg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:src="@drawable/hand_day_of_year"
-        tools:ignore="ContentDescription" />
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/MinuteHandImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:src="@drawable/hand_minute"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/DayOfYearHandImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/hand_day_of_year"
+            tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/HandImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/hand"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/MinuteHandImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/hand_minute"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/HandImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/hand"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
 
 </RelativeLayout>

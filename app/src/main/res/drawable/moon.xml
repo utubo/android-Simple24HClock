@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:tint="@color/white"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- moon -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M 100, 180
+            m 0, -6
+            a 6,6 0 1,0 6,6
+            a 3,3 0 0,1 -6,-6
+            z
+        " />
+</vector>

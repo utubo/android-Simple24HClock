@@ -17,15 +17,15 @@ android {
         minSdk = 31
         //noinspection OldTargetApi
         targetSdk = 35
-        versionCode = 13
-        versionName = "2.0"
+        versionCode = 16
+        versionName = "2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -36,6 +36,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    //noinspection WrongGradleMethod
     kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)

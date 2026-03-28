@@ -109,4 +109,12 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
         val fmt = SimpleDateFormat(props.text, java.util.Locale.getDefault())
         views.setTextViewText(R.id.textView, fmt.format(now.time))
     }
+
+    // Rotation
+    if (props.rotate == 180) {
+        views.setFloat(R.id.RotateBg, "setRotation", 180F)
+        views.setFloat(R.id.RotateFg, "setRotation", 180F)
+        views.setImageViewResource(R.id.MoonView, R.drawable.moon_top)
+    }
+
 }

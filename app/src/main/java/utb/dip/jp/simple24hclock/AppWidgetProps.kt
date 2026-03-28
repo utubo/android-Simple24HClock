@@ -14,6 +14,7 @@ data class AppWidgetProps(
     val timezone: String? = "",
     var lat: Float = 0F,
     var lng: Float = 0F,
+    var rotate: Int = 0,
 )
 
 internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProps {
@@ -28,7 +29,8 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         backgroundAlpha = prefs.getFloat("backgroundAlpha_$id", 0.4F),
         timezone = prefs.getString("timezone_$id", ""),
         lat = prefs.getFloat("lat_$id", 0F),
-        lng = prefs.getFloat("lat_$id", 0F),
+        lng = prefs.getFloat("lng_$id", 0F),
+        rotate = prefs.getInt("rotate_$id", 0),
     )
 }
 
@@ -45,5 +47,6 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putString("timezone_$id", props.timezone)
     editor.putFloat("lat_$id", props.lat)
     editor.putFloat("lng_$id", props.lng)
+    editor.putInt("rotate_$id", props.rotate)
 
 }
