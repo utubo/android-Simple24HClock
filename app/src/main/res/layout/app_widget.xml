@@ -51,6 +51,14 @@
         android:textColor="#88FFFFFF"
         app:layout_constraintVertical_weight="1" />
 
+    <ImageView
+        android:id="@+id/MinuteHandImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/hand_minute"
+        tools:ignore="ContentDescription" />
+
     <RelativeLayout
         android:id="@+id/RotateFg"
         android:layout_width="match_parent"
@@ -62,14 +70,6 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:src="@drawable/hand_day_of_year"
-            tools:ignore="ContentDescription" />
-
-        <ImageView
-            android:id="@+id/MinuteHandImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0"
-            android:src="@drawable/hand_minute"
             tools:ignore="ContentDescription" />
 
         <ImageView

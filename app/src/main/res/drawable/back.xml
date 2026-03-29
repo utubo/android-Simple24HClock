@@ -2,7 +2,6 @@
     android:width="200dp"
     android:height="200dp"
     android:alpha="0.3"
-    android:tint="#000000"
     android:viewportWidth="200"
     android:viewportHeight="200">
     <path
@@ -12,5 +11,12 @@
             m 90, 0
             a 90,90 0 1,0 -180,0
             a 90,90 0 1,0  180,0
+        " />
+    <path
+        android:fillColor="#FF888888"
+        android:pathData="
+            M 100, 100
+            m 90, 0
+            a 90,90 0 1,0 -180,0
         " />
 </vector>
