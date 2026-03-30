@@ -49,11 +49,11 @@ object SunCycleManager {
             style = Paint.Style.FILL
         }
 
-        // Apply 10% padding
+        // Apply 5% padding
         val padding = size * 0.05f
         val rect = RectF(padding, padding, size - padding, size - padding)
         val center = size / 2f
-        val radius = (size - (padding * 2)) / 2f
+        val radius = center - padding
 
         // 1. Get sunrise and sunset times
         val (sunrise, sunset) = getSunHours(context, props)
