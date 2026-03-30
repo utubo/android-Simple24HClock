@@ -1,6 +1,7 @@
 package utb.dip.jp.simple24hclock
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
@@ -167,6 +168,32 @@ class AppWidgetSettingsActivity : ComponentActivity() {
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             setResult(RESULT_OK, resultValue)
             finish()
+        }
+
+        val licenses = findViewById<TextView>(R.id.licenses)
+        licenses.setOnClickListener {
+            val message = """
+                This app uses the following open source software:
+        
+                - commons-suncalc
+                Copyright (C) Richard "Shred" Körber
+                Licensed under the Apache License, Version 2.0
+                https://www.apache.org/licenses/LICENSE-2.0
+        
+                - Timezone Data (IANA)
+                Public Domain
+                https://www.iana.org/
+        
+                - Android Jetpack & Kotlin Libraries
+                Copyright (C) Google LLC / JetBrains s.r.o.
+                Licensed under the Apache License, Version 2.0
+                https://www.apache.org/licenses/LICENSE-2.0
+            """.trimIndent()
+            AlertDialog.Builder(this)
+                .setTitle("Open Source Licenses")
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show()
         }
     }
 }
