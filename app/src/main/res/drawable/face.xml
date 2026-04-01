@@ -117,4 +117,15 @@
         android:strokeWidth="1"
         android:strokeColor="#FF000000" />
 
+    <!-- moon -->
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="
+            M 100, 180
+            m 3.3, -5
+            a 6,6 0 1,0 0,10
+            a 3,3 0 0,1 0,-10
+            z
+        " />
+
 </vector>
