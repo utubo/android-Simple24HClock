@@ -27,6 +27,10 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".OssLicenseActivity"
+            android:label="Open source license"
+            android:theme="@style/Theme.Material3.DayNight" />
 
         <receiver
             android:name=".MyAppWidgetProvider"
