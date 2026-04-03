@@ -164,11 +164,13 @@
                 <ImageView
                     android:id="@+id/PalletImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
+                    android:layout_height="120dp"
                     android:importantForAccessibility="no"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/pallet" />
+                    android:paddingStart="24dp"
+                    android:src="@drawable/pallet"
+                    tools:ignore="RtlSymmetry" />
 
                 <LinearLayout
                     android:id="@+id/Seekbars"
