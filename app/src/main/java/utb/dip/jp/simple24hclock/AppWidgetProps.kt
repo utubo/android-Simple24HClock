@@ -20,7 +20,8 @@ data class AppWidgetProps(
     var colorHour: Int = Color.WHITE,
     var colorMinute: Int = Color.WHITE,
     var colorDayOfYear: Int = Color.WHITE,
-    var colorFace: Int = Color.WHITE,
+    var colorBorder: Int = Color.WHITE,
+    var colorDots: Int = Color.WHITE,
     var colorDayOfYearDots: Int = Color.WHITE,
     var colorSun: Int = Color.WHITE,
     var colorMoon: Int = Color.WHITE,
@@ -47,7 +48,8 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         colorHour = prefs.getInt("color_hour_$id", Color.WHITE),
         colorMinute = prefs.getInt("color_minute_$id", argb(180, 255, 255, 255)),
         colorDayOfYear = prefs.getInt("color_day_of_year_$id", argb(160, 255, 255, 255)),
-        colorFace = prefs.getInt("color_face_$id", Color.WHITE),
+        colorBorder = prefs.getInt("color_border_$id", Color.WHITE),
+        colorDots = prefs.getInt("color_dots_$id", Color.WHITE),
         colorDayOfYearDots = prefs.getInt("color_day_of_year_dots_$id", argb(160, 255, 255, 255)),
         colorSun = prefs.getInt("color_sun_$id", Color.WHITE),
         colorMoon = prefs.getInt("color_moon_$id", Color.WHITE),
@@ -75,7 +77,8 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putInt("color_hour_$id", props.colorHour)
     editor.putInt("color_minute_$id", props.colorMinute)
     editor.putInt("color_day_of_year_$id", props.colorDayOfYear)
-    editor.putInt("color_face_$id", props.colorFace)
+    editor.putInt("color_border_$id", props.colorBorder)
+    editor.putInt("color_dots_$id", props.colorDots)
     editor.putInt("color_day_of_year_dots_$id", props.colorDayOfYearDots)
     editor.putInt("color_sun_$id", props.colorSun)
     editor.putInt("color_moon_$id", props.colorMoon)

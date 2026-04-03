@@ -6,7 +6,7 @@
     android:initialLayout="@layout/app_widget"
     android:minWidth="40dp"
     android:minHeight="40dp"
-    android:previewImage="@drawable/face"
+    android:previewImage="@drawable/border"
     android:previewLayout="@layout/app_widget"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"

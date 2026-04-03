@@ -34,7 +34,8 @@
         <item>Hour Hand</item>
         <item>Minute Hand</item>
         <item>Day of year Hand</item>
-        <item>Face</item>
+        <item>Border</item>
+        <item>Dots</item>
         <item>Month dots</item>
         <item>Sun</item>
         <item>Moon</item>
@@ -46,7 +47,8 @@
         <item>colorHour</item>
         <item>colorMinute</item>
         <item>colorDayOfYear</item>
-        <item>colorFace</item>
+        <item>colorBorder</item>
+        <item>colorDots</item>
         <item>colorDayOfYearDots</item>
         <item>colorSun</item>
         <item>colorMoon</item>

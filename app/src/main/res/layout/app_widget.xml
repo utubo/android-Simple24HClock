@@ -20,10 +20,18 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/FaceImageView"
+            android:id="@+id/BorderImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/face"
+            android:src="@drawable/border"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/DotsImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/dots"
             app:tint="@color/white"
             tools:ignore="ContentDescription" />
 
