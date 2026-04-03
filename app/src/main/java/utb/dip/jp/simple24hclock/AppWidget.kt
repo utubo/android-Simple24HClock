@@ -15,6 +15,8 @@ import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+private const val MASK_OPAQUE = 0xFF000000.toInt()
+
 internal fun calculateLayout(
     editor: SharedPreferences.Editor,
     id: Int,
@@ -68,18 +70,15 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
 
     // Hour
     val h = 360F / 24F * (now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60F)
-    views.setFloat(R.id.HandImageView, "setRotation", h)
+    views.setFloat(R.id.HourHandImageView, "setRotation", h)
 
     // Minute
-    views.setFloat(R.id.MinuteHandImageView, "setAlpha", props.minute)
     if (0 < props.minute) {
         val m = 360F / 60F * now.get(Calendar.MINUTE)
         views.setFloat(R.id.MinuteHandImageView, "setRotation", m)
     }
 
     // Day of year
-    views.setFloat(R.id.DayOfYearHandImageView, "setAlpha", props.dayOfYear)
-    views.setFloat(R.id.DayOfYearDotsImageView, "setAlpha", props.dayOfYearDots)
     if (0 < props.dayOfYear) {
         if (0 < props.dayOfYearDots) {
             val m = now.get(Calendar.MONDAY).toFloat()
@@ -100,7 +99,6 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     val bgBitmap =
         SunCycleManager.getOrUpdateBackground(context, props, maxSize) // size in pixels
     views.setImageViewBitmap(R.id.BackImageView, bgBitmap)
-    views.setFloat(R.id.BackImageView, "setAlpha", props.backgroundAlpha)
 
     // Text
     if (props.text.isNullOrEmpty()) {
@@ -113,5 +111,25 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     // Rotation
     views.setFloat(R.id.RotateBg, "setRotation", props.rotate)
     views.setFloat(R.id.RotateFg, "setRotation", props.rotate)
+
+    // Colors
+    fun setColor(id: Int, color: Int, visible: Float = 1F) {
+        if (visible != 0F) {
+            views.setInt(id, "setColorFilter", color or MASK_OPAQUE)
+            views.setFloat(id, "setAlpha", ((color shr 24) and 0xFF) / 255F)
+        } else {
+            views.setFloat(id, "setAlpha", 0F)
+        }
+    }
+    setColor(R.id.HourHandImageView, props.colorHour)
+    setColor(R.id.MinuteHandImageView, props.colorMinute, props.minute)
+    setColor(R.id.DayOfYearHandImageView, props.colorDayOfYear, props.dayOfYear)
+    setColor(R.id.FaceImageView, props.colorFace)
+    setColor(R.id.DayOfYearDotsImageView, props.colorDayOfYearDots, props.dayOfYearDots)
+    setColor(R.id.SunImageView, props.colorSun)
+    setColor(R.id.MoonImageView, props.colorMoon)
+    views.setInt(R.id.textView, "setTextColor", props.colorText or MASK_OPAQUE)
+    views.setFloat(R.id.textView, "setAlpha", ((props.colorText shr 24) and 0xFF) / 255F)
+    views.setFloat(R.id.BackImageView, "setAlpha", props.backgroundAlpha)
 
 }

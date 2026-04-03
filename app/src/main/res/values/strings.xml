@@ -2,7 +2,8 @@
     <string name="app_name">Simple 24H Clock</string>
     <string name="app_widget_description" />
     <string name="title_activity_app_widget_settings">Simple 24H Clock</string>
-    <string name="custom_text_note" formatted="false">See <a href="https://developers.google.com/j2objc/javadoc/jre/reference/java/text/SimpleDateFormat">SimpleDateFormat</a>.
+    <string name="custom_text_note" formatted="false">Input the format directly into the preview.
+        \nSee <a href="https://developers.google.com/j2objc/javadoc/jre/reference/java/text/SimpleDateFormat">SimpleDateFormat</a>.
         \nSeconds and milliseconds are not supported.
         \nThe label is displayed in the center.
         \nUse line breaks to adjust position.
@@ -23,4 +24,34 @@
     <string name="calendar">Calendar</string>
     <string name="apply">Apply</string>
     <string name="open_source_licenses">Open Source Licenses</string>
+    <string name="colors">Colors</string>
+    <string name="select_part">Select part</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+    <string name="opacity">Opacity</string>
+    <string-array name="part_names">
+        <item>Hour Hand</item>
+        <item>Minute Hand</item>
+        <item>Day of year Hand</item>
+        <item>Face</item>
+        <item>Month dots</item>
+        <item>Sun</item>
+        <item>Moon</item>
+        <item>Day area</item>
+        <item>Night area</item>
+        <item>Label</item>
+    </string-array>
+    <string-array name="part_keys">
+        <item>colorHour</item>
+        <item>colorMinute</item>
+        <item>colorDayOfYear</item>
+        <item>colorFace</item>
+        <item>colorDayOfYearDots</item>
+        <item>colorSun</item>
+        <item>colorMoon</item>
+        <item>colorDayArea</item>
+        <item>colorNightArea</item>
+        <item>colorText</item>
+    </string-array>
 </resources>

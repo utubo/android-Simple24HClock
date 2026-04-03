@@ -1,20 +1,33 @@
 package utb.dip.jp.simple24hclock
 
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.Color.argb
 
 data class AppWidgetProps(
     val id: Int,
     val minute: Float,
     val dayOfYear: Float,
     val dayOfYearDots: Float,
-    val text: String? = "",
-    val format: String? = "",
+    var text: String? = "",
+    var format: String? = "",
     val tapBehavior: String? = "",
     val backgroundAlpha: Float = 0.3F,
     val timezone: String? = "",
     var lat: Float = 0F,
     var lng: Float = 0F,
     var rotate: Float = 0F,
+    var colorHour: Int = Color.WHITE,
+    var colorMinute: Int = Color.WHITE,
+    var colorDayOfYear: Int = Color.WHITE,
+    var colorFace: Int = Color.WHITE,
+    var colorDayOfYearDots: Int = Color.WHITE,
+    var colorSun: Int = Color.WHITE,
+    var colorMoon: Int = Color.WHITE,
+    var colorDayArea: Int = Color.GRAY,
+    var colorNightArea: Int = Color.BLACK,
+    var colorText: Int = Color.WHITE,
+    var updateNow: Boolean = false,
 )
 
 internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProps {
@@ -31,6 +44,17 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         lat = prefs.getFloat("lat_$id", 0F),
         lng = prefs.getFloat("lng_$id", 0F),
         rotate = prefs.getFloat("rotate_$id", 0F),
+        colorHour = prefs.getInt("color_hour_$id", Color.WHITE),
+        colorMinute = prefs.getInt("color_minute_$id", argb(180, 255, 255, 255)),
+        colorDayOfYear = prefs.getInt("color_day_of_year_$id", argb(160, 255, 255, 255)),
+        colorFace = prefs.getInt("color_face_$id", Color.WHITE),
+        colorDayOfYearDots = prefs.getInt("color_day_of_year_dots_$id", argb(160, 255, 255, 255)),
+        colorSun = prefs.getInt("color_sun_$id", Color.WHITE),
+        colorMoon = prefs.getInt("color_moon_$id", Color.WHITE),
+        colorDayArea = prefs.getInt("color_day_area_$id", Color.GRAY),
+        colorNightArea = prefs.getInt("color_night_area_$id", Color.BLACK),
+        colorText = prefs.getInt("color_text_$id", argb(180, 255, 255, 255)),
+        updateNow = prefs.getBoolean("update_now_$id", false)
     )
 }
 
@@ -48,5 +72,15 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putFloat("lat_$id", props.lat)
     editor.putFloat("lng_$id", props.lng)
     editor.putFloat("rotate_$id", props.rotate)
-
+    editor.putInt("color_hour_$id", props.colorHour)
+    editor.putInt("color_minute_$id", props.colorMinute)
+    editor.putInt("color_day_of_year_$id", props.colorDayOfYear)
+    editor.putInt("color_face_$id", props.colorFace)
+    editor.putInt("color_day_of_year_dots_$id", props.colorDayOfYearDots)
+    editor.putInt("color_sun_$id", props.colorSun)
+    editor.putInt("color_moon_$id", props.colorMoon)
+    editor.putInt("color_day_area_$id", props.colorDayArea)
+    editor.putInt("color_night_area_$id", props.colorNightArea)
+    editor.putInt("color_text_$id", props.colorText)
+    editor.putBoolean("update_now_$id", props.updateNow)
 }

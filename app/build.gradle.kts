@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
+    implementation(libs.kotlin.reflect)
     implementation(libs.suncalc)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)

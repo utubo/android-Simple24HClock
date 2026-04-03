@@ -3,7 +3,6 @@ package utb.dip.jp.simple24hclock
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.core.graphics.createBitmap
@@ -25,12 +24,7 @@ object SunCycleManager {
      */
     fun getOrUpdateBackground(context: Context, props: AppWidgetProps, size: Int): Bitmap {
         val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-
-        // Only re-draw if:
-        // 1. No cache exists
-        // 2. The date has changed (sunrise/sunset updated)
-        // 3. The widget size has changed
-        if (cachedBackground == null || lastUpdateDay != today || cachedBackground?.width != size) {
+        if (props.updateNow || cachedBackground == null || lastUpdateDay != today || cachedBackground?.width != size) {
             cachedBackground = createDayNightBackground(context, props, size)
             lastUpdateDay = today
         }
@@ -41,7 +35,7 @@ object SunCycleManager {
     private fun createDayNightBackground(
         context: Context,
         props: AppWidgetProps,
-        size: Int
+        size: Int,
     ): Bitmap {
         val bitmap = createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -66,11 +60,11 @@ object SunCycleManager {
 
         // 3. Draw Background Layers
         // Night area
-        paint.color = Color.BLACK
+        paint.color = props.colorNightArea
         canvas.drawCircle(center, center, radius, paint)
 
         // Day area
-        paint.color = Color.GRAY
+        paint.color = props.colorDayArea
         canvas.drawArc(rect, startAngle, sweepAngle, true, paint)
 
         return bitmap
@@ -127,6 +121,7 @@ object SunCycleManager {
                     cachedCoordinates = Pair(lat, lng)
                     props.lat = lat.toFloat()
                     props.lng = lng.toFloat()
+                    props.updateNow = false
                     val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
                     prefs.edit().apply {
                         putAppWidgetProps(this, props)

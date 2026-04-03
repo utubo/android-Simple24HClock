@@ -22,7 +22,7 @@
             android:name=".AppWidgetSettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_app_widget_settings"
-            android:theme="@style/Theme.App.Main">
+            android:theme="@style/Theme.WallpaperBackground">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

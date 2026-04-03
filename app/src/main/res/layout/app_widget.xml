@@ -24,6 +24,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/face"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/SunImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/sun"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/MoonImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/moon"
+            app:tint="@color/white"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
@@ -33,6 +50,7 @@
         android:layout_height="match_parent"
         android:alpha="0"
         android:src="@drawable/face_day_of_year"
+        app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -42,6 +60,7 @@
         android:gravity="center"
         android:text=""
         android:textColor="#88FFFFFF"
+        app:tint="@color/white"
         app:layout_constraintVertical_weight="1" />
 
     <ImageView
@@ -50,6 +69,7 @@
         android:layout_height="match_parent"
         android:alpha="0"
         android:src="@drawable/hand_minute"
+        app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
@@ -63,13 +83,15 @@
             android:layout_height="match_parent"
             android:alpha="0"
             android:src="@drawable/hand_day_of_year"
+            app:tint="@color/white"
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/HandImageView"
+            android:id="@+id/HourHandImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/hand"
+            app:tint="@color/white"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 

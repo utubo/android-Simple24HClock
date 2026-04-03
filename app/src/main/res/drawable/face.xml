@@ -92,40 +92,4 @@
     <path
         android:fillColor="#FF000000"
         android:pathData="M 79, 22 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
-
-    <!-- sun -->
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="
-            M 100, 20
-            m 4, 0
-            a 4,4 0 1,0 -8,0
-            a 4,4 0 1,0  8,0
-        " />
-    <path
-        android:pathData="
-            M 100, 20
-            m 5, 0 h 2
-            m -7, 5 v 2
-            m -5, -7 h-2
-            m 7, -5 v-2
-            m 3.4, 3.8 l 1.4, -1.4
-            m -1.4, 8 l 1.4, 1.4
-            m -8, -1.4 l -1.4, 1.4
-            m 1.4, -8 l -1.4, -1.4
-        "
-        android:strokeWidth="1"
-        android:strokeColor="#FF000000" />
-
-    <!-- moon -->
-    <path
-        android:fillColor="#FF000000"
-        android:pathData="
-            M 100, 180
-            m 3.3, -5
-            a 6,6 0 1,0 0,10
-            a 3,3 0 0,1 0,-10
-            z
-        " />
-
 </vector>
