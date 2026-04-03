@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="utb.dip.jp.simple24hclock.AppWidgetSettingsActivity"
+    android:configure="utb.dip.jp.simple24hclock.SettingsActivity"
     android:description="@string/app_widget_description"
     android:initialKeyguardLayout="@layout/app_widget"
     android:initialLayout="@layout/app_widget"

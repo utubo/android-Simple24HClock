@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppWidgetSettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_app_widget_settings"
             android:theme="@style/Theme.WallpaperBackground">

@@ -36,7 +36,7 @@ import kotlin.reflect.full.memberProperties
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
-class AppWidgetSettingsActivity : FragmentActivity() {
+class SettingsActivity : FragmentActivity() {
     @SuppressLint("QueryPermissionsNeeded", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -242,11 +242,13 @@ class AppWidgetSettingsActivity : FragmentActivity() {
         }
         findViewById<ImageView>(R.id.PalletImageView).setOnTouchListener { view, event ->
             if (selectedPart.isEmpty() || event.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
-            val iv = view as ImageView
             val bitmap = palletBitmap ?: return@setOnTouchListener false
+            val iv = view as ImageView
+            val xx = event.x - iv.paddingLeft
+            val yy = event.y - iv.paddingTop
             val inverse = Matrix()
             iv.imageMatrix.invert(inverse)
-            val points = floatArrayOf(event.x, event.y)
+            val points = floatArrayOf(xx, yy)
             inverse.mapPoints(points)
             val x = points[0].toInt()
             val y = points[1].toInt()
