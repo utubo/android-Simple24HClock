@@ -4,81 +4,90 @@
     android:viewportWidth="200"
     android:viewportHeight="200">
     <!--
+    // 0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345
     for (let d = 0; d < 24; d ++) {
       const r = 360 / 24 * d - 90;
       const x = Math.cos(r * Math.PI / 180) * 80 + 100;
       const y = Math.sin(r * Math.PI / 180) * 80 + 100;
       console.log(`${d} ${r}: ${x} ${y}`);
     }
+    <group android:rotation="30" android:translateX="100" android:translateY="100">
+        <path
+            android:strokeColor="#FF9999FF"
+            android:pathData="M0 0v-80" />
+        <path
+            android:fillColor="#FF9999FF"
+            android:pathData="M0, -80 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    </group>
     -->
-    <!-- dots from 1 to 6 -->
+    <!-- dots from1 to 6 -->
     <path
         android:fillColor="@color/white"
-        android:pathData="M 120, 22 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M120.7, 22.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 140, 30 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M140, 30.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 156, 43 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M156.6, 43.4 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 169, 60 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M169.3, 60 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 177, 79 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M177.3, 79.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 180, 100 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
-    <!-- dots from 7 to 11 -->
+        android:pathData="M180, 100 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <!-- dots from7 to 11 -->
     <path
         android:fillColor="@color/white"
-        android:pathData="M 177, 120 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M177.3, 120.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 169, 140 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M169.3, 140 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 156, 156 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M156.6, 156.6 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 140, 169 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M140, 169.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 120, 177 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
-    <!-- dots from 13 to 18 -->
+        android:pathData="M120.7, 177.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <!-- dots from13 to 18 -->
     <path
         android:fillColor="@color/white"
-        android:pathData="M 79, 177 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M79.3 177.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 60, 169 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M60, 169.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 43, 156 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M43.4, 156.6 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 30, 140 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M30.7, 140 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 22, 120 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M22.7, 120.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 20, 100 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
-    <!-- dots from 19 to 23 -->
+        android:pathData="M20, 100 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+    <!-- dots from19 to 23 -->
     <path
         android:fillColor="@color/white"
-        android:pathData="M 22, 79 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M22.7, 79.3 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 30, 59 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M30.7, 60 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 43, 43 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M43.4, 43.4 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 60, 30 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M60, 30.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
     <path
         android:fillColor="@color/white"
-        android:pathData="M 79, 22 m 2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
+        android:pathData="M79.3, 22.7 m2, 0 a 2,2 0 1,0 -4,0 a 2,2 0 1,0  4,0" />
 </vector>
