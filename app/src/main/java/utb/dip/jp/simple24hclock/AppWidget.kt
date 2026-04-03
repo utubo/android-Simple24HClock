@@ -69,7 +69,8 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     val now = Calendar.getInstance()
 
     // Hour
-    val h = 360F / 24F * (now.get(Calendar.HOUR_OF_DAY) + now.get(Calendar.MINUTE) / 60F)
+    val hour = now.get(Calendar.HOUR_OF_DAY)
+    val h = 360F / 24F * (hour + now.get(Calendar.MINUTE) / 60F)
     views.setFloat(R.id.HourHandImageView, "setRotation", h)
 
     // Minute
@@ -109,8 +110,9 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     }
 
     // Rotation
-    views.setFloat(R.id.RotateBg, "setRotation", props.rotate)
-    views.setFloat(R.id.RotateFg, "setRotation", props.rotate)
+    val deg = if (props.rotate < 0) if (hour in 6..17) 0F else 180F else props.rotate
+    views.setFloat(R.id.RotateBg, "setRotation", deg)
+    views.setFloat(R.id.RotateFg, "setRotation", deg)
 
     // Colors
     fun setColor(id: Int, color: Int, visible: Float = 1F) {

@@ -48,7 +48,7 @@ class SettingsActivity : FragmentActivity() {
         val prop = AppWidgetProps::class.memberProperties
         var backgroundAlpha: Float
 
-        setContentView(R.layout.activity_app_widget_settings)
+        setContentView(R.layout.activity_settings)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -71,12 +71,12 @@ class SettingsActivity : FragmentActivity() {
             val textCustom = findViewById<RadioButton>(R.id.textCustom)
             val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
             val customTextNote = findViewById<TextView>(R.id.custom_text_note)
-            val rotate = findViewById<CheckBox>(R.id.rotate)
             val minute = findViewById<CheckBox>(R.id.minute)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
             val preview = findViewById<FrameLayout>(R.id.preview)
-            val tapRadioGroup = findViewById<RadioGroup>(R.id.tapGroup)
+            val rotateRadioGroup = findViewById<RadioGroup>(R.id.rotateRadioGroup)
+            val tapRadioGroup = findViewById<RadioGroup>(R.id.tapRadioGroup)
             val colorsBtn = findViewById<TextView>(R.id.ColorsBtn)
             val redBar = findViewById<SeekBar>(R.id.redBar)
             val greenBar = findViewById<SeekBar>(R.id.greenBar)
@@ -92,7 +92,13 @@ class SettingsActivity : FragmentActivity() {
             else -> v.textCustom.toggle()
         }
         v.textFormat.setText(wp.format)
-        v.rotate.isChecked = wp.rotate == 180F
+        v.rotateRadioGroup.check(
+            when (wp.rotate) {
+                180F -> R.id.rotateMoonTop
+                -1F -> R.id.rotateAuto
+                else -> R.id.rotateSunTop
+            }
+        )
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
@@ -119,7 +125,11 @@ class SettingsActivity : FragmentActivity() {
                 format = "",
                 tapBehavior = "",
                 backgroundAlpha = backgroundAlpha,
-                rotate = if (v.rotate.isChecked) 180F else 0F,
+                rotate = when (v.rotateRadioGroup.checkedRadioButtonId) {
+                    R.id.rotateMoonTop -> 180F
+                    R.id.rotateAuto -> -1F
+                    else -> 0F
+                },
                 updateNow = true,
             )
             partKeys.forEach { key ->
@@ -155,7 +165,7 @@ class SettingsActivity : FragmentActivity() {
             v.textCustom.toggle()
         }
         v.customTextNote.movementMethod = LinkMovementMethod.getInstance()
-        v.rotate.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.rotateRadioGroup.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
@@ -272,6 +282,11 @@ class SettingsActivity : FragmentActivity() {
                 val wp = newAppWidgetProps()
                 wp.text = textValue
                 wp.format = formatValue
+                wp.tapBehavior = when (v.tapRadioGroup.checkedRadioButtonId) {
+                    R.id.tapAlarm -> "alarm"
+                    R.id.tapCalendar -> "calendar"
+                    else -> ""
+                }
                 putAppWidgetProps(this, wp)
                 apply()
             }

@@ -114,14 +114,42 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@string/optional" />
+                    android:text="@string/rotate" />
 
-                <CheckBox
-                    android:id="@+id/rotate"
+                <RadioGroup
+                    android:id="@+id/rotateRadioGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/rotateSunTop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:minHeight="48dp"
+                        android:text="@string/sun_top" />
+
+                    <RadioButton
+                        android:id="@+id/rotateMoonTop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/moon_top" />
+
+                    <RadioButton
+                        android:id="@+id/rotateAuto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/auto_change_at_6_00_and_18_00" />
+
+                </RadioGroup>
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="@string/rotate" />
+                    android:layout_marginTop="16dp"
+                    android:text="@string/optional" />
 
                 <CheckBox
                     android:id="@+id/minute"
@@ -243,7 +271,7 @@
                     android:text="@string/tap_behavior" />
 
                 <RadioGroup
-                    android:id="@+id/tapGroup"
+                    android:id="@+id/tapRadioGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -275,8 +303,8 @@
                     android:id="@+id/licenses"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/open_source_licenses"
-                    android:textColor="?android:attr/textColorPrimary" />
+                    android:layout_marginTop="16dp"
+                    android:text="@string/open_source_licenses" />
 
             </LinearLayout>
         </ScrollView>

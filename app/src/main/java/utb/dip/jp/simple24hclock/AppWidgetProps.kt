@@ -11,7 +11,7 @@ data class AppWidgetProps(
     val dayOfYearDots: Float,
     var text: String? = "",
     var format: String? = "",
-    val tapBehavior: String? = "",
+    var tapBehavior: String? = "",
     val backgroundAlpha: Float = 0.3F,
     val timezone: String? = "",
     var lat: Float = 0F,
