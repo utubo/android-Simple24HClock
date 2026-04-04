@@ -14,10 +14,10 @@
         android:fillColor="#EF3A9A"
         android:pathData="M36,8a4,4,0,1,0,-8,0a4,4,0,1,0,8,0" />
     <path
-        android:fillColor="#FFCC80"
+        android:fillColor="#FFF59D"
         android:pathData="M48,8a4,4,0,1,0,-8,0a4,4,0,1,0,8,0" />
     <path
-        android:fillColor="#FFF59D"
+        android:fillColor="#FFCC80"
         android:pathData="M60,8a4,4,0,1,0,-8,0a4,4,0,1,0,8,0" />
     <path
         android:fillColor="#A5D6A7"
