@@ -82,6 +82,7 @@ class SettingsActivity : FragmentActivity() {
             val greenBar = findViewById<SeekBar>(R.id.greenBar)
             val blueBar = findViewById<SeekBar>(R.id.blueBar)
             val alphaBar = findViewById<SeekBar>(R.id.alphaBar)
+            var opacityTextView = findViewById<TextView>(R.id.opacityTextView)
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
@@ -211,6 +212,13 @@ class SettingsActivity : FragmentActivity() {
                     val argb = colors[selectedPart] ?: 0
                     setupARGBSeekBars(argb, true)
                     v.colorsBtn.text = name
+                    v.opacityTextView.text = getString(
+                        when (selectedPart) {
+                            "colorDayArea" -> R.string.linked_to_night
+                            "colorNightArea" -> R.string.linked_to_day
+                            else -> R.string.opacity
+                        }
+                    )
                 }
                 .setNegativeButton("Cancel", null)
                 .show()

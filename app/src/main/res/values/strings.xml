@@ -29,6 +29,8 @@
     <string name="green">Green</string>
     <string name="blue">Blue</string>
     <string name="opacity">Opacity</string>
+    <string name="linked_to_day">Opacity (linked to Day area)</string>
+    <string name="linked_to_night">Opacity (linked to Night area)</string>
     <string name="rotate">Rotate</string>
     <string name="sun_top">Sun top</string>
     <string name="moon_top">Moon top</string>
