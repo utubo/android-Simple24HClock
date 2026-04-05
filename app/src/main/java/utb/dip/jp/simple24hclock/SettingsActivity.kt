@@ -74,6 +74,7 @@ class SettingsActivity : FragmentActivity() {
             val minute = findViewById<CheckBox>(R.id.minute)
             val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
             val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
+            val moonPhase = findViewById<CheckBox>(R.id.moonPhase)
             val preview = findViewById<FrameLayout>(R.id.preview)
             val rotateRadioGroup = findViewById<RadioGroup>(R.id.rotateRadioGroup)
             val tapRadioGroup = findViewById<RadioGroup>(R.id.tapRadioGroup)
@@ -103,6 +104,7 @@ class SettingsActivity : FragmentActivity() {
         v.minute.isChecked = 0 < wp.minute
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
+        v.moonPhase.isChecked = wp.moonPhase
         v.tapRadioGroup.check(
             when (wp.tapBehavior) {
                 "alarm" -> R.id.tapAlarm
@@ -131,6 +133,7 @@ class SettingsActivity : FragmentActivity() {
                     R.id.rotateAuto -> -1F
                     else -> 0F
                 },
+                moonPhase = v.moonPhase.isChecked,
                 updateNow = true,
             )
             partKeys.forEach { key ->
@@ -170,6 +173,7 @@ class SettingsActivity : FragmentActivity() {
         v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.moonPhase.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.alphaBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 updatePreview()

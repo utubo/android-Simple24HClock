@@ -173,12 +173,18 @@
                     android:minHeight="48dp"
                     android:text="@string/day_of_year_dots" />
 
+                <CheckBox
+                    android:id="@+id/moonPhase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/moon_phase" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/colors" />
-
 
                 <TextView
                     android:id="@+id/ColorsBtn"

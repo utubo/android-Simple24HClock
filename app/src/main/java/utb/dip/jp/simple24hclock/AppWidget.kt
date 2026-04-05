@@ -109,10 +109,24 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
         views.setTextViewText(R.id.textView, fmt.format(now.time))
     }
 
+    // Moon phase
+    val coordinates = if (props.moonPhase) LatLng.getCoordinates(context, props) else null
+    var moonRotate = 1F
+    if (coordinates != null) {
+        views.setImageViewResource(R.id.MoonImageView, MoonPhase.getMoonPhase())
+        moonRotate = if (0 <= coordinates.first) 1F else -1F
+    } else {
+        views.setImageViewResource(R.id.MoonImageView, R.drawable.moon_7)
+    }
+
     // Rotation
     val deg = if (props.rotate < 0) if (hour in 6..17) 0F else 180F else props.rotate
     views.setFloat(R.id.RotateBg, "setRotation", deg)
     views.setFloat(R.id.RotateFg, "setRotation", deg)
+    if (deg != 0F) {
+        moonRotate *= -1
+    }
+    views.setFloat(R.id.MoonImageView, "setScaleX", moonRotate)
 
     // Colors
     fun setColor(id: Int, color: Int, visible: Float = 1F) {

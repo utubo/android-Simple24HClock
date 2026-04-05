@@ -8,9 +8,8 @@
         android:fillColor="@color/white"
         android:pathData="
             M 100, 180
-            m 3.3, -4.7
-            a 6,6 0 1,0 0,10
-            a 2,2.5 0 0,1 0,-10
+            m 0, -6
+            a 6,6 1 1,1 0,12
             z
         " />
     <!-- guid circle

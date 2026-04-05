@@ -17,6 +17,7 @@ data class AppWidgetProps(
     var lat: Float = 0F,
     var lng: Float = 0F,
     var rotate: Float = 0F,
+    var moonPhase: Boolean = false,
     var colorHour: Int = Color.WHITE,
     var colorMinute: Int = Color.WHITE,
     var colorDayOfYear: Int = Color.WHITE,
@@ -45,6 +46,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         lat = prefs.getFloat("lat_$id", 0F),
         lng = prefs.getFloat("lng_$id", 0F),
         rotate = prefs.getFloat("rotate_$id", 0F),
+        moonPhase = prefs.getBoolean("moon_phase_$id", false),
         colorHour = prefs.getInt("color_hour_$id", Color.WHITE),
         colorMinute = prefs.getInt("color_minute_$id", argb(180, 255, 255, 255)),
         colorDayOfYear = prefs.getInt("color_day_of_year_$id", argb(160, 255, 255, 255)),
@@ -74,6 +76,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putFloat("lat_$id", props.lat)
     editor.putFloat("lng_$id", props.lng)
     editor.putFloat("rotate_$id", props.rotate)
+    editor.putBoolean("moon_phase_$id", props.moonPhase)
     editor.putInt("color_hour_$id", props.colorHour)
     editor.putInt("color_minute_$id", props.colorMinute)
     editor.putInt("color_day_of_year_$id", props.colorDayOfYear)

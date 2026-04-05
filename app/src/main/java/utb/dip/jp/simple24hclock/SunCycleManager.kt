@@ -6,15 +6,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.core.graphics.createBitmap
-import org.json.JSONArray
 import org.shredzone.commons.suncalc.SunTimes
+import utb.dip.jp.simple24hclock.LatLng.getCoordinates
 import java.util.Calendar
 import java.util.TimeZone
 
 object SunCycleManager {
 
     // Cache to minimize CPU/Memory usage during 1-minute updates
-    private var cachedCoordinates: Pair<Double, Double>? = null
     private var cachedBackground: Bitmap? = null
     private var lastUpdateDay = -1
 
@@ -71,9 +70,8 @@ object SunCycleManager {
     }
 
     private fun getSunHours(context: Context, props: AppWidgetProps): Pair<Float, Float> {
+        val coordinates = getCoordinates(context, props)
         val zoneId = TimeZone.getDefault().id
-        val coordinates = getCoordinates(context, props, zoneId)
-
         return if (coordinates != null) {
             val times = SunTimes.compute()
                 .at(coordinates.first, coordinates.second)
@@ -91,48 +89,6 @@ object SunCycleManager {
             }
         } else {
             Pair(6f, 18f) // Default fallback
-        }
-    }
-
-    private fun getCoordinates(
-        context: Context,
-        props: AppWidgetProps,
-        zoneId: String
-    ): Pair<Double, Double>? {
-        // Form cache
-        cachedCoordinates?.let { return it }
-
-        // From SharedPreference
-        if (props.timezone == zoneId) {
-            cachedCoordinates = Pair(props.lat.toDouble(), props.lng.toDouble())
-            return cachedCoordinates
-        }
-
-        // From JSON
-        return try {
-            val jsonString =
-                context.assets.open("timezones.json").bufferedReader().use { it.readText() }
-            val jsonArray = JSONArray(jsonString)
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                if (obj.getString("id") == zoneId) {
-                    val lat = obj.getDouble("lat")
-                    val lng = obj.getDouble("lng")
-                    cachedCoordinates = Pair(lat, lng)
-                    props.lat = lat.toFloat()
-                    props.lng = lng.toFloat()
-                    props.updateNow = false
-                    val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-                    prefs.edit().apply {
-                        putAppWidgetProps(this, props)
-                        apply()
-                    }
-                    break
-                }
-            }
-            cachedCoordinates
-        } catch (_: Exception) {
-            null
         }
     }
 }
