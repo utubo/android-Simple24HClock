@@ -38,8 +38,7 @@
                 tools:ignore="SpUsage,TextSizeCheck" />
         </RelativeLayout>
 
-        <ScrollView
-            android:id="@+id/scroll"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
@@ -49,268 +48,275 @@
             android:padding="16dp"
             android:background="@drawable/round_corner">
 
-            <LinearLayout
+            <ScrollView
+                android:id="@+id/scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="@integer/settings_radio_group_orientation">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="18sp"
-                    android:paddingBottom="8dp"
-                    android:text="@string/settings" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity=""
-                    android:text="@string/label" />
-
-                <RadioGroup
-                    android:id="@+id/labelGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/textNone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:minHeight="48dp"
-                        android:text="@string/none" />
-
-                    <RadioButton
-                        android:id="@+id/textDefault"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/recommended_e_g_sun_31" />
-
-                    <RadioButton
-                        android:id="@+id/textCustom"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/custom" />
-
-                    <TextView
-                        android:id="@+id/custom_text_note"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:alpha="0.75"
-                        android:linksClickable="true"
-                        android:text="@string/custom_text_note"
-                        tools:ignore="VisualLintLongText" />
-                </RadioGroup>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/rotate" />
-
-                <RadioGroup
-                    android:id="@+id/rotateRadioGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/rotateSunTop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:minHeight="48dp"
-                        android:text="@string/sun_top" />
-
-                    <RadioButton
-                        android:id="@+id/rotateMoonTop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/moon_top" />
-
-                    <RadioButton
-                        android:id="@+id/rotateAuto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/auto_change_at_6_00_and_18_00" />
-
-                </RadioGroup>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/optional" />
-
-                <CheckBox
-                    android:id="@+id/minute"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="@string/minute_hand" />
-
-                <CheckBox
-                    android:id="@+id/dayOfYear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="@string/day_of_year_hand" />
-
-                <CheckBox
-                    android:id="@+id/dayOfYearDots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:minHeight="48dp"
-                    android:text="@string/day_of_year_dots" />
-
-                <CheckBox
-                    android:id="@+id/moonPhase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:text="@string/moon_phase" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/colors" />
-
-                <TextView
-                    android:id="@+id/ColorsBtn"
-                    style="@style/Widget.AppCompat.Spinner.DropDown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginStart="24dp"
-                    android:text="@string/select_part" />
-
-                <ImageView
-                    android:id="@+id/PalletImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:importantForAccessibility="no"
-                    android:scaleType="fitCenter"
-                    android:adjustViewBounds="true"
-                    android:paddingStart="24dp"
-                    android:src="@drawable/pallet"
-                    tools:ignore="RtlSymmetry" />
+                android:layout_height="match_parent"
+                android:background="@drawable/round_corner">
 
                 <LinearLayout
-                    android:id="@+id/Seekbars"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="@integer/settings_radio_group_orientation">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="18sp"
+                        android:paddingBottom="8dp"
+                        android:text="@string/settings" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity=""
+                        android:text="@string/label" />
+
+                    <RadioGroup
+                        android:id="@+id/labelGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/textNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:minHeight="48dp"
+                            android:text="@string/none" />
+
+                        <RadioButton
+                            android:id="@+id/textDefault"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/recommended_e_g_sun_31" />
+
+                        <RadioButton
+                            android:id="@+id/textCustom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/custom" />
+
+                        <TextView
+                            android:id="@+id/custom_text_note"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:alpha="0.75"
+                            android:linksClickable="true"
+                            android:text="@string/custom_text_note"
+                            tools:ignore="VisualLintLongText" />
+                    </RadioGroup>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginStart="24dp"
-                        android:text="@string/red" />
+                        android:text="@string/rotate" />
 
-                    <SeekBar
-                        android:id="@+id/redBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:max="255" />
+                    <RadioGroup
+                        android:id="@+id/rotateRadioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rotateSunTop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:minHeight="48dp"
+                            android:text="@string/sun_top" />
+
+                        <RadioButton
+                            android:id="@+id/rotateMoonTop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/moon_top" />
+
+                        <RadioButton
+                            android:id="@+id/rotateAuto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/auto_change_at_6_00_and_18_00" />
+
+                    </RadioGroup>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginStart="24dp"
-                        android:text="@string/green" />
+                        android:text="@string/optional" />
 
-                    <SeekBar
-                        android:id="@+id/greenBar"
-                        android:layout_width="match_parent"
+                    <CheckBox
+                        android:id="@+id/minute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/minute_hand" />
+
+                    <CheckBox
+                        android:id="@+id/dayOfYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/day_of_year_hand" />
+
+                    <CheckBox
+                        android:id="@+id/dayOfYearDots"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
-                        android:max="255" />
+                        android:minHeight="48dp"
+                        android:text="@string/day_of_year_dots" />
+
+                    <CheckBox
+                        android:id="@+id/moonPhase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/moon_phase" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginStart="24dp"
-                        android:text="@string/blue" />
-
-                    <SeekBar
-                        android:id="@+id/blueBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:max="255" />
+                        android:text="@string/colors" />
 
                     <TextView
-                        android:id="@+id/opacityTextView"
+                        android:id="@+id/ColorsBtn"
+                        style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_marginStart="24dp"
-                        android:text="@string/opacity" />
+                        android:text="@string/select_part" />
 
-                    <SeekBar
-                        android:id="@+id/alphaBar"
+                    <ImageView
+                        android:id="@+id/PalletImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
+                        android:paddingStart="24dp"
+                        android:src="@drawable/pallet"
+                        tools:ignore="RtlSymmetry" />
+
+                    <LinearLayout
+                        android:id="@+id/Seekbars"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:max="255" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="24dp"
+                            android:text="@string/red" />
+
+                        <SeekBar
+                            android:id="@+id/redBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:max="255" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="24dp"
+                            android:text="@string/green" />
+
+                        <SeekBar
+                            android:id="@+id/greenBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:max="255" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="24dp"
+                            android:text="@string/blue" />
+
+                        <SeekBar
+                            android:id="@+id/blueBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:max="255" />
+
+                        <TextView
+                            android:id="@+id/opacityTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginStart="24dp"
+                            android:text="@string/opacity" />
+
+                        <SeekBar
+                            android:id="@+id/alphaBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:max="255" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/tap_behavior" />
+
+                    <RadioGroup
+                        android:id="@+id/tapRadioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/tapNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:minHeight="48dp"
+                            android:text="@string/none" />
+
+                        <RadioButton
+                            android:id="@+id/tapAlarm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/alarm" />
+
+                        <RadioButton
+                            android:id="@+id/tapCalendar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/calendar" />
+
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/licenses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/open_source_licenses" />
 
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/tap_behavior" />
-
-                <RadioGroup
-                    android:id="@+id/tapRadioGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/tapNone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:minHeight="48dp"
-                        android:text="@string/none" />
-
-                    <RadioButton
-                        android:id="@+id/tapAlarm"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/alarm" />
-
-                    <RadioButton
-                        android:id="@+id/tapCalendar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/calendar" />
-
-                </RadioGroup>
-
-                <TextView
-                    android:id="@+id/licenses"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/open_source_licenses" />
-
-            </LinearLayout>
-        </ScrollView>
+            </ScrollView>
+        </LinearLayout>
     </LinearLayout>
 
 
