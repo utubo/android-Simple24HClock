@@ -32,3 +32,6 @@
 
 # Keep the JSON classes used for timezone coordinate lookups.
 -keep class org.json.** { *; }
+
+# AboutLibraries
+-keep class com.mikepenz.aboutlibraries.** { *; }
