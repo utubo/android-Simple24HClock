@@ -42,73 +42,66 @@
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:attr/colorBackground">
+            android:layout_margin="24dp"
+            android:padding="16dp"
+            android:background="@drawable/round_corner">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="@integer/settings_radio_group_orientation">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="@integer/settings_radio_group_orientation">
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="18sp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/settings" />
 
-                    <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity=""
+                    android:text="@string/label" />
+
+                <RadioGroup
+                    android:id="@+id/labelGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/textNone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        tools:ignore="UselessParent">
+                        android:checked="true"
+                        android:minHeight="48dp"
+                        android:text="@string/none" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity=""
-                            android:text="@string/label" />
+                    <RadioButton
+                        android:id="@+id/textDefault"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/recommended_e_g_sun_31" />
 
-                        <RadioGroup
-                            android:id="@+id/labelGroup"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                    <RadioButton
+                        android:id="@+id/textCustom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/custom" />
 
-                            <RadioButton
-                                android:id="@+id/textNone"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:minHeight="48dp"
-                                android:text="@string/none" />
-
-                            <RadioButton
-                                android:id="@+id/textDefault"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minHeight="48dp"
-                                android:text="@string/recommended_e_g_sun_31" />
-
-                            <RadioButton
-                                android:id="@+id/textCustom"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minHeight="48dp"
-                                android:text="@string/custom" />
-
-                            <TextView
-                                android:id="@+id/custom_text_note"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="32dp"
-                                android:alpha="0.75"
-                                android:linksClickable="true"
-                                android:text="@string/custom_text_note"
-                                tools:ignore="VisualLintLongText" />
-                        </RadioGroup>
-                    </LinearLayout>
-
-
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/custom_text_note"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:alpha="0.75"
+                        android:linksClickable="true"
+                        android:text="@string/custom_text_note"
+                        tools:ignore="VisualLintLongText" />
+                </RadioGroup>
 
                 <TextView
                     android:layout_width="wrap_content"
