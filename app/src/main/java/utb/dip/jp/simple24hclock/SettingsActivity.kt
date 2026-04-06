@@ -30,9 +30,6 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
-import kotlin.reflect.KMutableProperty
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
@@ -46,7 +43,6 @@ class SettingsActivity : FragmentActivity() {
         val partKeys = resources.getStringArray(R.array.part_keys)
         var selectedPart = ""
         val colors = hashMapOf<String, Int>()
-        val prop = AppWidgetProps::class.memberProperties
         var backgroundAlpha: Float
 
         setContentView(R.layout.activity_settings)
@@ -114,13 +110,18 @@ class SettingsActivity : FragmentActivity() {
             }
         )
         backgroundAlpha = wp.backgroundAlpha
-        partKeys.forEach { partKey ->
-            val p = prop.find { it.name == partKey }
-            p?.let {
-                it.isAccessible = true
-                colors[partKey] = it.get(wp) as Int
-            }
-        }
+        // NOTE: DON'T USE libs.kotlin.reflect.
+        colors["colorHour"] = wp.colorHour
+        colors["colorMinute"] = wp.colorMinute
+        colors["colorDayOfYear"] = wp.colorDayOfYear
+        colors["colorBorder"] = wp.colorBorder
+        colors["colorDots"] = wp.colorDots
+        colors["colorDayOfYearDots"] = wp.colorDayOfYearDots
+        colors["colorSun"] = wp.colorSun
+        colors["colorMoon"] = wp.colorMoon
+        colors["colorDayArea"] = wp.colorDayArea
+        colors["colorNightArea"] = wp.colorNightArea
+        colors["colorText"] = wp.colorText
 
         // create AppWidgetProps for preview and save
         fun newAppWidgetProps(): AppWidgetProps {
@@ -141,13 +142,17 @@ class SettingsActivity : FragmentActivity() {
                 moonPhase = v.moonPhase.isChecked,
                 updateNow = true,
             )
-            partKeys.forEach { key ->
-                val p = prop.find { it.name == key }
-                p?.let {
-                    it.isAccessible = true
-                    (it as KMutableProperty<*>).setter.call(wp, colors[key])
-                }
-            }
+            wp.colorHour = colors["colorHour"] ?: -1
+            wp.colorMinute = colors["colorMinute"] ?: -1
+            wp.colorDayOfYear = colors["colorDayOfYear"] ?: -1
+            wp.colorBorder = colors["colorBorder"] ?: -1
+            wp.colorDots = colors["colorDots"] ?: -1
+            wp.colorDayOfYearDots = colors["colorDayOfYearDots"] ?: -1
+            wp.colorSun = colors["colorSun"] ?: -1
+            wp.colorMoon = colors["colorMoon"] ?: -1
+            wp.colorDayArea = colors["colorDayArea"] ?: 0
+            wp.colorNightArea = colors["colorNightArea"] ?: 0
+            wp.colorText = colors["colorText"] ?: -1
             return wp
         }
 

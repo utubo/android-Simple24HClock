@@ -32,10 +32,3 @@
 
 # Keep the JSON classes used for timezone coordinate lookups.
 -keep class org.json.** { *; }
-
-# AppWidgetProps property names for refrect
--keepclassmembers class utb.dip.jp.simple24hclock.AppWidgetProps {
-    <fields>;
-    <methods>;
-}
--keepattributes Signature,EnclosingMethod,InnerClasses,AnnotationDefault,*Annotation*
