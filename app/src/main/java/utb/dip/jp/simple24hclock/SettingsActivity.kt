@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
@@ -114,7 +115,11 @@ class SettingsActivity : FragmentActivity() {
         )
         backgroundAlpha = wp.backgroundAlpha
         partKeys.forEach { partKey ->
-            colors[partKey] = prop.find { it.name == partKey }?.get(wp) as Int
+            val p = prop.find { it.name == partKey }
+            p?.let {
+                it.isAccessible = true
+                colors[partKey] = it.get(wp) as Int
+            }
         }
 
         // create AppWidgetProps for preview and save
@@ -137,10 +142,11 @@ class SettingsActivity : FragmentActivity() {
                 updateNow = true,
             )
             partKeys.forEach { key ->
-                (prop.find { it.name == key } as KMutableProperty<*>).setter.call(
-                    wp,
-                    colors[key]
-                )
+                val p = prop.find { it.name == key }
+                p?.let {
+                    it.isAccessible = true
+                    (it as KMutableProperty<*>).setter.call(wp, colors[key])
+                }
             }
             return wp
         }
