@@ -10,7 +10,7 @@ import java.util.Date
 
 fun createIntent(context: Context): PendingIntent {
     val intent = Intent(context, MyBroadcastReceiver::class.java)
-    intent.setAction(INTENT_UPDATE_ALL)
+    intent.action = INTENT_UPDATE_ALL
     return PendingIntent.getBroadcast(
         context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
