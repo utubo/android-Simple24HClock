@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import java.util.Calendar
 import java.util.Date
 
@@ -18,17 +19,26 @@ fun createIntent(context: Context): PendingIntent {
 
 fun setupNext(context: Context) {
     val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val next = Calendar.getInstance()
-    next.set(Calendar.MILLISECOND, 0)
-    next.set(Calendar.SECOND, 0)
-    next.add(Calendar.MINUTE, 1)
+    val next = Calendar.getInstance().apply {
+        set(Calendar.MILLISECOND, 0)
+        set(Calendar.SECOND, 0)
+        add(Calendar.MINUTE, 1)
+    }
     val pendingIntent = createIntent(context)
     manager.cancel(pendingIntent)
-    manager.set(
-        AlarmManager.RTC,
-        next.time.time,
-        createIntent(context)
-    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && manager.canScheduleExactAlarms()) {
+        manager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            next.time.time,
+            createIntent(context)
+        )
+    } else {
+        manager.setAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            next.time.time,
+            createIntent(context)
+        )
+    }
 }
 
 internal fun doWork(context: Context) {
