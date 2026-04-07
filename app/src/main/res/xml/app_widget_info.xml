@@ -3,7 +3,7 @@
     android:configure="utb.dip.jp.simple24hclock.SettingsActivity"
     android:description="@string/app_widget_description"
     android:initialKeyguardLayout="@layout/app_widget"
-    android:initialLayout="@layout/app_widget"
+    android:initialLayout="@layout/app_widget_initial"
     android:minWidth="40dp"
     android:minHeight="40dp"
     android:previewImage="@drawable/border"
