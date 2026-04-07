@@ -17,4 +17,6 @@ local.properties
 *.aab
 *.apks
 /app/release/
+/.idea/deploymentTargetSelector.xml
+/.idea/deploymentTargetDropDown.xml
 
