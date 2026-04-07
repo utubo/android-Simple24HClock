@@ -12,6 +12,7 @@ data class AppWidgetProps(
     var text: String? = "",
     var format: String? = "",
     var tapBehavior: String? = "",
+    var tapBehaviorLabel: String? = "",
     val backgroundAlpha: Float = 0.3F,
     val timezone: String? = "",
     var lat: Float = 0F,
@@ -41,6 +42,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         text = prefs.getString("text_$id", ""),
         format = prefs.getString("format_$id", ""),
         tapBehavior = prefs.getString("tap_behavior_$id", ""),
+        tapBehaviorLabel = prefs.getString("tap_behavior_label_$id", ""),
         backgroundAlpha = prefs.getFloat("backgroundAlpha_$id", 0.4F),
         timezone = prefs.getString("timezone_$id", ""),
         lat = prefs.getFloat("lat_$id", 0F),
@@ -71,6 +73,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putString("text_$id", props.text)
     editor.putString("format_$id", props.format)
     editor.putString("tap_behavior_$id", props.tapBehavior)
+    editor.putString("tap_behavior_label_$id", props.tapBehaviorLabel)
     editor.putFloat("backgroundAlpha_$id", props.backgroundAlpha)
     editor.putString("timezone_$id", props.timezone)
     editor.putFloat("lat_$id", props.lat)

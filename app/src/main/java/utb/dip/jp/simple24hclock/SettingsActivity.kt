@@ -3,7 +3,9 @@ package utb.dip.jp.simple24hclock
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Bundle
@@ -21,6 +23,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.get
 import androidx.core.view.ViewCompat
@@ -44,6 +47,7 @@ class SettingsActivity : FragmentActivity() {
         var selectedPart = ""
         val colors = hashMapOf<String, Int>()
         var backgroundAlpha: Float
+        var tapBehavior: String
 
         setContentView(R.layout.activity_settings)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -74,13 +78,13 @@ class SettingsActivity : FragmentActivity() {
             val moonPhase = findViewById<CheckBox>(R.id.moonPhase)
             val preview = findViewById<FrameLayout>(R.id.preview)
             val rotateRadioGroup = findViewById<RadioGroup>(R.id.rotateRadioGroup)
-            val tapRadioGroup = findViewById<RadioGroup>(R.id.tapRadioGroup)
             val colorsBtn = findViewById<TextView>(R.id.ColorsBtn)
             val redBar = findViewById<SeekBar>(R.id.redBar)
             val greenBar = findViewById<SeekBar>(R.id.greenBar)
             val blueBar = findViewById<SeekBar>(R.id.blueBar)
             val alphaBar = findViewById<SeekBar>(R.id.alphaBar)
             var opacityTextView = findViewById<TextView>(R.id.opacityTextView)
+            var tapbehaviorTextView = findViewById<TextView>(R.id.TapBehaviorTextView)
         }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
@@ -102,13 +106,6 @@ class SettingsActivity : FragmentActivity() {
         v.dayOfYear.isChecked = 0 < wp.dayOfYear
         v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
         v.moonPhase.isChecked = wp.moonPhase
-        v.tapRadioGroup.check(
-            when (wp.tapBehavior) {
-                "alarm" -> R.id.tapAlarm
-                "calendar" -> R.id.tapCalendar
-                else -> R.id.tapNone
-            }
-        )
         backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
@@ -122,6 +119,13 @@ class SettingsActivity : FragmentActivity() {
         colors["colorDayArea"] = wp.colorDayArea
         colors["colorNightArea"] = wp.colorNightArea
         colors["colorText"] = wp.colorText
+        tapBehavior = wp.tapBehavior ?: ""
+        v.tapbehaviorTextView.text = when (tapBehavior) {
+            "" -> getString(R.string.none)
+            "alarm" -> getString(R.string.alarm)
+            "calendar" -> getString(R.string.calendar)
+            else -> wp.tapBehaviorLabel
+        }
 
         // create AppWidgetProps for preview and save
         fun newAppWidgetProps(): AppWidgetProps {
@@ -213,7 +217,7 @@ class SettingsActivity : FragmentActivity() {
             }
             selectedPart = key
         }
-        findViewById<TextView>(R.id.ColorsBtn).setOnClickListener {
+        v.colorsBtn.setOnClickListener {
             val names = partNames.toMutableList()
             if (!v.minute.isChecked) names.remove(partNames[partKeys.indexOf("colorMinute")])
             if (!v.dayOfYear.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYear")])
@@ -294,6 +298,50 @@ class SettingsActivity : FragmentActivity() {
             true
         }
 
+        // Tap behavior
+        val appPickerLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.component?.let {
+                    tapBehavior = it.flattenToString()
+                    v.tapbehaviorTextView.text =
+                        getAppLabel(this@SettingsActivity, it.packageName)
+                }
+            }
+        }
+
+        val tapBehaviors = arrayOf(
+            getString(R.string.none),
+            getString(R.string.alarm),
+            getString(R.string.calendar),
+            getString(R.string.other_apps),
+        )
+        v.tapbehaviorTextView.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.tap_behavior)
+                .setItems(tapBehaviors) { _, which ->
+                    v.tapbehaviorTextView.text = tapBehaviors[which]
+                    tapBehavior = when (which) {
+                        0 -> ""
+                        1 -> "alarm"
+                        2 -> "calendar"
+                        else -> "app"
+                    }
+                    if (tapBehavior == "app") {
+                        val intent = Intent(Intent.ACTION_PICK_ACTIVITY).apply {
+                            val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
+                                addCategory(Intent.CATEGORY_LAUNCHER)
+                            }
+                            putExtra(Intent.EXTRA_INTENT, mainIntent)
+                            putExtra(Intent.EXTRA_TITLE, getString(R.string.tap_behavior))
+                        }
+                        appPickerLauncher.launch(intent)
+                    }
+                }
+                .show()
+        }
+
         // Apply
         findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
             val formatValue = v.textFormat.text.toString()
@@ -305,11 +353,8 @@ class SettingsActivity : FragmentActivity() {
                 val wp = newAppWidgetProps()
                 wp.text = textValue
                 wp.format = formatValue
-                wp.tapBehavior = when (v.tapRadioGroup.checkedRadioButtonId) {
-                    R.id.tapAlarm -> "alarm"
-                    R.id.tapCalendar -> "calendar"
-                    else -> ""
-                }
+                wp.tapBehavior = tapBehavior
+                wp.tapBehaviorLabel = v.tapbehaviorTextView.text.toString()
                 putAppWidgetProps(this, wp)
                 apply()
             }
@@ -323,6 +368,17 @@ class SettingsActivity : FragmentActivity() {
         findViewById<TextView>(R.id.licenses).setOnClickListener {
             val intent = Intent(this, OssLicenseActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    fun getAppLabel(context: Context, packageName: String?): String {
+        if (packageName == null) return getString(R.string.none)
+        return try {
+            val pm = context.packageManager
+            val info = pm.getApplicationInfo(packageName, 0)
+            pm.getApplicationLabel(info).toString()
+        } catch (_: PackageManager.NameNotFoundException) {
+            getString(R.string.other_apps)
         }
     }
 }

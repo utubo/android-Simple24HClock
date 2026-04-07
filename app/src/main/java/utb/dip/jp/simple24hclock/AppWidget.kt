@@ -2,6 +2,7 @@ package utb.dip.jp.simple24hclock
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
@@ -46,13 +47,22 @@ internal fun updateAppWidget(
     updateAppWidgetContent(context, views, props)
 
     // Tap
-    val intent = when (props.tapBehavior) {
+    val intent = when (props.tapBehavior ?: "") {
+        "" -> Intent()
         "alarm" -> Intent(ACTION_SHOW_ALARMS)
         "calendar" -> Intent(ACTION_VIEW).apply {
             data = "content://com.android.calendar/time".toUri()
         }
 
-        else -> Intent()
+        else -> {
+            val comp = ComponentName.unflattenFromString(props.tapBehavior!!)
+            if (comp?.packageName == context.packageName)
+                Intent(context, SettingsActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                }
+            else
+                Intent().apply { component = comp }
+        }
     }
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     val pendingIntent = PendingIntent.getActivity(

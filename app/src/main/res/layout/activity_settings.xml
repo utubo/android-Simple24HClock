@@ -211,48 +211,43 @@
                         android:id="@+id/Seekbars"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:layout_marginStart="24dp"
                             android:text="@string/red" />
 
                         <SeekBar
                             android:id="@+id/redBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
                             android:max="255" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:layout_marginStart="24dp"
                             android:text="@string/green" />
 
                         <SeekBar
                             android:id="@+id/greenBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
                             android:max="255" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:layout_marginStart="24dp"
                             android:text="@string/blue" />
 
                         <SeekBar
                             android:id="@+id/blueBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
                             android:max="255" />
 
                         <TextView
@@ -260,14 +255,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:layout_marginStart="24dp"
                             android:text="@string/opacity" />
 
                         <SeekBar
                             android:id="@+id/alphaBar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="24dp"
                             android:max="255" />
 
                     </LinearLayout>
@@ -278,34 +271,14 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/tap_behavior" />
 
-                    <RadioGroup
-                        android:id="@+id/tapRadioGroup"
+                    <TextView
+                        android:id="@+id/TapBehaviorTextView"
+                        style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <RadioButton
-                            android:id="@+id/tapNone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:minHeight="48dp"
-                            android:text="@string/none" />
-
-                        <RadioButton
-                            android:id="@+id/tapAlarm"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/alarm" />
-
-                        <RadioButton
-                            android:id="@+id/tapCalendar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/calendar" />
-
-                    </RadioGroup>
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginStart="24dp"
+                        android:text="@string/none" />
 
                     <TextView
                         android:id="@+id/licenses"
