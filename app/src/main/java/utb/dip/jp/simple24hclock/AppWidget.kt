@@ -40,7 +40,7 @@ internal fun updateAppWidget(
     val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
     val textSize = layoutPrefs.getFloat("text_size_$appWidgetId", 0F)
     if (textSize != 0F) {
-        views.setFloat(R.id.textView, "setTextSize", textSize)
+        views.setFloat(R.id.tv_label, "setTextSize", textSize)
     }
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
@@ -71,7 +71,7 @@ internal fun updateAppWidget(
         intent,
         PendingIntent.FLAG_IMMUTABLE
     )
-    views.setOnClickPendingIntent(R.id.Container, pendingIntent)
+    views.setOnClickPendingIntent(R.id.container, pendingIntent)
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
@@ -81,12 +81,12 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     // Hour
     val hour = now.get(Calendar.HOUR_OF_DAY)
     val h = 360F / 24F * (hour + now.get(Calendar.MINUTE) / 60F)
-    views.setFloat(R.id.HourHandImageView, "setRotation", h)
+    views.setFloat(R.id.iv_hour, "setRotation", h)
 
     // Minute
     if (0 < props.minute) {
         val m = 360F / 60F * now.get(Calendar.MINUTE)
-        views.setFloat(R.id.MinuteHandImageView, "setRotation", m)
+        views.setFloat(R.id.iv_minute, "setRotation", m)
     }
 
     // Day of year
@@ -96,11 +96,11 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
             val dOfM =
                 (now.get(Calendar.DAY_OF_MONTH) - 1).toFloat() / now.getLeastMaximum(Calendar.DAY_OF_MONTH)
             val d = 360F / 12 * (m + dOfM)
-            views.setFloat(R.id.DayOfYearHandImageView, "setRotation", d)
+            views.setFloat(R.id.iv_day_of_year, "setRotation", d)
         } else {
             val maxDoY = now.getMaximum(Calendar.DAY_OF_YEAR)
             val d = 360F / maxDoY * (now.get(Calendar.DAY_OF_YEAR) - 1)
-            views.setFloat(R.id.DayOfYearHandImageView, "setRotation", d)
+            views.setFloat(R.id.iv_day_of_year, "setRotation", d)
         }
     }
 
@@ -109,34 +109,34 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     val maxSize = minOf(metrics.widthPixels, metrics.heightPixels)
     val bgBitmap =
         SunCycleManager.getOrUpdateBackground(context, props, maxSize) // size in pixels
-    views.setImageViewBitmap(R.id.BackImageView, bgBitmap)
+    views.setImageViewBitmap(R.id.iv_background, bgBitmap)
 
     // Text
     if (props.text.isNullOrEmpty()) {
-        views.setTextViewText(R.id.textView, "")
+        views.setTextViewText(R.id.tv_label, "")
     } else {
         val fmt = SimpleDateFormat(props.text, java.util.Locale.getDefault())
-        views.setTextViewText(R.id.textView, fmt.format(now.time))
+        views.setTextViewText(R.id.tv_label, fmt.format(now.time))
     }
 
     // Moon phase
     val coordinates = if (props.moonPhase) LatLng.getCoordinates(context, props) else null
     var moonRotate = 1F
     if (coordinates != null) {
-        views.setImageViewResource(R.id.MoonImageView, MoonPhase.getMoonPhase())
+        views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase())
         moonRotate = if (0 <= coordinates.first) 1F else -1F
     } else {
-        views.setImageViewResource(R.id.MoonImageView, R.drawable.moon_7)
+        views.setImageViewResource(R.id.iv_moon, R.drawable.moon_7)
     }
 
     // Rotation
     val deg = if (props.rotate < 0) if (hour in 6..17) 0F else 180F else props.rotate
-    views.setFloat(R.id.RotateBg, "setRotation", deg)
-    views.setFloat(R.id.RotateFg, "setRotation", deg)
+    views.setFloat(R.id.rl_background, "setRotation", deg)
+    views.setFloat(R.id.rl_foreground, "setRotation", deg)
     if (deg != 0F) {
         moonRotate *= -1
     }
-    views.setFloat(R.id.MoonImageView, "setScaleX", moonRotate)
+    views.setFloat(R.id.iv_moon, "setScaleX", moonRotate)
 
     // Colors
     fun setColor(id: Int, color: Int, visible: Float = 1F) {
@@ -147,16 +147,16 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
             views.setFloat(id, "setAlpha", 0F)
         }
     }
-    setColor(R.id.HourHandImageView, props.colorHour)
-    setColor(R.id.MinuteHandImageView, props.colorMinute, props.minute)
-    setColor(R.id.DayOfYearHandImageView, props.colorDayOfYear, props.dayOfYear)
-    setColor(R.id.BorderImageView, props.colorBorder)
-    setColor(R.id.DotsImageView, props.colorDots)
-    setColor(R.id.DayOfYearDotsImageView, props.colorDayOfYearDots, props.dayOfYearDots)
-    setColor(R.id.SunImageView, props.colorSun)
-    setColor(R.id.MoonImageView, props.colorMoon)
-    views.setInt(R.id.textView, "setTextColor", props.colorText or MASK_OPAQUE)
-    views.setFloat(R.id.textView, "setAlpha", ((props.colorText shr 24) and 0xFF) / 255F)
-    views.setFloat(R.id.BackImageView, "setAlpha", props.backgroundAlpha)
+    setColor(R.id.iv_hour, props.colorHour)
+    setColor(R.id.iv_minute, props.colorMinute, props.minute)
+    setColor(R.id.iv_day_of_year, props.colorDayOfYear, props.dayOfYear)
+    setColor(R.id.iv_border, props.colorBorder)
+    setColor(R.id.iv_dots, props.colorDots)
+    setColor(R.id.iv_day_of_year_dots, props.colorDayOfYearDots, props.dayOfYearDots)
+    setColor(R.id.iv_sun, props.colorSun)
+    setColor(R.id.iv_moon, props.colorMoon)
+    views.setInt(R.id.tv_label, "setTextColor", props.colorText or MASK_OPAQUE)
+    views.setFloat(R.id.tv_label, "setAlpha", ((props.colorText shr 24) and 0xFF) / 255F)
+    views.setFloat(R.id.iv_background, "setAlpha", props.backgroundAlpha)
 
 }

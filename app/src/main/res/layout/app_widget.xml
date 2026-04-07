@@ -4,23 +4,23 @@
     style="@style/Widget.Simple24HClock.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/Container">
+    android:id="@+id/container">
 
 
     <RelativeLayout
-        android:id="@+id/RotateBg"
+        android:id="@+id/rl_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/BackImageView"
+            android:id="@+id/iv_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/back"
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/BorderImageView"
+            android:id="@+id/iv_border"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/border"
@@ -28,7 +28,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/DotsImageView"
+            android:id="@+id/iv_dots"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/dots"
@@ -36,7 +36,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/SunImageView"
+            android:id="@+id/iv_sun"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/sun"
@@ -44,7 +44,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/MoonImageView"
+            android:id="@+id/iv_moon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/moon_7"
@@ -53,7 +53,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/DayOfYearDotsImageView"
+        android:id="@+id/iv_day_of_year_dots"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
@@ -62,7 +62,7 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -72,7 +72,7 @@
         app:layout_constraintVertical_weight="1" />
 
     <ImageView
-        android:id="@+id/MinuteHandImageView"
+        android:id="@+id/iv_minute"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
@@ -81,12 +81,12 @@
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
-        android:id="@+id/RotateFg"
+        android:id="@+id/rl_foreground"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/DayOfYearHandImageView"
+            android:id="@+id/iv_day_of_year"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0"
@@ -95,7 +95,7 @@
             tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/HourHandImageView"
+            android:id="@+id/iv_hour"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/hand"

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
 import android.os.Bundle
@@ -13,15 +14,11 @@ import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.MotionEvent
-import android.widget.CheckBox
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.widget.LinearLayout
 import android.widget.RemoteViews
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.graphics.drawable.toBitmap
@@ -31,30 +28,32 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
+import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
 
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
 class SettingsActivity : FragmentActivity() {
+
     @SuppressLint("QueryPermissionsNeeded", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Views
+        val v = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(v.root)
         enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fl_settings_main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        // Settings
         val partNames = resources.getStringArray(R.array.part_names)
         val partKeys = resources.getStringArray(R.array.part_keys)
         var selectedPart = ""
         val colors = hashMapOf<String, Int>()
         var backgroundAlpha: Float
         var tapBehavior: String
-
-        setContentView(R.layout.activity_settings)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
         // get widget id
         val appWidgetId = intent?.extras?.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -65,47 +64,26 @@ class SettingsActivity : FragmentActivity() {
             setResult(RESULT_CANCELED, resultValue)
             finish()
         }
-        // views
-        val v = object {
-            val textNone = findViewById<RadioButton>(R.id.textNone)
-            val textDefault = findViewById<RadioButton>(R.id.textDefault)
-            val textCustom = findViewById<RadioButton>(R.id.textCustom)
-            val textFormat = findViewById<TextInputEditText>(R.id.textFormat)
-            val customTextNote = findViewById<TextView>(R.id.custom_text_note)
-            val minute = findViewById<CheckBox>(R.id.minute)
-            val dayOfYear = findViewById<CheckBox>(R.id.dayOfYear)
-            val dayOfYearDots = findViewById<CheckBox>(R.id.dayOfYearDots)
-            val moonPhase = findViewById<CheckBox>(R.id.moonPhase)
-            val preview = findViewById<FrameLayout>(R.id.preview)
-            val rotateRadioGroup = findViewById<RadioGroup>(R.id.rotateRadioGroup)
-            val colorsBtn = findViewById<TextView>(R.id.ColorsBtn)
-            val redBar = findViewById<SeekBar>(R.id.redBar)
-            val greenBar = findViewById<SeekBar>(R.id.greenBar)
-            val blueBar = findViewById<SeekBar>(R.id.blueBar)
-            val alphaBar = findViewById<SeekBar>(R.id.alphaBar)
-            var opacityTextView = findViewById<TextView>(R.id.opacityTextView)
-            var tapbehaviorTextView = findViewById<TextView>(R.id.TapBehaviorTextView)
-        }
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
         val wp = getAppWidgetProps(prefs, appWidgetId)
         when (wp.text) {
-            null, "" -> v.textNone.toggle()
-            DEFAULT_TEXT -> v.textDefault.toggle()
-            else -> v.textCustom.toggle()
+            null, "" -> v.rbLabelNone.toggle()
+            DEFAULT_TEXT -> v.rbLabelRecommended.toggle()
+            else -> v.rbLabelCustom.toggle()
         }
-        v.textFormat.setText(wp.format)
-        v.rotateRadioGroup.check(
+        v.etFormat.setText(wp.format)
+        v.rgRotate.check(
             when (wp.rotate) {
-                180F -> R.id.rotateMoonTop
-                -1F -> R.id.rotateAuto
-                else -> R.id.rotateSunTop
+                180F -> R.id.rb_rotate_moon_top
+                -1F -> R.id.rb_rotate_auto
+                else -> R.id.rb_rotate_sun_top
             }
         )
-        v.minute.isChecked = 0 < wp.minute
-        v.dayOfYear.isChecked = 0 < wp.dayOfYear
-        v.dayOfYearDots.isChecked = 0 < wp.dayOfYearDots
-        v.moonPhase.isChecked = wp.moonPhase
+        v.cbMinute.isChecked = 0 < wp.minute
+        v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
+        v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
+        v.cbMoonPhase.isChecked = wp.moonPhase
         backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
@@ -120,7 +98,7 @@ class SettingsActivity : FragmentActivity() {
         colors["colorNightArea"] = wp.colorNightArea
         colors["colorText"] = wp.colorText
         tapBehavior = wp.tapBehavior ?: ""
-        v.tapbehaviorTextView.text = when (tapBehavior) {
+        v.tvTapBehavior.text = when (tapBehavior) {
             "" -> getString(R.string.none)
             "alarm" -> getString(R.string.alarm)
             "calendar" -> getString(R.string.calendar)
@@ -131,19 +109,19 @@ class SettingsActivity : FragmentActivity() {
         fun newAppWidgetProps(): AppWidgetProps {
             val wp = AppWidgetProps(
                 id = appWidgetId,
-                minute = if (v.minute.isChecked) 1F else 0F,
-                dayOfYear = if (v.dayOfYear.isChecked) 1F else 0F,
-                dayOfYearDots = if (v.dayOfYearDots.isChecked) 0.5F else 0F,
-                text = if (v.textDefault.isChecked) DEFAULT_TEXT else "",
+                minute = if (v.cbMinute.isChecked) 1F else 0F,
+                dayOfYear = if (v.cbDayOfYear.isChecked) 1F else 0F,
+                dayOfYearDots = if (v.cbMonthDots.isChecked) 0.5F else 0F,
+                text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
                 format = "",
                 tapBehavior = "",
                 backgroundAlpha = backgroundAlpha,
-                rotate = when (v.rotateRadioGroup.checkedRadioButtonId) {
-                    R.id.rotateMoonTop -> 180F
-                    R.id.rotateAuto -> -1F
+                rotate = when (v.rgRotate.checkedRadioButtonId) {
+                    R.id.rb_rotate_moon_top -> 180F
+                    R.id.rb_rotate_auto -> -1F
                     else -> 0F
                 },
-                moonPhase = v.moonPhase.isChecked,
+                moonPhase = v.cbMoonPhase.isChecked,
                 updateNow = true,
             )
             wp.colorHour = colors["colorHour"] ?: -1
@@ -163,33 +141,33 @@ class SettingsActivity : FragmentActivity() {
         // preview
         fun updatePreview() {
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
-            views.setTextViewTextSize(R.id.textView, COMPLEX_UNIT_PX, v.textFormat.textSize)
+            views.setTextViewTextSize(R.id.tv_label, COMPLEX_UNIT_PX, v.etFormat.textSize)
             updateAppWidgetContent(applicationContext, views, newAppWidgetProps())
             v.preview.removeAllViews()
             v.preview.addView(views.apply(applicationContext, v.preview))
-            v.textFormat.isVisible = v.textCustom.isChecked
+            v.etFormat.isVisible = v.rbLabelCustom.isChecked
         }
         updatePreview()
 
         // setup events
-        findViewById<RadioGroup>(R.id.labelGroup).setOnCheckedChangeListener { _, i ->
+        v.rgLabel.setOnCheckedChangeListener { _, i ->
             updatePreview()
-            if (i == R.id.textCustom) {
-                v.textFormat.requestFocus()
+            if (i == R.id.rb_label_custom) {
+                v.etFormat.requestFocus()
             } else {
-                v.textFormat.clearFocus()
+                v.etFormat.clearFocus()
             }
         }
-        v.textFormat.addTextChangedListener {
-            v.textCustom.toggle()
+        v.etFormat.addTextChangedListener {
+            v.rbLabelCustom.toggle()
         }
-        v.customTextNote.movementMethod = LinkMovementMethod.getInstance()
-        v.rotateRadioGroup.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.minute.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.dayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.dayOfYearDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.moonPhase.setOnCheckedChangeListener { _, _ -> updatePreview() }
-        v.alphaBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        v.tvLabelNote.movementMethod = LinkMovementMethod.getInstance()
+        v.rgRotate.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbMinute.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbDayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbMonthDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbMoonPhase.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.sbAlpha.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 updatePreview()
             }
@@ -205,24 +183,24 @@ class SettingsActivity : FragmentActivity() {
         fun setupARGBSeekBars(argb: Int, alpha: Boolean) {
             val key = selectedPart
             selectedPart = "" // prevent event
-            v.redBar.progress = Color.red(argb)
-            v.greenBar.progress = Color.green(argb)
-            v.blueBar.progress = Color.blue(argb)
+            v.sbRed.progress = Color.red(argb)
+            v.sbGreen.progress = Color.green(argb)
+            v.sbBlue.progress = Color.blue(argb)
             if (!alpha) {
                 // NOP
             } else if (key.endsWith("Area")) {
-                v.alphaBar.progress = (backgroundAlpha * 255F).toInt()
+                v.sbAlpha.progress = (backgroundAlpha * 255F).toInt()
             } else {
-                v.alphaBar.progress = Color.alpha(argb)
+                v.sbAlpha.progress = Color.alpha(argb)
             }
             selectedPart = key
         }
-        v.colorsBtn.setOnClickListener {
+        v.tvColors.setOnClickListener {
             val names = partNames.toMutableList()
-            if (!v.minute.isChecked) names.remove(partNames[partKeys.indexOf("colorMinute")])
-            if (!v.dayOfYear.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYear")])
-            if (!v.dayOfYearDots.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYearDots")])
-            if (!v.textDefault.isChecked) names.remove(partNames[partKeys.indexOf("colorText")])
+            if (!v.cbMinute.isChecked) names.remove(partNames[partKeys.indexOf("colorMinute")])
+            if (!v.cbDayOfYear.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYear")])
+            if (!v.cbMonthDots.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYearDots")])
+            if (!v.rbLabelRecommended.isChecked) names.remove(partNames[partKeys.indexOf("colorText")])
             AlertDialog.Builder(this)
                 .setTitle(R.string.select_part)
                 .setItems(names.toTypedArray()) { _, which ->
@@ -230,8 +208,8 @@ class SettingsActivity : FragmentActivity() {
                     selectedPart = partKeys[partNames.indexOf(name)]
                     val argb = colors[selectedPart] ?: 0
                     setupARGBSeekBars(argb, true)
-                    v.colorsBtn.text = name
-                    v.opacityTextView.text = getString(
+                    v.tvColors.text = name
+                    v.tvOpacity.text = getString(
                         when (selectedPart) {
                             "colorDayArea" -> R.string.linked_to_night
                             "colorNightArea" -> R.string.linked_to_day
@@ -244,20 +222,20 @@ class SettingsActivity : FragmentActivity() {
         }
         fun updateColor() {
             if (selectedPart == "") return
-            var alpha = v.alphaBar.progress
+            var alpha = v.sbAlpha.progress
             if (selectedPart.endsWith("Area")) {
-                backgroundAlpha = v.alphaBar.progress.toFloat() / 255
+                backgroundAlpha = v.sbAlpha.progress.toFloat() / 255
                 alpha = 255
             }
             colors[selectedPart] = Color.argb(
                 alpha,
-                v.redBar.progress,
-                v.greenBar.progress,
-                v.blueBar.progress
+                v.sbRed.progress,
+                v.sbGreen.progress,
+                v.sbBlue.progress
             )
             updatePreview()
         }
-        arrayOf(v.alphaBar, v.redBar, v.greenBar, v.blueBar).forEach {
+        arrayOf(v.sbAlpha, v.sbRed, v.sbGreen, v.sbBlue).forEach {
             it.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     updateColor()
@@ -275,9 +253,9 @@ class SettingsActivity : FragmentActivity() {
             }
         }
         val palletBitmap by lazy {
-            findViewById<ImageView>(R.id.PalletImageView).drawable?.toBitmap()
+            v.ivPallet.drawable?.toBitmap()
         }
-        findViewById<ImageView>(R.id.PalletImageView).setOnTouchListener { view, event ->
+        v.ivPallet.setOnTouchListener { view, event ->
             if (selectedPart.isEmpty() || event.action != MotionEvent.ACTION_DOWN) return@setOnTouchListener false
             val bitmap = palletBitmap ?: return@setOnTouchListener false
             val iv = view as ImageView
@@ -305,7 +283,7 @@ class SettingsActivity : FragmentActivity() {
             if (result.resultCode == RESULT_OK) {
                 result.data?.component?.let {
                     tapBehavior = it.flattenToString()
-                    v.tapbehaviorTextView.text =
+                    v.tvTapBehavior.text =
                         getAppLabel(this@SettingsActivity, it.packageName)
                 }
             }
@@ -317,11 +295,11 @@ class SettingsActivity : FragmentActivity() {
             getString(R.string.calendar),
             getString(R.string.other_apps),
         )
-        v.tapbehaviorTextView.setOnClickListener {
+        v.tvTapBehavior.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle(R.string.tap_behavior)
                 .setItems(tapBehaviors) { _, which ->
-                    v.tapbehaviorTextView.text = tapBehaviors[which]
+                    v.tvTapBehavior.text = tapBehaviors[which]
                     tapBehavior = when (which) {
                         0 -> ""
                         1 -> "alarm"
@@ -343,18 +321,18 @@ class SettingsActivity : FragmentActivity() {
         }
 
         // Apply
-        findViewById<FloatingActionButton>(R.id.applyButton).setOnClickListener {
-            val formatValue = v.textFormat.text.toString()
+        v.btnApply.setOnClickListener {
+            val formatValue = v.etFormat.text.toString()
             val textValue =
-                if (v.textDefault.isChecked) DEFAULT_TEXT
-                else if (v.textCustom.isChecked) formatValue
+                if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT
+                else if (v.rbLabelCustom.isChecked) formatValue
                 else ""
             prefs.edit().apply {
                 val wp = newAppWidgetProps()
                 wp.text = textValue
                 wp.format = formatValue
                 wp.tapBehavior = tapBehavior
-                wp.tapBehaviorLabel = v.tapbehaviorTextView.text.toString()
+                wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
                 putAppWidgetProps(this, wp)
                 apply()
             }
@@ -365,7 +343,7 @@ class SettingsActivity : FragmentActivity() {
             finish()
         }
 
-        findViewById<TextView>(R.id.licenses).setOnClickListener {
+        v.tvLicenses.setOnClickListener {
             val intent = Intent(this, OssLicenseActivity::class.java)
             startActivity(intent)
         }
@@ -380,5 +358,16 @@ class SettingsActivity : FragmentActivity() {
         } catch (_: PackageManager.NameNotFoundException) {
             getString(R.string.other_apps)
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val llSettingsMain = findViewById<LinearLayout>(R.id.ll_settings_main)
+        llSettingsMain.orientation =
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                LinearLayout.HORIZONTAL
+            } else {
+                LinearLayout.VERTICAL
+            }
     }
 }

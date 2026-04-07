@@ -29,6 +29,7 @@
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_app_widget_settings"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.WallpaperBackground">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
