@@ -9,11 +9,14 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.MotionEvent
+import android.view.View.GONE
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RemoteViews
@@ -341,6 +344,14 @@ class SettingsActivity : FragmentActivity() {
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             setResult(RESULT_OK, resultValue)
             finish()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            v.tvPreventTimeLag.setOnClickListener {
+                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+            }
+        } else {
+            v.tvPreventTimeLag.visibility = GONE
         }
 
         v.tvLicenses.setOnClickListener {

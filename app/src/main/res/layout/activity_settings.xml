@@ -281,6 +281,13 @@
                         android:text="@string/none" />
 
                     <TextView
+                        android:id="@+id/tv_prevent_time_lag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/prevent_time_lag" />
+
+                    <TextView
                         android:id="@+id/tv_licenses"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
