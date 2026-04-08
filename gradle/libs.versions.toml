@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.0"
+billing = "8.3.0"
 kotlin = "2.3.20"
 coreKtx = "1.18.0"
 junit = "4.13.2"
@@ -22,6 +23,7 @@ aboutLibraries = "14.0.0-b03"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

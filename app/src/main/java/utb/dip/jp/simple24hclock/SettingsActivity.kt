@@ -352,6 +352,18 @@ class SettingsActivity : FragmentActivity() {
             val intent = Intent(this, OssLicenseActivity::class.java)
             startActivity(intent)
         }
+
+        fun updateDonationLabel() {
+            val donationCount = DonationHelper.getDonationCount(this)
+            val stars = getString(R.string.donation_star).repeat(donationCount)
+            v.tvSupport.text = getString(R.string.donation_label, stars)
+        }
+        updateDonationLabel()
+        v.tvSupport.setOnClickListener {
+            DonationHelper.start(this) {
+                updateDonationLabel()
+            }
+        }
     }
 
     fun getAppLabel(context: Context, packageName: String?): String {
@@ -375,4 +387,6 @@ class SettingsActivity : FragmentActivity() {
                 LinearLayout.VERTICAL
             }
     }
+
+
 }

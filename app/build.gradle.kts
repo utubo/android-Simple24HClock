@@ -18,8 +18,8 @@ android {
         minSdk = 31
         //noinspection OldTargetApi
         targetSdk = 35
-        versionCode = 25
-        versionName = "4.0"
+        versionCode = 27
+        versionName = "4.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.suncalc)
     implementation(libs.aboutlibraries.core)
     implementation(libs.aboutlibraries.compose.m3)
+    implementation(libs.billing)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
