@@ -18,7 +18,7 @@
     <string name="day_of_year_hand">Day of year hand</string>
     <string name="day_of_year_dots">Month dots</string>
     <string name="background_alpha">Background opacity</string>
-    <string name="tap_behavior">Tap behavior</string>
+    <string name="tap_behavior">Tap action</string>
     <string name="alarm">Alarm</string>
     <string name="calendar">Calendar</string>
     <string name="other_apps">Other apps...</string>
