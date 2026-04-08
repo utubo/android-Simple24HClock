@@ -1,22 +1,20 @@
+# IDE
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+
+# Build, Cache
+.gradle/
+build/
+/app/release/
+.externalNativeBuild/
+.cxx/
+
+# Artifacts
 *.apk
 *.aab
 *.apks
-/app/release/
-/.idea/deploymentTargetSelector.xml
-/.idea/deploymentTargetDropDown.xml
 
+# Local
+local.properties
+.DS_Store
+/captures/
