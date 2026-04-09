@@ -53,8 +53,9 @@ class SettingsActivity : FragmentActivity() {
         val partKeys = resources.getStringArray(R.array.part_keys)
         var selectedPart = ""
         val colors = hashMapOf<String, Int>()
-        var backgroundAlpha: Float
-        var tapBehavior: String
+        // NOTE: initialize on load prefs.
+        // var backgroundAlpha: Float
+        // var tapBehavior: String
         // get widget id
         val appWidgetId = intent?.extras?.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
@@ -82,23 +83,25 @@ class SettingsActivity : FragmentActivity() {
             }
         )
         v.cbMinute.isChecked = 0 < wp.minute
+        v.cbMinuteAndHourDots.isChecked = 0 < wp.minuteAndHourDots
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
-        backgroundAlpha = wp.backgroundAlpha
+        var backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
         colors["colorMinute"] = wp.colorMinute
         colors["colorDayOfYear"] = wp.colorDayOfYear
         colors["colorBorder"] = wp.colorBorder
         colors["colorDots"] = wp.colorDots
+        colors["colorMinuteDots"] = wp.colorMinuteDots
         colors["colorDayOfYearDots"] = wp.colorDayOfYearDots
         colors["colorSun"] = wp.colorSun
         colors["colorMoon"] = wp.colorMoon
         colors["colorDayArea"] = wp.colorDayArea
         colors["colorNightArea"] = wp.colorNightArea
         colors["colorText"] = wp.colorText
-        tapBehavior = wp.tapBehavior ?: ""
+        var tapBehavior = wp.tapBehavior ?: ""
         v.tvTapBehavior.text = when (tapBehavior) {
             "" -> getString(R.string.none)
             "alarm" -> getString(R.string.alarm)
@@ -111,6 +114,7 @@ class SettingsActivity : FragmentActivity() {
             val wp = AppWidgetProps(
                 id = appWidgetId,
                 minute = if (v.cbMinute.isChecked) 1F else 0F,
+                minuteAndHourDots = if (v.cbMinuteAndHourDots.isChecked) 0.5F else 0F,
                 dayOfYear = if (v.cbDayOfYear.isChecked) 1F else 0F,
                 dayOfYearDots = if (v.cbMonthDots.isChecked) 0.5F else 0F,
                 text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
@@ -130,6 +134,7 @@ class SettingsActivity : FragmentActivity() {
             wp.colorDayOfYear = colors["colorDayOfYear"] ?: -1
             wp.colorBorder = colors["colorBorder"] ?: -1
             wp.colorDots = colors["colorDots"] ?: -1
+            wp.colorMinuteDots = colors["colorMinuteDots"] ?: -1
             wp.colorDayOfYearDots = colors["colorDayOfYearDots"] ?: -1
             wp.colorSun = colors["colorSun"] ?: -1
             wp.colorMoon = colors["colorMoon"] ?: -1
@@ -165,6 +170,7 @@ class SettingsActivity : FragmentActivity() {
         v.tvLabelNote.movementMethod = LinkMovementMethod.getInstance()
         v.rgRotate.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMinute.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbMinuteAndHourDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbDayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMonthDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMoonPhase.setOnCheckedChangeListener { _, _ -> updatePreview() }
@@ -198,10 +204,14 @@ class SettingsActivity : FragmentActivity() {
         }
         v.tvColors.setOnClickListener {
             val names = partNames.toMutableList()
-            if (!v.cbMinute.isChecked) names.remove(partNames[partKeys.indexOf("colorMinute")])
-            if (!v.cbDayOfYear.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYear")])
-            if (!v.cbMonthDots.isChecked) names.remove(partNames[partKeys.indexOf("colorDayOfYearDots")])
-            if (!v.rbLabelRecommended.isChecked) names.remove(partNames[partKeys.indexOf("colorText")])
+            fun toggleItem(key: String, visible: Boolean) {
+                if (!visible) names.remove(partNames[partKeys.indexOf(key)])
+            }
+            toggleItem("colorMinute", v.cbMinute.isChecked)
+            toggleItem("colorMinuteDots", v.cbMinuteAndHourDots.isChecked)
+            toggleItem("colorDayOfYear", v.cbDayOfYear.isChecked)
+            toggleItem("colorDayOfYearDots", v.cbMonthDots.isChecked)
+            toggleItem("colorText", v.rbLabelRecommended.isChecked)
             AlertDialog.Builder(this)
                 .setTitle(R.string.select_part)
                 .setItems(names.toTypedArray()) { _, which ->

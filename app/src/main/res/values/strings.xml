@@ -15,6 +15,7 @@
     <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
     <string name="optional">Optional</string>
     <string name="minute_hand">Minute hand</string>
+    <string name="minutes_hours_dots">Minute &amp; Hour dots</string>
     <string name="day_of_year_hand">Day of year hand</string>
     <string name="day_of_year_dots">Month dots</string>
     <string name="background_alpha">Background opacity</string>
@@ -54,7 +55,8 @@
         <item>Minute Hand</item>
         <item>Day of year Hand</item>
         <item>Border</item>
-        <item>Dots</item>
+        <item>Hour Dots</item>
+        <item>Minute dots</item>
         <item>Month dots</item>
         <item>Sun</item>
         <item>Moon</item>
@@ -68,6 +70,7 @@
         <item>colorDayOfYear</item>
         <item>colorBorder</item>
         <item>colorDots</item>
+        <item>colorMinuteDots</item>
         <item>colorDayOfYearDots</item>
         <item>colorSun</item>
         <item>colorMoon</item>

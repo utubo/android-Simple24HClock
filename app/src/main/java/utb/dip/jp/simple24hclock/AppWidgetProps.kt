@@ -7,6 +7,7 @@ import android.graphics.Color.argb
 data class AppWidgetProps(
     val id: Int,
     val minute: Float,
+    val minuteAndHourDots: Float,
     val dayOfYear: Float,
     val dayOfYearDots: Float,
     var text: String? = "",
@@ -24,6 +25,7 @@ data class AppWidgetProps(
     var colorDayOfYear: Int = Color.WHITE,
     var colorBorder: Int = Color.WHITE,
     var colorDots: Int = Color.WHITE,
+    var colorMinuteDots: Int = Color.WHITE,
     var colorDayOfYearDots: Int = Color.WHITE,
     var colorSun: Int = Color.WHITE,
     var colorMoon: Int = Color.WHITE,
@@ -37,6 +39,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
     return AppWidgetProps(
         id = id,
         minute = prefs.getFloat("minute_$id", 0F),
+        minuteAndHourDots = prefs.getFloat("minute_and_hour_dots_$id", 0F),
         dayOfYear = prefs.getFloat("day_of_year_$id", 0F),
         dayOfYearDots = prefs.getFloat("day_of_year_dots_$id", 0F),
         text = prefs.getString("text_$id", ""),
@@ -54,6 +57,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         colorDayOfYear = prefs.getInt("color_day_of_year_$id", argb(160, 255, 255, 255)),
         colorBorder = prefs.getInt("color_border_$id", Color.WHITE),
         colorDots = prefs.getInt("color_dots_$id", Color.WHITE),
+        colorMinuteDots = prefs.getInt("color_minute_dots_$id", argb(180, 255, 255, 255)),
         colorDayOfYearDots = prefs.getInt("color_day_of_year_dots_$id", argb(160, 255, 255, 255)),
         colorSun = prefs.getInt("color_sun_$id", Color.WHITE),
         colorMoon = prefs.getInt("color_moon_$id", Color.WHITE),
@@ -68,6 +72,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     val id = props.id
     editor.putInt("id_$id", props.id)
     editor.putFloat("minute_$id", props.minute)
+    editor.putFloat("minute_and_hour_dots_$id", props.minuteAndHourDots)
     editor.putFloat("day_of_year_$id", props.dayOfYear)
     editor.putFloat("day_of_year_dots_$id", props.dayOfYearDots)
     editor.putString("text_$id", props.text)
@@ -85,6 +90,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putInt("color_day_of_year_$id", props.colorDayOfYear)
     editor.putInt("color_border_$id", props.colorBorder)
     editor.putInt("color_dots_$id", props.colorDots)
+    editor.putInt("color_minute_dots_$id", props.colorMinuteDots)
     editor.putInt("color_day_of_year_dots_$id", props.colorDayOfYearDots)
     editor.putInt("color_sun_$id", props.colorSun)
     editor.putInt("color_moon_$id", props.colorMoon)

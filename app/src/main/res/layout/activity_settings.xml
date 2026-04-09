@@ -161,6 +161,14 @@
                         android:text="@string/minute_hand" />
 
                     <CheckBox
+                        android:id="@+id/cb_minute_and_hour_dots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:minHeight="48dp"
+                        android:text="@string/minutes_hours_dots" />
+
+                    <CheckBox
                         android:id="@+id/cb_day_of_year"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

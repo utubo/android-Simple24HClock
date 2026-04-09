@@ -147,16 +147,27 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
             views.setFloat(id, "setAlpha", 0F)
         }
     }
+    // Hand
     setColor(R.id.iv_hour, props.colorHour)
     setColor(R.id.iv_minute, props.colorMinute, props.minute)
     setColor(R.id.iv_day_of_year, props.colorDayOfYear, props.dayOfYear)
     setColor(R.id.iv_border, props.colorBorder)
-    setColor(R.id.iv_dots, props.colorDots)
+    // Dots
+    if (props.minuteAndHourDots == 0F) {
+        setColor(R.id.iv_dots, props.colorDots)
+        setColor(R.id.iv_hour_dots, 0, 0F)
+        setColor(R.id.iv_minute_dots, 0, 0F)
+    } else {
+        setColor(R.id.iv_dots, 0, 0F)
+        setColor(R.id.iv_hour_dots, props.colorDots)
+        setColor(R.id.iv_minute_dots, props.colorMinuteDots)
+    }
     setColor(R.id.iv_day_of_year_dots, props.colorDayOfYearDots, props.dayOfYearDots)
+    // Others
     setColor(R.id.iv_sun, props.colorSun)
     setColor(R.id.iv_moon, props.colorMoon)
-    views.setInt(R.id.tv_label, "setTextColor", props.colorText or MASK_OPAQUE)
     views.setFloat(R.id.tv_label, "setAlpha", ((props.colorText shr 24) and 0xFF) / 255F)
     views.setFloat(R.id.iv_background, "setAlpha", props.backgroundAlpha)
+    views.setInt(R.id.tv_label, "setTextColor", props.colorText or MASK_OPAQUE)
 
 }
