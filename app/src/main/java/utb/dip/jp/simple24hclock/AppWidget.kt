@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.AlarmClock.ACTION_SHOW_ALARMS
 import android.util.SizeF
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
 import java.lang.Float.min
@@ -143,8 +144,9 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
         if (visible != 0F) {
             views.setInt(id, "setColorFilter", color or MASK_OPAQUE)
             views.setFloat(id, "setAlpha", ((color shr 24) and 0xFF) / 255F)
+            views.setViewVisibility(id, View.VISIBLE)
         } else {
-            views.setFloat(id, "setAlpha", 0F)
+            views.setViewVisibility(id, View.INVISIBLE)
         }
     }
     // Hand
