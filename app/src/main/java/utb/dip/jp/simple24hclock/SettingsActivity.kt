@@ -201,6 +201,8 @@ class SettingsActivity : FragmentActivity() {
                 v.sbAlpha.progress = Color.alpha(argb)
             }
             selectedPart = key
+            v.ivPallet.alpha = 1F
+            v.llSeekbars.alpha = 1F
         }
         v.tvColors.setOnClickListener {
             val names = partNames.toMutableList()
@@ -222,8 +224,8 @@ class SettingsActivity : FragmentActivity() {
                     v.tvColors.text = name
                     v.tvOpacity.text = getString(
                         when (selectedPart) {
-                            "colorDayArea" -> R.string.linked_to_night
-                            "colorNightArea" -> R.string.linked_to_day
+                            "colorDayArea" -> R.string.linked_with_night
+                            "colorNightArea" -> R.string.linked_with_day
                             else -> R.string.opacity
                         }
                     )

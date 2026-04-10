@@ -207,6 +207,7 @@
 
                     <ImageView
                         android:id="@+id/iv_pallet"
+                        android:alpha="0.3"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:importantForAccessibility="no"
@@ -217,6 +218,8 @@
                         tools:ignore="RtlSymmetry" />
 
                     <LinearLayout
+                        android:id="@+id/ll_seekbars"
+                        android:alpha="0.3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
