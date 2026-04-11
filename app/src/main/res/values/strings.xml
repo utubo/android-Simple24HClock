@@ -54,10 +54,10 @@
         <item>Hour Hand</item>
         <item>Minute Hand</item>
         <item>Day of year Hand</item>
-        <item>Border</item>
         <item>Hour Dots</item>
         <item>Minute dots</item>
         <item>Month dots</item>
+        <item>Border</item>
         <item>Sun</item>
         <item>Moon</item>
         <item>Day area</item>
@@ -68,10 +68,10 @@
         <item>colorHour</item>
         <item>colorMinute</item>
         <item>colorDayOfYear</item>
-        <item>colorBorder</item>
         <item>colorDots</item>
         <item>colorMinuteDots</item>
         <item>colorDayOfYearDots</item>
+        <item>colorBorder</item>
         <item>colorSun</item>
         <item>colorMoon</item>
         <item>colorDayArea</item>
