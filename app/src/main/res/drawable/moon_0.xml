@@ -18,7 +18,6 @@
     <path
         android:fillColor="@color/white"
         android:fillAlpha="0.3"
-
         android:pathData="
             M 100, 180
             m 6, 0

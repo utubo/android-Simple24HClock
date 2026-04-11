@@ -13,17 +13,4 @@
             a 6,6 0 0,0 0,-12
             z
         " />
-    <!-- guid circle
-    <path
-        android:fillColor="@color/white"
-        android:fillAlpha="0.3"
-
-        android:pathData="
-            M 100, 180
-            m 6, 0
-            a 6,6 0 1,0 -12,0
-            a 6,6 0 1,0  12,0
-            z
-        " />
-    -->
 </vector>
