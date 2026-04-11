@@ -196,18 +196,17 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/colors" />
 
-                    <TextView
-                        android:id="@+id/tv_colors"
-                        style="@style/Widget.AppCompat.Spinner.DropDown"
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_parts_selector"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginStart="24dp"
-                        android:text="@string/select_part" />
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp"
+                        android:clipToPadding="false"
+                        android:scrollbars="none" />
 
                     <ImageView
                         android:id="@+id/iv_pallet"
-                        android:alpha="0.3"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:importantForAccessibility="no"
@@ -219,7 +218,6 @@
 
                     <LinearLayout
                         android:id="@+id/ll_seekbars"
-                        android:alpha="0.3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"

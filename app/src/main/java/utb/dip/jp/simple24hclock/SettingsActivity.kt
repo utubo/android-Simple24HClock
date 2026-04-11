@@ -12,7 +12,6 @@ import android.graphics.Matrix
 import android.os.Bundle
 import android.provider.Settings
 import android.text.method.LinkMovementMethod
-import android.util.TypedValue
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.MotionEvent
 import android.widget.ImageView
@@ -29,6 +28,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
 
 
@@ -48,11 +48,42 @@ class SettingsActivity : FragmentActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        // Settings
-        val partNames = resources.getStringArray(R.array.part_names)
-        val partKeys = resources.getStringArray(R.array.part_keys)
-        var selectedPart = ""
+        // color tip
         val colors = hashMapOf<String, Int>()
+        val masterPartNames = resources.getStringArray(R.array.part_names).toList()
+        val masterPartKeys = resources.getStringArray(R.array.part_keys).toList()
+        val partNames = mutableListOf<String>()
+        val partKeys = mutableListOf<String>()
+        var selectedPart = masterPartKeys[0]
+        partNames.addAll(masterPartNames)
+        partKeys.addAll(masterPartKeys)
+        var colorChipAdapter: PartsAdapter? = null
+        fun toggleColorPart(key: String, isVisible: Boolean) {
+            val masterIndex = masterPartKeys.indexOf(key)
+            if (masterIndex == -1) return
+            if (isVisible) {
+                if (!partKeys.contains(key)) {
+                    val insertIndex =
+                        masterPartKeys.take(masterIndex).count { partKeys.contains(it) }
+                    partNames.add(insertIndex, masterPartNames[masterIndex])
+                    partKeys.add(insertIndex, key)
+                    colorChipAdapter?.notifyItemInserted(insertIndex)
+                }
+            } else {
+                if (selectedPart == key) {
+                    selectedPart = ""
+                    colorChipAdapter?.resetSelection()
+                }
+                val removeIndex = partKeys.indexOf(key)
+                if (removeIndex != -1) {
+                    partNames.removeAt(removeIndex)
+                    partKeys.removeAt(removeIndex)
+                    colorChipAdapter?.notifyItemRemoved(removeIndex)
+                }
+            }
+        }
+
+        // other items
         // NOTE: initialize on load prefs.
         // var backgroundAlpha: Float
         // var tapBehavior: String
@@ -66,6 +97,7 @@ class SettingsActivity : FragmentActivity() {
             setResult(RESULT_CANCELED, resultValue)
             finish()
         }
+
         // load prefs
         val prefs = applicationContext.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
         val wp = getAppWidgetProps(prefs, appWidgetId)
@@ -152,6 +184,11 @@ class SettingsActivity : FragmentActivity() {
             v.preview.removeAllViews()
             v.preview.addView(views.apply(applicationContext, v.preview))
             v.etFormat.isVisible = v.rbLabelCustom.isChecked
+            toggleColorPart("colorMinute", v.cbMinute.isChecked)
+            toggleColorPart("colorMinuteDots", v.cbMinuteAndHourDots.isChecked)
+            toggleColorPart("colorDayOfYear", v.cbDayOfYear.isChecked)
+            toggleColorPart("colorDayOfYearDots", v.cbMonthDots.isChecked)
+            toggleColorPart("colorText", v.rbLabelRecommended.isChecked)
         }
         updatePreview()
 
@@ -201,38 +238,8 @@ class SettingsActivity : FragmentActivity() {
                 v.sbAlpha.progress = Color.alpha(argb)
             }
             selectedPart = key
-            v.ivPallet.alpha = 1F
-            v.llSeekbars.alpha = 1F
         }
-        v.tvColors.setOnClickListener {
-            val names = partNames.toMutableList()
-            fun toggleItem(key: String, visible: Boolean) {
-                if (!visible) names.remove(partNames[partKeys.indexOf(key)])
-            }
-            toggleItem("colorMinute", v.cbMinute.isChecked)
-            toggleItem("colorMinuteDots", v.cbMinuteAndHourDots.isChecked)
-            toggleItem("colorDayOfYear", v.cbDayOfYear.isChecked)
-            toggleItem("colorDayOfYearDots", v.cbMonthDots.isChecked)
-            toggleItem("colorText", v.rbLabelRecommended.isChecked)
-            AlertDialog.Builder(this)
-                .setTitle(R.string.select_part)
-                .setItems(names.toTypedArray()) { _, which ->
-                    val name = names[which]
-                    selectedPart = partKeys[partNames.indexOf(name)]
-                    val argb = colors[selectedPart] ?: 0
-                    setupARGBSeekBars(argb, true)
-                    v.tvColors.text = name
-                    v.tvOpacity.text = getString(
-                        when (selectedPart) {
-                            "colorDayArea" -> R.string.linked_with_night
-                            "colorNightArea" -> R.string.linked_with_day
-                            else -> R.string.opacity
-                        }
-                    )
-                }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }
+
         fun updateColor() {
             if (selectedPart == "") return
             var alpha = v.sbAlpha.progress
@@ -248,6 +255,7 @@ class SettingsActivity : FragmentActivity() {
             )
             updatePreview()
         }
+
         arrayOf(v.sbAlpha, v.sbRed, v.sbGreen, v.sbBlue).forEach {
             it.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -258,13 +266,29 @@ class SettingsActivity : FragmentActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
-        // Pallet
-        val themeBackgroundColor by lazy {
-            TypedValue().let {
-                theme.resolveAttribute(android.R.attr.colorBackground, it, true)
-                it.data
-            }
+        fun onPartSelected(selectedKey: String) {
+            selectedPart = selectedKey
+            val argb = colors[selectedPart] ?: 0
+            setupARGBSeekBars(argb, true)
+            v.tvOpacity.text = getString(
+                when (selectedPart) {
+                    "colorDayArea" -> R.string.linked_with_night
+                    "colorNightArea" -> R.string.linked_with_day
+                    else -> R.string.opacity
+                }
+            )
         }
+        // initialize seekbars
+        onPartSelected(selectedPart)
+        // on tips selected
+        colorChipAdapter = PartsAdapter(partNames, partKeys) { selectedKey ->
+            onPartSelected(selectedKey)
+        }
+        v.rvPartsSelector.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        v.rvPartsSelector.adapter = colorChipAdapter
+
+        // Pallet
         val palletBitmap by lazy {
             v.ivPallet.drawable?.toBitmap()
         }
@@ -282,10 +306,11 @@ class SettingsActivity : FragmentActivity() {
             val y = points[1].toInt()
             if (x !in 0 until bitmap.width || y !in 0 until bitmap.height) return@setOnTouchListener false
             val pixel = bitmap[x, y]
-            val argb = if (Color.alpha(pixel) == 0) themeBackgroundColor else pixel
-            setupARGBSeekBars(argb, false)
-            updateColor()
-            view.performClick()
+            if (Color.alpha(pixel) != 0) {
+                setupARGBSeekBars(pixel, false)
+                updateColor()
+                view.performClick()
+            }
             true
         }
 
@@ -399,6 +424,5 @@ class SettingsActivity : FragmentActivity() {
                 LinearLayout.VERTICAL
             }
     }
-
 
 }
