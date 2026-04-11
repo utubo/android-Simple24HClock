@@ -3,12 +3,12 @@
     android:height="200dp"
     android:viewportWidth="200"
     android:viewportHeight="200">
-    <!-- move x +1.0 to centering totality -->
+    <!-- move x +1.4 to centering totality -->
     <path
         android:fillColor="@color/white"
         android:pathData="
             M 100, 180
-            m 4.3, -4.9
+            m 4.7, -4.9
             a 6,6 0 1,0 0,10
             a 2,2.5 0 0,1 0,-10
             z
