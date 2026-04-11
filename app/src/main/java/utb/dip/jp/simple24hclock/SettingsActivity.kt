@@ -50,11 +50,11 @@ class SettingsActivity : FragmentActivity() {
         }
         // color tip
         val colors = hashMapOf<String, Int>()
+        var selectedPart = ""
         val masterPartNames = resources.getStringArray(R.array.part_names).toList()
         val masterPartKeys = resources.getStringArray(R.array.part_keys).toList()
         val partNames = mutableListOf<String>()
         val partKeys = mutableListOf<String>()
-        var selectedPart = masterPartKeys[0]
         partNames.addAll(masterPartNames)
         partKeys.addAll(masterPartKeys)
         var colorChipAdapter: PartsAdapter? = null
@@ -82,6 +82,8 @@ class SettingsActivity : FragmentActivity() {
                 }
             }
         }
+        v.llSettingsMain.setOnClickListener { colorChipAdapter?.resetSelection() }
+        v.llSettings.setOnClickListener { colorChipAdapter?.resetSelection() }
 
         // other items
         // NOTE: initialize on load prefs.
@@ -266,23 +268,19 @@ class SettingsActivity : FragmentActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
-        fun onPartSelected(selectedKey: String) {
-            selectedPart = selectedKey
-            val argb = colors[selectedPart] ?: 0
-            setupARGBSeekBars(argb, true)
-            v.tvOpacity.text = getString(
-                when (selectedPart) {
-                    "colorDayArea" -> R.string.linked_with_night
-                    "colorNightArea" -> R.string.linked_with_day
-                    else -> R.string.opacity
-                }
-            )
-        }
-        // initialize seekbars
-        onPartSelected(selectedPart)
-        // on tips selected
         colorChipAdapter = PartsAdapter(partNames, partKeys) { selectedKey ->
-            onPartSelected(selectedKey)
+            selectedPart = selectedKey
+            if (selectedPart != "") {
+                val argb = colors[selectedPart] ?: 0
+                setupARGBSeekBars(argb, true)
+                v.tvOpacity.text = getString(
+                    when (selectedPart) {
+                        "colorDayArea" -> R.string.linked_with_night
+                        "colorNightArea" -> R.string.linked_with_day
+                        else -> R.string.opacity
+                    }
+                )
+            }
         }
         v.rvPartsSelector.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

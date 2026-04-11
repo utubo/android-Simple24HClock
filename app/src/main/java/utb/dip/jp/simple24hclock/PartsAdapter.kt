@@ -12,7 +12,7 @@ class PartsAdapter(
     private val onPartSelected: (String) -> Unit
 ) : RecyclerView.Adapter<PartsAdapter.ViewHolder>() {
 
-    private var selectedPosition = 0 // 初期選択
+    private var selectedPosition = -1
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameText: TextView = view.findViewById(R.id.tv_part_name)
@@ -21,8 +21,10 @@ class PartsAdapter(
             view.setOnClickListener {
                 val oldPos = selectedPosition
                 selectedPosition = bindingAdapterPosition
-                notifyItemChanged(oldPos)
-                notifyItemChanged(selectedPosition)
+                if (selectedPosition != oldPos) {
+                    notifyItemChanged(oldPos)
+                    notifyItemChanged(selectedPosition)
+                }
                 onPartSelected(keys[selectedPosition])
             }
         }
@@ -47,5 +49,6 @@ class PartsAdapter(
         val oldPos = selectedPosition
         selectedPosition = -1
         notifyItemChanged(oldPos)
+        onPartSelected("")
     }
 }
