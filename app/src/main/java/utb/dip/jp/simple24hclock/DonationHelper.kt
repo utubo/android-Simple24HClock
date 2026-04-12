@@ -84,6 +84,7 @@ object DonationHelper {
     private fun showDialog(activity: Activity, item: ProductDetails, client: BillingClient) {
         val price = item.oneTimePurchaseOfferDetails?.formattedPrice ?: ""
         AlertDialog.Builder(activity)
+            .setIcon(R.drawable.baseline_coffee_24)
             .setTitle(activity.getString(R.string.donation_dialog_title))
             .setMessage(activity.getString(R.string.donation_dialog_message))
             .setPositiveButton(

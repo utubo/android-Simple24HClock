@@ -390,8 +390,7 @@ class SettingsActivity : FragmentActivity() {
 
         fun updateDonationLabel() {
             val donationCount = DonationHelper.getDonationCount(this)
-            val stars = getString(R.string.donation_star).repeat(donationCount)
-            v.tvSupport.text = getString(R.string.donation_label, stars)
+            v.tvSupport.text = getString(R.string.donation_star).repeat(donationCount)
         }
         updateDonationLabel()
         v.tvSupport.setOnClickListener {

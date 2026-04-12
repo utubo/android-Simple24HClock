@@ -39,9 +39,8 @@
     <string name="moon_phase">Moon phase</string>
     <string name="settings">Settings</string>
     <string name="prevent_time_lag">Prevent time lag</string>
-    <string name="donation_label">☕%1$s</string>
     <string name="donation_star">✨️</string>
-    <string name="donation_dialog_title">☕ Support the developer</string>
+    <string name="donation_dialog_title">Support the developer</string>
     <string name="donation_dialog_message">This will not unlock any features.
         \nI\'ll just enjoy a fresh cup of coffee!
     </string>
