@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import java.util.Calendar
 import java.util.Date
 
@@ -26,7 +25,7 @@ fun setupNext(context: Context) {
     }
     val pendingIntent = createIntent(context)
     manager.cancel(pendingIntent)
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && manager.canScheduleExactAlarms()) {
+    if (manager.canScheduleExactAlarms()) {
         manager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             next.time.time,

@@ -82,12 +82,14 @@ class MyAppWidgetProvider : AppWidgetProvider() {
         newOptions: Bundle?
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, id, newOptions)
-        val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
-        layoutPrefs.edit().apply {
-            calculateLayout(context, this, id, newOptions)
-            apply()
+        newOptions?.let {
+            val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
+            layoutPrefs.edit().apply {
+                calculateLayout(context, this, id, newOptions)
+                apply()
+            }
+            updateAppWidget(context, appWidgetManager, id)
         }
-        updateAppWidget(context, appWidgetManager, id)
     }
 }
 

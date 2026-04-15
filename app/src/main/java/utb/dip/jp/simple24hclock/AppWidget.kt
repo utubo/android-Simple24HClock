@@ -9,13 +9,12 @@ import android.content.Intent.ACTION_VIEW
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.AlarmClock.ACTION_SHOW_ALARMS
-import android.util.SizeF
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
-import java.lang.Float.min
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import kotlin.math.min
 
 private const val MASK_OPAQUE = 0xFF000000.toInt()
 
@@ -23,15 +22,14 @@ internal fun calculateLayout(
     context: Context,
     editor: SharedPreferences.Editor,
     id: Int,
-    options: Bundle?
+    bundle: Bundle
 ) {
-    @Suppress("DEPRECATION") val sizes = options?.getParcelableArrayList<SizeF>(
-        AppWidgetManager.OPTION_APPWIDGET_SIZES
+    val size = min(
+        bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH),
+        bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
     )
-    if (sizes.isNullOrEmpty()) return
-    val size = min(sizes[0].width, sizes[0].height)
-    editor.putFloat("text_size_$id", size / 14)
-    editor.putFloat("size_$id", size * context.resources.displayMetrics.density)
+    editor.putFloat("text_size_$id", size.toFloat() / 14)
+    editor.putFloat("size_$id", size.toFloat() * context.resources.displayMetrics.density)
 }
 
 internal fun updateAppWidget(
