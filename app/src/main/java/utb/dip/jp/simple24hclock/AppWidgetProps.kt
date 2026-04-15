@@ -4,6 +4,10 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Color.argb
 
+const val WP_HIDDEN = 0F
+const val ROTATE_AUTO = -1F
+const val ROTATE_FIX_HOUR_HAND = -2F
+
 data class AppWidgetProps(
     val id: Int,
     val minute: Float,

@@ -17,7 +17,8 @@ dots = []
 # minute dots
 max_dots = 60
 accent_step = 5
-skip_list = [0, 1, 29, 30, 31, 59]
+skip_list = []
+# skip_list = [0, 1, 29, 30, 31, 59]
 radius = 80
 #
 # # month dots

@@ -20,6 +20,7 @@ import java.util.Calendar
 private const val MASK_OPAQUE = 0xFF000000.toInt()
 
 internal fun calculateLayout(
+    context: Context,
     editor: SharedPreferences.Editor,
     id: Int,
     options: Bundle?
@@ -28,8 +29,9 @@ internal fun calculateLayout(
         AppWidgetManager.OPTION_APPWIDGET_SIZES
     )
     if (sizes.isNullOrEmpty()) return
-    val size = sizes[0]
-    editor.putFloat("text_size_$id", min(size.width, size.height) / 14)
+    val size = min(sizes[0].width, sizes[0].height)
+    editor.putFloat("text_size_$id", size / 14)
+    editor.putFloat("size_$id", size * context.resources.displayMetrics.density)
 }
 
 internal fun updateAppWidget(
@@ -39,13 +41,14 @@ internal fun updateAppWidget(
 ) {
     val views = RemoteViews(context.packageName, R.layout.app_widget)
     val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
+    val size = layoutPrefs.getFloat("size_$appWidgetId", 0F)
     val textSize = layoutPrefs.getFloat("text_size_$appWidgetId", 0F)
     if (textSize != 0F) {
         views.setFloat(R.id.tv_label, "setTextSize", textSize)
     }
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
-    updateAppWidgetContent(context, views, props)
+    updateAppWidgetContent(context, views, props, size)
 
     // Tap
     val intent = when (props.tapBehavior ?: "") {
@@ -76,13 +79,18 @@ internal fun updateAppWidget(
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
-internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props: AppWidgetProps) {
+internal fun updateAppWidgetContent(
+    context: Context,
+    views: RemoteViews,
+    props: AppWidgetProps,
+    size: Float
+) {
     val now = Calendar.getInstance()
 
     // Hour
     val hour = now.get(Calendar.HOUR_OF_DAY)
-    val h = 360F / 24F * (hour + now.get(Calendar.MINUTE) / 60F)
-    views.setFloat(R.id.iv_hour, "setRotation", h)
+    val hourDeg = 360F / 24F * (hour + now.get(Calendar.MINUTE) / 60F)
+    views.setFloat(R.id.iv_hour, "setRotation", hourDeg)
 
     // Minute
     if (0 < props.minute) {
@@ -106,10 +114,12 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
     }
 
     // Back
-    val metrics = context.resources.displayMetrics
-    val maxSize = minOf(metrics.widthPixels, metrics.heightPixels)
     val bgBitmap =
-        SunCycleManager.getOrUpdateBackground(context, props, maxSize) // size in pixels
+        SunCycleManager.getOrUpdateBackground(
+            context,
+            props,
+            size.toInt()
+        )
     views.setImageViewBitmap(R.id.iv_background, bgBitmap)
 
     // Text
@@ -130,11 +140,32 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
         views.setImageViewResource(R.id.iv_moon, R.drawable.moon_7)
     }
 
+    // Sun and Moon position
+    val isInnerSunAndMoon =
+        props.rotate == ROTATE_FIX_HOUR_HAND && props.minuteAndHourDots != WP_HIDDEN
+    var sunAndMoonPadding = 0F
+    if (isInnerSunAndMoon) {
+        sunAndMoonPadding = size * 0.12F
+        views.setImageViewResource(R.id.iv_hour_dots, R.drawable.dots_hour_skiped)
+        views.setImageViewResource(R.id.iv_month_dots, R.drawable.dots_month_skiped)
+        views.setImageViewResource(R.id.iv_minute_dots, R.drawable.dots_minute_full)
+    } else {
+        views.setImageViewResource(R.id.iv_hour_dots, R.drawable.dots_hour_full)
+        views.setImageViewResource(R.id.iv_month_dots, R.drawable.dots_month_full)
+        views.setImageViewResource(R.id.iv_minute_dots, R.drawable.dots_minute_skiped)
+    }
+    views.setFloat(R.id.iv_sun, "setTranslationY", sunAndMoonPadding)
+    views.setFloat(R.id.iv_moon, "setTranslationY", -sunAndMoonPadding)
+
     // Rotation
-    val deg = if (props.rotate < 0) if (hour in 6..17) 0F else 180F else props.rotate
+    val deg = when (props.rotate) {
+        ROTATE_AUTO -> if (hour in 6..17) 0F else 180F
+        ROTATE_FIX_HOUR_HAND -> -hourDeg - 180F
+        else -> props.rotate
+    }
     views.setFloat(R.id.rl_background, "setRotation", deg)
     views.setFloat(R.id.rl_foreground, "setRotation", deg)
-    if (deg != 0F) {
+    if (deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND) {
         moonRotate *= -1
     }
     views.setFloat(R.id.iv_moon, "setScaleX", moonRotate)
@@ -149,11 +180,13 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
             views.setViewVisibility(id, View.INVISIBLE)
         }
     }
+
     // Hand
     setColor(R.id.iv_hour, props.colorHour)
     setColor(R.id.iv_minute, props.colorMinute, props.minute)
     setColor(R.id.iv_day_of_year, props.colorDayOfYear, props.dayOfYear)
     setColor(R.id.iv_border, props.colorBorder)
+
     // Dots
     if (props.minuteAndHourDots == 0F) {
         setColor(R.id.iv_dots, props.colorDots)
@@ -164,7 +197,8 @@ internal fun updateAppWidgetContent(context: Context, views: RemoteViews, props:
         setColor(R.id.iv_hour_dots, props.colorDots)
         setColor(R.id.iv_minute_dots, props.colorMinuteDots)
     }
-    setColor(R.id.iv_day_of_year_dots, props.colorDayOfYearDots, props.dayOfYearDots)
+    setColor(R.id.iv_month_dots, props.colorDayOfYearDots, props.dayOfYearDots)
+
     // Others
     setColor(R.id.iv_sun, props.colorSun)
     setColor(R.id.iv_moon, props.colorMoon)

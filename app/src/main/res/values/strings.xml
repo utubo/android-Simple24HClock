@@ -48,6 +48,7 @@
     <string name="donation_button_negative">Cancel</string>
     <string name="donation_thanks">Thanks for the drink! ☕</string>
     <string name="donation_error">Item not found</string>
+    <string name="fix_hour_hand">Fix hour hand</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>

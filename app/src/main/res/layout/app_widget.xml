@@ -50,32 +50,32 @@
             android:src="@drawable/moon_7"
             app:tint="@color/white"
             tools:ignore="ContentDescription" />
-    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_hour_dots"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:src="@drawable/dots_hour"
-        app:tint="@color/white"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/iv_hour_dots"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/dots_hour_skiped"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/iv_month_dots"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/dots_month_full"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/iv_minute_dots"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:src="@drawable/dots_minute"
-        app:tint="@color/white"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/iv_day_of_year_dots"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:src="@drawable/dots_day_of_year"
+        android:src="@drawable/dots_minute_skiped"
         app:tint="@color/white"
         tools:ignore="ContentDescription" />
 

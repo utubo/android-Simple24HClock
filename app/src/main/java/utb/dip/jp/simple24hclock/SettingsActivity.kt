@@ -112,7 +112,8 @@ class SettingsActivity : FragmentActivity() {
         v.rgRotate.check(
             when (wp.rotate) {
                 180F -> R.id.rb_rotate_moon_top
-                -1F -> R.id.rb_rotate_auto
+                ROTATE_AUTO -> R.id.rb_rotate_auto
+                ROTATE_FIX_HOUR_HAND -> R.id.rb_rotate_fix_hour_hand
                 else -> R.id.rb_rotate_sun_top
             }
         )
@@ -148,16 +149,17 @@ class SettingsActivity : FragmentActivity() {
             val wp = AppWidgetProps(
                 id = appWidgetId,
                 minute = if (v.cbMinute.isChecked) 1F else 0F,
-                minuteAndHourDots = if (v.cbMinuteAndHourDots.isChecked) 0.5F else 0F,
+                minuteAndHourDots = if (v.cbMinuteAndHourDots.isChecked) 1F else 0F,
                 dayOfYear = if (v.cbDayOfYear.isChecked) 1F else 0F,
-                dayOfYearDots = if (v.cbMonthDots.isChecked) 0.5F else 0F,
+                dayOfYearDots = if (v.cbMonthDots.isChecked) 1F else 0F,
                 text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
                 format = "",
                 tapBehavior = "",
                 backgroundAlpha = backgroundAlpha,
                 rotate = when (v.rgRotate.checkedRadioButtonId) {
                     R.id.rb_rotate_moon_top -> 180F
-                    R.id.rb_rotate_auto -> -1F
+                    R.id.rb_rotate_auto -> ROTATE_AUTO
+                    R.id.rb_rotate_fix_hour_hand -> ROTATE_FIX_HOUR_HAND
                     else -> 0F
                 },
                 moonPhase = v.cbMoonPhase.isChecked,
@@ -179,10 +181,18 @@ class SettingsActivity : FragmentActivity() {
         }
 
         // preview
+//        val tv = TypedValue()
+//        resources.getValue(R.dimen.preview_size, tv, true)
+//        val previewSize = tv.data.toFloat()
         fun updatePreview() {
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
             views.setTextViewTextSize(R.id.tv_label, COMPLEX_UNIT_PX, v.etFormat.textSize)
-            updateAppWidgetContent(applicationContext, views, newAppWidgetProps())
+            updateAppWidgetContent(
+                applicationContext,
+                views,
+                newAppWidgetProps(),
+                resources.getDimension(R.dimen.preview_size)
+            )
             v.preview.removeAllViews()
             v.preview.addView(views.apply(applicationContext, v.preview))
             v.etFormat.isVisible = v.rbLabelCustom.isChecked
