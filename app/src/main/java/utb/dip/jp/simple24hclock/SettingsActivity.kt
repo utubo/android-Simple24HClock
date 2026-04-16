@@ -180,10 +180,6 @@ class SettingsActivity : FragmentActivity() {
             return wp
         }
 
-        // preview
-//        val tv = TypedValue()
-//        resources.getValue(R.dimen.preview_size, tv, true)
-//        val previewSize = tv.data.toFloat()
         fun updatePreview() {
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
             views.setTextViewTextSize(R.id.tv_label, COMPLEX_UNIT_PX, v.etFormat.textSize)

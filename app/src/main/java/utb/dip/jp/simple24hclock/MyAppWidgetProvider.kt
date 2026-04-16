@@ -19,15 +19,6 @@ class MyAppWidgetProvider : AppWidgetProvider() {
             }
             apply()
         }
-        val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
-        layoutPrefs.edit().apply {
-            this.clear()
-            for (appWidgetId in appWidgetIds) {
-                val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
-                calculateLayout(context, this, appWidgetId, options)
-            }
-            apply()
-        }
         val isDoWork = restart(context)
         if (!isDoWork) {
             updateAllAppWidgets(context, appWidgetManager)
@@ -83,11 +74,6 @@ class MyAppWidgetProvider : AppWidgetProvider() {
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, id, newOptions)
         newOptions?.let {
-            val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
-            layoutPrefs.edit().apply {
-                calculateLayout(context, this, id, newOptions)
-                apply()
-            }
             updateAppWidget(context, appWidgetManager, id)
         }
     }

@@ -6,31 +6,16 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
-import android.content.SharedPreferences
-import android.os.Bundle
 import android.provider.AlarmClock.ACTION_SHOW_ALARMS
+import android.util.SizeF
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import kotlin.math.min
 
 private const val MASK_OPAQUE = 0xFF000000.toInt()
-
-internal fun calculateLayout(
-    context: Context,
-    editor: SharedPreferences.Editor,
-    id: Int,
-    bundle: Bundle
-) {
-    val size = min(
-        bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH),
-        bundle.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-    )
-    editor.putFloat("text_size_$id", size.toFloat() / 14)
-    editor.putFloat("size_$id", size.toFloat() * context.resources.displayMetrics.density)
-}
 
 internal fun updateAppWidget(
     context: Context,
@@ -38,15 +23,10 @@ internal fun updateAppWidget(
     appWidgetId: Int
 ) {
     val views = RemoteViews(context.packageName, R.layout.app_widget)
-    val layoutPrefs = context.getSharedPreferences(WIDGET_LAYOUT_KEY, Context.MODE_PRIVATE)
-    val size = layoutPrefs.getFloat("size_$appWidgetId", 0F)
-    val textSize = layoutPrefs.getFloat("text_size_$appWidgetId", 0F)
-    if (textSize != 0F) {
-        views.setFloat(R.id.tv_label, "setTextSize", textSize)
-    }
+    val size = getWidgetMinimumDimensionInDp(appWidgetManager, appWidgetId)
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
-    updateAppWidgetContent(context, views, props, size)
+    updateAppWidgetContent(context, views, props, size * context.resources.displayMetrics.density)
 
     // Tap
     val intent = when (props.tapBehavior ?: "") {
@@ -125,6 +105,7 @@ internal fun updateAppWidgetContent(
         views.setTextViewText(R.id.tv_label, "")
     } else {
         val fmt = SimpleDateFormat(props.text, java.util.Locale.getDefault())
+        views.setTextViewTextSize(R.id.tv_label, TypedValue.COMPLEX_UNIT_PX, size / 14F)
         views.setTextViewText(R.id.tv_label, fmt.format(now.time))
     }
 
@@ -205,3 +186,27 @@ internal fun updateAppWidgetContent(
     views.setInt(R.id.tv_label, "setTextColor", props.colorText or MASK_OPAQUE)
 
 }
+
+fun getWidgetMinimumDimensionInDp(appWidgetManager: AppWidgetManager, appWidgetId: Int): Float {
+    val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
+
+    // 1. Current size from sizes[0] (Most reliable for API 31+)
+    @Suppress("DEPRECATION") val sizes =
+        options.getParcelableArrayList<SizeF>(AppWidgetManager.OPTION_APPWIDGET_SIZES)
+    if (!sizes.isNullOrEmpty()) {
+        val current = sizes[0]
+        return minOf(current.width, current.height)
+    }
+
+    // 2. Fallback: Traditional MIN width/height
+    val minWidthDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+    val minHeightDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+    if (minWidthDp > 0 && minHeightDp > 0) {
+        return minOf(minWidthDp, minHeightDp).toFloat()
+    }
+
+    // 3. Ultimate fallback: 3x3 cells equivalent
+    return 180f
+}
+
+
