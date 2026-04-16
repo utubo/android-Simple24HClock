@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import java.util.Calendar
-import java.util.Date
 
 fun createIntent(context: Context): PendingIntent {
     val intent = Intent(context, MyBroadcastReceiver::class.java)
@@ -29,13 +28,13 @@ fun setupNext(context: Context) {
         manager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             next.time.time,
-            createIntent(context)
+            pendingIntent
         )
     } else {
         manager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             next.time.time,
-            createIntent(context)
+            pendingIntent
         )
     }
 }
@@ -46,18 +45,6 @@ internal fun doWork(context: Context) {
 }
 
 internal fun restart(context: Context): Boolean {
-    // Debounce
-    val workerPrefs = context.getSharedPreferences(WIDGET_WORKER_KEY, Context.MODE_PRIVATE)
-    val lastTick = workerPrefs.getLong("last_restart_time", 0L)
-    val now = Date().time
-    if (lastTick != 0L && now - lastTick < 100) {
-        return false
-    }
-    workerPrefs.edit().apply {
-        putLong("last_restart_time", now)
-        apply()
-    }
-    // start
     doWork(context)
     return true
 }

@@ -10,7 +10,9 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
+import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue.COMPLEX_UNIT_PX
@@ -387,9 +389,17 @@ class SettingsActivity : FragmentActivity() {
         }
 
         v.tvPreventTimeLag.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+            if (!canScheduleExact()) {
+                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+            }
+            if (!isIgnoringBatteryOpt()) {
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = Uri.parse("package:${applicationContext.packageName}")
+                }
+                startActivity(intent)
+            }
         }
-        updatePreventTimeLagState(this)
+        updatePreventTimeLagState()
 
         v.tvLicenses.setOnClickListener {
             val intent = Intent(this, OssLicenseActivity::class.java)
@@ -432,15 +442,24 @@ class SettingsActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        updatePreventTimeLagState(this)
+        updatePreventTimeLagState()
     }
 
-    fun updatePreventTimeLagState(context: Context) {
-        val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-        val id =
-            if (manager.canScheduleExactAlarms()) R.drawable.ic_check_circle else R.drawable.ic_warn_circle
+    fun updatePreventTimeLagState() {
+        val icon =
+            if (canScheduleExact() && isIgnoringBatteryOpt()) R.drawable.ic_check_circle else R.drawable.ic_warn_circle
         val tvPreventTimeLag =
             findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tv_prevent_time_lag)
-        tvPreventTimeLag.setCompoundDrawablesWithIntrinsicBounds(0, 0, id, 0)
+        tvPreventTimeLag.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0)
+    }
+
+    fun canScheduleExact(): Boolean {
+        val manager = getSystemService(ALARM_SERVICE) as AlarmManager
+        return manager.canScheduleExactAlarms()
+    }
+
+    fun isIgnoringBatteryOpt(): Boolean {
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+        return pm.isIgnoringBatteryOptimizations(packageName)
     }
 }
