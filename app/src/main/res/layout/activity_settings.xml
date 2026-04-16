@@ -302,11 +302,13 @@
                         android:layout_marginStart="24dp"
                         android:text="@string/none" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_prevent_time_lag"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:drawablePadding="8dp"
+                        app:drawableEndCompat="@drawable/ic_check_circle"
                         android:text="@string/prevent_time_lag" />
 
                     <TextView

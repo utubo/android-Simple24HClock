@@ -1,6 +1,7 @@
 package utb.dip.jp.simple24hclock
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -388,6 +389,7 @@ class SettingsActivity : FragmentActivity() {
         v.tvPreventTimeLag.setOnClickListener {
             startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
         }
+        updatePreventTimeLagState(this)
 
         v.tvLicenses.setOnClickListener {
             val intent = Intent(this, OssLicenseActivity::class.java)
@@ -428,4 +430,17 @@ class SettingsActivity : FragmentActivity() {
             }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updatePreventTimeLagState(this)
+    }
+
+    fun updatePreventTimeLagState(context: Context) {
+        val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+        val id =
+            if (manager.canScheduleExactAlarms()) R.drawable.ic_check_circle else R.drawable.ic_warn_circle
+        val tvPreventTimeLag =
+            findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tv_prevent_time_lag)
+        tvPreventTimeLag.setCompoundDrawablesWithIntrinsicBounds(0, 0, id, 0)
+    }
 }
