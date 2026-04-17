@@ -66,6 +66,7 @@
                 <action android:name="android.intent.action.MY_PACKAGE_UNSUSPENDED" />
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.ACTION_BATTERY_OKAY " />
                 <action android:name="utb.dip.jp.simple24hclock.UPDATE_ALL" />
             </intent-filter>
         </receiver>

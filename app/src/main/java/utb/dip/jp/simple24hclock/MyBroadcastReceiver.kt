@@ -10,6 +10,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Intent.ACTION_SCREEN_ON,
             Intent.ACTION_USER_PRESENT,
             Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
+            Intent.ACTION_BATTERY_OKAY,
             Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
             // Intent.ACTION_SCREEN_OFF -> stop(context)
             Intent.ACTION_TIME_CHANGED,
