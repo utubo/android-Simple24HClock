@@ -49,17 +49,12 @@ fun setupNext(context: Context) {
     }
 }
 
-internal fun doWork(context: Context) {
+internal fun startUpdateWorker(context: Context) {
     setupNext(context)
     updateAllAppWidgets(context, AppWidgetManager.getInstance(context))
 }
 
-internal fun restart(context: Context): Boolean {
-    doWork(context)
-    return true
-}
-
-internal fun stop(context: Context) {
+internal fun stopUpdateWorker(context: Context) {
     val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     manager.cancel(createIntent(context))
 }

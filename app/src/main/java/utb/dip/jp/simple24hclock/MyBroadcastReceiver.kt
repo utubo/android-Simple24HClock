@@ -7,15 +7,24 @@ import android.content.Intent
 class MyBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
+            INTENT_UPDATE_ALL,
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED,
             Intent.ACTION_SCREEN_ON,
             Intent.ACTION_USER_PRESENT,
             Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
             Intent.ACTION_BATTERY_OKAY,
             Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
             // Intent.ACTION_SCREEN_OFF -> stop(context)
-            Intent.ACTION_TIME_CHANGED,
-            Intent.ACTION_TIMEZONE_CHANGED,
-            INTENT_UPDATE_ALL -> doWork(context)
         }
     }
+}
+
+internal fun restart(context: Context) {
+    startUpdateWorker(context)
+    startWatchdog(context)
+}
+
+internal fun stop(context: Context) {
+    stopUpdateWorker(context)
 }

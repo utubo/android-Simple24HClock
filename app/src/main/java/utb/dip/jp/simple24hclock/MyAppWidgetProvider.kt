@@ -19,10 +19,7 @@ class MyAppWidgetProvider : AppWidgetProvider() {
             }
             apply()
         }
-        val isDoWork = restart(context)
-        if (!isDoWork) {
-            updateAllAppWidgets(context, appWidgetManager)
-        }
+        restart(context)
     }
 
     override fun onEnabled(context: Context) {
