@@ -22,9 +22,10 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
 internal fun restart(context: Context) {
     startUpdateWorker(context)
-    startWatchdog(context)
+    startWatchdogWorker(context)
 }
 
 internal fun stop(context: Context) {
     stopUpdateWorker(context)
+    stopWatchdogWorker(context)
 }

@@ -18,7 +18,7 @@ class WidgetWatchdogWorker(appContext: Context, workerParams: WorkerParameters) 
     }
 }
 
-internal fun startWatchdog(context: Context) {
+internal fun startWatchdogWorker(context: Context) {
     val constraints = Constraints.Builder()
         .build()
 
@@ -33,4 +33,8 @@ internal fun startWatchdog(context: Context) {
         ExistingPeriodicWorkPolicy.UPDATE,
         request
     )
+}
+
+internal fun stopWatchdogWorker(context: Context) {
+    WorkManager.getInstance(context).cancelUniqueWork("WIDGET_WATCHDOG")
 }
