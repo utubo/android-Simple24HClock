@@ -302,14 +302,25 @@
                         android:layout_marginStart="24dp"
                         android:text="@string/none" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_prevent_time_lag"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:drawablePadding="8dp"
-                        app:drawableEndCompat="@drawable/ic_check_circle"
+                        android:text="@string/performance" />
+
+                    <CheckBox
+                        android:id="@+id/cb_prevent_time_lag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
                         android:text="@string/prevent_time_lag" />
+
+                    <CheckBox
+                        android:id="@+id/cb_use_alarm_method"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/use_alarm_method_for_updates" />
 
                     <TextView
                         android:id="@+id/tv_licenses"

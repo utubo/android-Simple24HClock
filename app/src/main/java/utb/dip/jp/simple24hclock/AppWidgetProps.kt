@@ -37,6 +37,7 @@ data class AppWidgetProps(
     var colorNightArea: Int = Color.BLACK,
     var colorText: Int = Color.WHITE,
     var updateNow: Boolean = false,
+    var updateAlarmMethod: Boolean = false,
 )
 
 internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProps {
@@ -68,7 +69,9 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         colorDayArea = prefs.getInt("color_day_area_$id", Color.GRAY),
         colorNightArea = prefs.getInt("color_night_area_$id", Color.BLACK),
         colorText = prefs.getInt("color_text_$id", argb(180, 255, 255, 255)),
-        updateNow = prefs.getBoolean("update_now_$id", false)
+        updateNow = prefs.getBoolean("update_now_$id", false),
+        // global
+        updateAlarmMethod = prefs.getBoolean("update_now_$id", false)
     )
 }
 
@@ -102,4 +105,6 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putInt("color_night_area_$id", props.colorNightArea)
     editor.putInt("color_text_$id", props.colorText)
     editor.putBoolean("update_now_$id", props.updateNow)
+    // global
+    editor.putBoolean("update_alarm_method", props.updateAlarmMethod)
 }

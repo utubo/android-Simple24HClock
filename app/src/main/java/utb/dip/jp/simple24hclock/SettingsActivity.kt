@@ -10,13 +10,13 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
-import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.MotionEvent
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RemoteViews
@@ -33,13 +33,14 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
+import androidx.core.net.toUri
 
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
 class SettingsActivity : FragmentActivity() {
 
-    @SuppressLint("QueryPermissionsNeeded", "ClickableViewAccessibility")
+    @SuppressLint("QueryPermissionsNeeded", "ClickableViewAccessibility", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Views
@@ -125,6 +126,7 @@ class SettingsActivity : FragmentActivity() {
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
+        v.cbUseAlarmMethod.isChecked = wp.updateAlarmMethod
         var backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
@@ -378,6 +380,7 @@ class SettingsActivity : FragmentActivity() {
                 wp.format = formatValue
                 wp.tapBehavior = tapBehavior
                 wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
+                wp.updateAlarmMethod = v.cbUseAlarmMethod.isChecked
                 putAppWidgetProps(this, wp)
                 apply()
             }
@@ -388,14 +391,15 @@ class SettingsActivity : FragmentActivity() {
             finish()
         }
 
-        v.tvPreventTimeLag.setOnClickListener {
+        v.cbPreventTimeLag.setOnClickListener {
             if (!canScheduleExact()) {
                 startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
             }
             if (!isIgnoringBatteryOpt()) {
-                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                    data = Uri.parse("package:${applicationContext.packageName}")
-                }
+                val intent =
+                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = "package:${applicationContext.packageName}".toUri()
+                    }
                 startActivity(intent)
             }
         }
@@ -446,11 +450,13 @@ class SettingsActivity : FragmentActivity() {
     }
 
     fun updatePreventTimeLagState() {
-        val icon =
-            if (canScheduleExact() && isIgnoringBatteryOpt()) R.drawable.ic_check_circle else R.drawable.ic_warn_circle
-        val tvPreventTimeLag =
-            findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tv_prevent_time_lag)
-        tvPreventTimeLag.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0)
+        val enable = canScheduleExact() && isIgnoringBatteryOpt()
+        val cb = findViewById<CheckBox>(R.id.cb_prevent_time_lag)
+        cb.isChecked = enable
+        cb.isEnabled = !enable
+        if (enable) {
+            cb.buttonTintList = getColorStateList(R.color.success)
+        }
     }
 
     fun canScheduleExact(): Boolean {
