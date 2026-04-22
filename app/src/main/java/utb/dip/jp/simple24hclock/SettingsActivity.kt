@@ -126,7 +126,7 @@ class SettingsActivity : FragmentActivity() {
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
-        v.cbUseAlarmMethod.isChecked = wp.updateAlarmMethod
+        v.cbUseAlarmMethod.isChecked = wp.useAlarmMethod
         var backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
@@ -380,7 +380,7 @@ class SettingsActivity : FragmentActivity() {
                 wp.format = formatValue
                 wp.tapBehavior = tapBehavior
                 wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
-                wp.updateAlarmMethod = v.cbUseAlarmMethod.isChecked
+                wp.useAlarmMethod = v.cbUseAlarmMethod.isChecked
                 putAppWidgetProps(this, wp)
                 apply()
             }

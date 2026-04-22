@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import android.util.Log
 import java.util.Calendar
 
 private const val MIN_ALARM_DELAY_MS = 5000L
@@ -35,8 +34,7 @@ fun setupNext(context: Context) {
     manager.cancel(pendingIntent)
 
     val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-    val useAlarmClock = prefs?.getBoolean("update_alarm_method", false) ?: false
-    Log.d("DEBUG", "useAlarmClock: $useAlarmClock")
+    val useAlarmClock = prefs?.getBoolean("use_alarm_method", false) ?: false
     if (useAlarmClock) {
         val triggerAtMillisRTC = now + delayMs
         val alarmInfo = AlarmManager.AlarmClockInfo(triggerAtMillisRTC, pendingIntent)
