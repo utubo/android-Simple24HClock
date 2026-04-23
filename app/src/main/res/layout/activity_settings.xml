@@ -78,12 +78,12 @@
 
                     <RadioGroup
                         android:id="@+id/rg_label"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <RadioButton
                             android:id="@+id/rb_label_none"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:minHeight="48dp"
@@ -91,14 +91,14 @@
 
                         <RadioButton
                             android:id="@+id/rb_label_recommended"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/recommended_e_g_sun_31" />
 
                         <RadioButton
                             android:id="@+id/rb_label_custom"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/custom" />
@@ -123,12 +123,12 @@
 
                     <RadioGroup
                         android:id="@+id/rg_rotate"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <RadioButton
                             android:id="@+id/rb_rotate_sun_top"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:minHeight="48dp"
@@ -136,21 +136,21 @@
 
                         <RadioButton
                             android:id="@+id/rb_rotate_moon_top"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/moon_top" />
 
                         <RadioButton
                             android:id="@+id/rb_rotate_auto"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/auto_change_at_6_00_and_18_00" />
 
                         <RadioButton
                             android:id="@+id/rb_rotate_fix_hour_hand"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/fix_hour_hand" />
@@ -165,14 +165,14 @@
 
                     <CheckBox
                         android:id="@+id/cb_minute"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:text="@string/minute_hand" />
 
                     <CheckBox
                         android:id="@+id/cb_minute_and_hour_dots"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:minHeight="48dp"
@@ -180,14 +180,14 @@
 
                     <CheckBox
                         android:id="@+id/cb_day_of_year"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:text="@string/day_of_year_hand" />
 
                     <CheckBox
                         android:id="@+id/cb_month_dots"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
                         android:minHeight="48dp"
@@ -195,7 +195,7 @@
 
                     <CheckBox
                         android:id="@+id/cb_moon_phase"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:text="@string/moon_phase" />
@@ -311,26 +311,26 @@
 
                     <CheckBox
                         android:id="@+id/cb_prevent_time_lag"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:text="@string/prevent_time_lag" />
 
                     <RadioGroup
                         android:id="@+id/rg_trigger"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <RadioButton
                             android:id="@+id/rb_trigger_default"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/_default" />
 
                         <RadioButton
                             android:id="@+id/rb_use_fgs"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/use_foreground_service_for_updates" />
@@ -346,7 +346,7 @@
 
                         <RadioButton
                             android:id="@+id/rb_use_alarm_method"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
                             android:text="@string/use_alarm_method_for_updates" />
