@@ -49,8 +49,13 @@
     <string name="donation_thanks">Thanks for the drink! ☕</string>
     <string name="donation_error">Item not found</string>
     <string name="fix_hour_hand">Fix hour hand</string>
-    <string name="use_alarm_method_for_updates">Use Alarm Method for Updates (Experimental)</string>
+    <string name="use_alarm_method_for_updates">Use Alarm Method for Updates</string>
     <string name="performance">Performance</string>
+    <string name="use_foreground_service_for_updates">Use Foreground Service for Updates</string>
+    <string name="notify_text">Ensuring widget accuracy</string>
+    <string name="use_fgs_summery">Keeps the clock active via a small notification.</string>
+    <string name="use_alarm_method_summary">[Experimental] Uses system alarm for higher priority.</string>
+    <string name="_default">Default</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>

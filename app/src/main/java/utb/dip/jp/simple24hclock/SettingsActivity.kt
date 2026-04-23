@@ -1,5 +1,6 @@
 package utb.dip.jp.simple24hclock
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.AlertDialog
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
@@ -24,6 +26,8 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.get
 import androidx.core.view.ViewCompat
@@ -126,7 +130,9 @@ class SettingsActivity : FragmentActivity() {
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
-        v.cbUseAlarmMethod.isChecked = wp.useAlarmMethod
+        v.rgTrigger.check(
+            if (wp.useFgs) R.id.rb_use_fgs else if (wp.useAlarmMethod) R.id.rb_use_alarm_method else R.id.rb_trigger_default
+        )
         var backgroundAlpha = wp.backgroundAlpha
         // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
@@ -367,30 +373,7 @@ class SettingsActivity : FragmentActivity() {
                 .show()
         }
 
-        // Apply
-        v.btnApply.setOnClickListener {
-            val formatValue = v.etFormat.text.toString()
-            val textValue =
-                if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT
-                else if (v.rbLabelCustom.isChecked) formatValue
-                else ""
-            prefs.edit().apply {
-                val wp = newAppWidgetProps()
-                wp.text = textValue
-                wp.format = formatValue
-                wp.tapBehavior = tapBehavior
-                wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
-                wp.useAlarmMethod = v.cbUseAlarmMethod.isChecked
-                putAppWidgetProps(this, wp)
-                apply()
-            }
-            val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-            updateAppWidget(applicationContext, appWidgetManager, appWidgetId)
-            val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            setResult(RESULT_OK, resultValue)
-            finish()
-        }
-
+        // Performance
         v.cbPreventTimeLag.setOnClickListener {
             if (!canScheduleExact()) {
                 startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
@@ -404,6 +387,20 @@ class SettingsActivity : FragmentActivity() {
             }
         }
         updatePreventTimeLagState()
+
+        v.rbUseFgs.setOnCheckedChangeListener { _, bool ->
+            if (!bool) return@setOnCheckedChangeListener
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return@setOnCheckedChangeListener
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) return@setOnCheckedChangeListener
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                101
+            )
+        }
 
         v.tvLicenses.setOnClickListener {
             val intent = Intent(this, OssLicenseActivity::class.java)
@@ -419,6 +416,32 @@ class SettingsActivity : FragmentActivity() {
             DonationHelper.start(this) {
                 updateDonationLabel()
             }
+        }
+
+        // Apply
+        v.btnApply.setOnClickListener {
+            val formatValue = v.etFormat.text.toString()
+            val textValue =
+                if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT
+                else if (v.rbLabelCustom.isChecked) formatValue
+                else ""
+            prefs.edit().apply {
+                val wp = newAppWidgetProps()
+                wp.text = textValue
+                wp.format = formatValue
+                wp.tapBehavior = tapBehavior
+                wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
+                wp.useAlarmMethod = v.rbUseAlarmMethod.isChecked
+                wp.useFgs = v.rbUseFgs.isChecked
+                putAppWidgetProps(this, wp)
+                apply()
+            }
+            val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+            updateAppWidget(applicationContext, appWidgetManager, appWidgetId)
+            resetUpdateTrigger(applicationContext)
+            val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            setResult(RESULT_OK, resultValue)
+            finish()
         }
     }
 

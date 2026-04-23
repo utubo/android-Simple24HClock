@@ -109,6 +109,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:alpha="0.75"
+                            android:textSize="13sp"
                             android:linksClickable="true"
                             android:text="@string/custom_text_note"
                             tools:ignore="VisualLintLongText" />
@@ -315,12 +316,50 @@
                         android:minHeight="48dp"
                         android:text="@string/prevent_time_lag" />
 
-                    <CheckBox
-                        android:id="@+id/cb_use_alarm_method"
+                    <RadioGroup
+                        android:id="@+id/rg_trigger"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/use_alarm_method_for_updates" />
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rb_trigger_default"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/_default" />
+
+                        <RadioButton
+                            android:id="@+id/rb_use_fgs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/use_foreground_service_for_updates" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="@string/use_fgs_summery"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="8dp"
+                            android:alpha="0.75" />
+
+                        <RadioButton
+                            android:id="@+id/rb_use_alarm_method"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/use_alarm_method_for_updates" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="@string/use_alarm_method_summary"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="8dp"
+                            android:alpha="0.75" />
+                    </RadioGroup>
 
                     <TextView
                         android:id="@+id/tv_licenses"

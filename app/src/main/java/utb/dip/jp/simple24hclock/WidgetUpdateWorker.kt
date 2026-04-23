@@ -2,7 +2,6 @@ package utb.dip.jp.simple24hclock
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
@@ -10,8 +9,9 @@ import java.util.Calendar
 
 private const val MIN_ALARM_DELAY_MS = 5000L
 fun createIntent(context: Context): PendingIntent {
-    val intent = Intent(context, MyBroadcastReceiver::class.java)
-    intent.action = INTENT_UPDATE_ALL
+    val intent = Intent(context, MyBroadcastReceiver::class.java).apply {
+        action = INTENT_UPDATE_ALL
+    }
     return PendingIntent.getBroadcast(
         context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
@@ -61,7 +61,6 @@ fun setupNext(context: Context) {
 
 internal fun startUpdateWorker(context: Context) {
     setupNext(context)
-    updateAllAppWidgets(context, AppWidgetManager.getInstance(context))
 }
 
 internal fun stopUpdateWorker(context: Context) {

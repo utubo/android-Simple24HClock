@@ -38,6 +38,7 @@ data class AppWidgetProps(
     var colorText: Int = Color.WHITE,
     var updateNow: Boolean = false,
     var useAlarmMethod: Boolean = false,
+    var useFgs: Boolean = false,
 )
 
 internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProps {
@@ -71,7 +72,8 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         colorText = prefs.getInt("color_text_$id", argb(180, 255, 255, 255)),
         updateNow = prefs.getBoolean("update_now_$id", false),
         // global
-        useAlarmMethod = prefs.getBoolean("use_alarm_method", false)
+        useAlarmMethod = prefs.getBoolean("use_alarm_method", false),
+        useFgs = prefs.getBoolean("use_fgs", false),
     )
 }
 
@@ -107,4 +109,5 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putBoolean("update_now_$id", props.updateNow)
     // global
     editor.putBoolean("use_alarm_method", props.useAlarmMethod)
+    editor.putBoolean("use_fgs", props.useFgs)
 }

@@ -13,20 +13,12 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Intent.ACTION_SCREEN_ON,
             Intent.ACTION_USER_PRESENT,
             Intent.ACTION_MY_PACKAGE_UNSUSPENDED,
-            Intent.ACTION_BATTERY_OKAY,
+            Intent.ACTION_BATTERY_OKAY -> restart(context)
+
             Intent.ACTION_BOOT_COMPLETED,
-            Intent.ACTION_MY_PACKAGE_REPLACED -> restart(context)
+            Intent.ACTION_MY_PACKAGE_REPLACED -> resetUpdateTrigger(context)
+
             // Intent.ACTION_SCREEN_OFF -> stop(context)
         }
     }
-}
-
-internal fun restart(context: Context) {
-    startUpdateWorker(context)
-    startWatchdogWorker(context)
-}
-
-internal fun stop(context: Context) {
-    stopUpdateWorker(context)
-    stopWatchdogWorker(context)
 }
