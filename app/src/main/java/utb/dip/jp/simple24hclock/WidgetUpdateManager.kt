@@ -4,8 +4,8 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 
 
-internal fun resetUpdateTrigger(context: Context) {
-    WidgetUpdateForegroundService.toggle(context)
+internal fun resetUpdateTrigger(context: Context, forceRefresh: Boolean = true) {
+    WidgetUpdateForegroundService.toggle(context, forceRefresh)
     restart(context)
 }
 

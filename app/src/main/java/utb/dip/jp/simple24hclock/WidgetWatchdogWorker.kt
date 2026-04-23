@@ -13,7 +13,7 @@ class WidgetWatchdogWorker(appContext: Context, workerParams: WorkerParameters) 
     CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-        restart(applicationContext)
+        resetUpdateTrigger(applicationContext, false)
         return Result.success()
     }
 }

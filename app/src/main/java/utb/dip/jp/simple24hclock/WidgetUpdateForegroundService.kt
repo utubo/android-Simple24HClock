@@ -24,14 +24,16 @@ class WidgetUpdateForegroundService : Service() {
             return isRunning
         }
 
-        fun toggle(context: Context) {
+        fun toggle(context: Context, forceRefresh: Boolean) {
             val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, MODE_PRIVATE)
             val useFGS = prefs.getBoolean("use_fgs", false)
             val serviceIntent = Intent(context, WidgetUpdateForegroundService::class.java)
-            if (useFGS) {
-                ContextCompat.startForegroundService(context, serviceIntent)
-            } else {
+            if (!useFGS) {
                 context.stopService(serviceIntent)
+            } else if (forceRefresh && isServiceRunning()) {
+                // NOP
+            } else {
+                ContextCompat.startForegroundService(context, serviceIntent)
             }
         }
     }
@@ -62,7 +64,6 @@ class WidgetUpdateForegroundService : Service() {
             startForeground(1, notification)
         }
         isRunning = true
-
         return START_STICKY
     }
 
@@ -77,7 +78,11 @@ class WidgetUpdateForegroundService : Service() {
     private fun createNotification(): Notification {
         val channelId = "widget_update_channel"
         val channel =
-            NotificationChannel(channelId, "時計の安定化", NotificationManager.IMPORTANCE_LOW)
+            NotificationChannel(
+                channelId,
+                getString(R.string.notify_text),
+                NotificationManager.IMPORTANCE_LOW
+            )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
 
