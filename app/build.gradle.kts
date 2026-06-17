@@ -11,15 +11,15 @@ plugins {
 android {
     namespace = "utb.dip.jp.simple24hclock"
     //noinspection GradleDependency
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "utb.dip.jp.simple24hclock"
         minSdk = 31
         //noinspection OldTargetApi
         targetSdk = 35
-        versionCode = 43
-        versionName = "8.2"
+        versionCode = 44
+        versionName = "8.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

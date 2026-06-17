@@ -1,3 +1,6 @@
+// Suppress warnings about incubating/unstable Gradle APIs in settings.gradle.kts
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google {
