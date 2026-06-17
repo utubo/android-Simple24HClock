@@ -179,6 +179,14 @@
                         android:text="@string/minutes_hours_dots" />
 
                     <CheckBox
+                        android:id="@+id/cb_show_sun_moon_inside"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:minHeight="48dp"
+                        android:text="@string/show_sun_moon_inside" />
+
+                    <CheckBox
                         android:id="@+id/cb_day_of_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

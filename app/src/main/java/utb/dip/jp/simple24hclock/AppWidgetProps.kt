@@ -12,6 +12,7 @@ data class AppWidgetProps(
     val id: Int,
     val minute: Float,
     val minuteAndHourDots: Float,
+    val showSunMoonInside: Boolean,
     val dayOfYear: Float,
     val dayOfYearDots: Float,
     var text: String? = "",
@@ -46,6 +47,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         id = id,
         minute = prefs.getFloat("minute_$id", 0F),
         minuteAndHourDots = prefs.getFloat("minute_and_hour_dots_$id", 0F),
+        showSunMoonInside = prefs.getBoolean("show_sun_moon_inside_$id", false),
         dayOfYear = prefs.getFloat("day_of_year_$id", 0F),
         dayOfYearDots = prefs.getFloat("day_of_year_dots_$id", 0F),
         text = prefs.getString("text_$id", ""),
@@ -82,6 +84,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putInt("id_$id", props.id)
     editor.putFloat("minute_$id", props.minute)
     editor.putFloat("minute_and_hour_dots_$id", props.minuteAndHourDots)
+    editor.putBoolean("show_sun_moon_inside_$id", props.showSunMoonInside)
     editor.putFloat("day_of_year_$id", props.dayOfYear)
     editor.putFloat("day_of_year_dots_$id", props.dayOfYearDots)
     editor.putString("text_$id", props.text)

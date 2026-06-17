@@ -121,7 +121,8 @@ internal fun updateAppWidgetContent(
 
     // Sun and Moon position
     val isInnerSunAndMoon =
-        props.rotate == ROTATE_FIX_HOUR_HAND && props.minuteAndHourDots != WP_HIDDEN
+        props.showSunMoonInside ||
+                props.rotate == ROTATE_FIX_HOUR_HAND && props.minuteAndHourDots != WP_HIDDEN
     var sunAndMoonPadding = 0F
     if (isInnerSunAndMoon) {
         sunAndMoonPadding = size * 0.12F

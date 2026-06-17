@@ -56,6 +56,7 @@
     <string name="use_fgs_summery">Keeps the clock active via a small notification.</string>
     <string name="use_alarm_method_summary">[Experimental] Uses system alarm for higher priority.</string>
     <string name="_default">Default</string>
+    <string name="show_sun_moon_inside">Show Sun &amp; Moon inside</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>

@@ -128,6 +128,7 @@ class SettingsActivity : FragmentActivity() {
         )
         v.cbMinute.isChecked = 0 < wp.minute
         v.cbMinuteAndHourDots.isChecked = 0 < wp.minuteAndHourDots
+        v.cbShowSunMoonInside.isChecked = wp.showSunMoonInside
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
@@ -164,6 +165,7 @@ class SettingsActivity : FragmentActivity() {
                 minuteAndHourDots = if (v.cbMinuteAndHourDots.isChecked) 1F else 0F,
                 dayOfYear = if (v.cbDayOfYear.isChecked) 1F else 0F,
                 dayOfYearDots = if (v.cbMonthDots.isChecked) 1F else 0F,
+                showSunMoonInside = v.cbShowSunMoonInside.isChecked,
                 text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
                 format = "",
                 tapBehavior = "",
@@ -209,6 +211,13 @@ class SettingsActivity : FragmentActivity() {
             toggleColorPart("colorDayOfYear", v.cbDayOfYear.isChecked)
             toggleColorPart("colorDayOfYearDots", v.cbMonthDots.isChecked)
             toggleColorPart("colorText", v.rbLabelRecommended.isChecked)
+            v.cbShowSunMoonInside.isEnabled =
+                v.cbMinuteAndHourDots.isChecked && !v.rbRotateFixHourHand.isChecked
+            if (!v.cbMinuteAndHourDots.isChecked) {
+                v.cbShowSunMoonInside.isChecked = false
+            } else if (v.rbRotateFixHourHand.isChecked) {
+                v.cbShowSunMoonInside.isChecked = true
+            }
         }
         updatePreview()
 
@@ -228,6 +237,7 @@ class SettingsActivity : FragmentActivity() {
         v.rgRotate.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMinute.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMinuteAndHourDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
+        v.cbShowSunMoonInside.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbDayOfYear.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMonthDots.setOnCheckedChangeListener { _, _ -> updatePreview() }
         v.cbMoonPhase.setOnCheckedChangeListener { _, _ -> updatePreview() }
