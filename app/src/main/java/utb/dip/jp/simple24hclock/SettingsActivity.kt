@@ -38,6 +38,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
 import androidx.core.net.toUri
+import kotlin.let
 
 
 const val DEFAULT_TEXT = "\n\n\n\nE  dd"
@@ -80,7 +81,7 @@ class SettingsActivity : FragmentActivity() {
             } else {
                 if (selectedPart == key) {
                     selectedPart = ""
-                    colorChipAdapter?.resetSelection()
+                    colorChipAdapter?.select(-1)
                 }
                 val removeIndex = partKeys.indexOf(key)
                 if (removeIndex != -1) {
@@ -90,8 +91,8 @@ class SettingsActivity : FragmentActivity() {
                 }
             }
         }
-        v.llSettingsMain.setOnClickListener { colorChipAdapter?.resetSelection() }
-        v.llSettings.setOnClickListener { colorChipAdapter?.resetSelection() }
+        v.llSettingsMain.setOnClickListener { colorChipAdapter?.select(-1) }
+        v.llSettings.setOnClickListener { colorChipAdapter?.select(-1) }
 
         // other items
         // NOTE: initialize on load prefs.
@@ -272,6 +273,7 @@ class SettingsActivity : FragmentActivity() {
                 v.sbGreen.progress,
                 v.sbBlue.progress
             )
+            colorChipAdapter?.notifyItemChanged(partKeys.indexOf(selectedPart))
             updatePreview()
         }
 
@@ -285,7 +287,8 @@ class SettingsActivity : FragmentActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar) {}
             })
         }
-        colorChipAdapter = PartsAdapter(partNames, partKeys) { selectedKey ->
+
+        fun onClickColorChip(selectedKey: String) {
             selectedPart = selectedKey
             if (selectedPart != "") {
                 val argb = colors[selectedPart] ?: 0
@@ -298,6 +301,9 @@ class SettingsActivity : FragmentActivity() {
                     }
                 )
             }
+        }
+        colorChipAdapter = PartsAdapter(partNames, partKeys, colors) { selectedKey ->
+            onClickColorChip(selectedKey)
         }
         v.rvPartsSelector.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -328,6 +334,8 @@ class SettingsActivity : FragmentActivity() {
             }
             true
         }
+        colorChipAdapter.select(0)
+        onClickColorChip(partKeys[0])
 
         // Tap behavior
         val appPickerLauncher = registerForActivityResult(

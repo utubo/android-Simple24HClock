@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 class PartsAdapter(
     private val names: MutableList<String>,
     private val keys: MutableList<String>,
+    private val colors: HashMap<String, Int>,
     private val onPartSelected: (String) -> Unit
 ) : RecyclerView.Adapter<PartsAdapter.ViewHolder>() {
 
@@ -38,6 +39,11 @@ class PartsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.nameText.text = names[position]
+        colors[keys[position]]?.let { cl ->
+            holder.nameText.compoundDrawablesRelative.forEach { drawable ->
+                drawable?.mutate()?.setTint(cl)
+            }
+        }
         val selected = position == selectedPosition
         holder.itemView.isSelected = selected
         holder.nameText.isSelected = selected
@@ -45,9 +51,9 @@ class PartsAdapter(
 
     override fun getItemCount() = names.size
 
-    fun resetSelection() {
+    fun select(position: Int) {
         val oldPos = selectedPosition
-        selectedPosition = -1
+        selectedPosition = position
         notifyItemChanged(oldPos)
         onPartSelected("")
     }
