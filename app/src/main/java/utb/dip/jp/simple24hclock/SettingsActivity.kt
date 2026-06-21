@@ -210,7 +210,7 @@ class SettingsActivity : FragmentActivity() {
             toggleColorPart("colorMinuteDots", v.cbMinuteAndHourDots.isChecked)
             toggleColorPart("colorDayOfYear", v.cbDayOfYear.isChecked)
             toggleColorPart("colorDayOfYearDots", v.cbMonthDots.isChecked)
-            toggleColorPart("colorText", v.rbLabelRecommended.isChecked)
+            toggleColorPart("colorText", !v.rbLabelNone.isChecked)
             v.cbShowSunMoonInside.isEnabled =
                 v.cbMinuteAndHourDots.isChecked && !v.rbRotateFixHourHand.isChecked
             if (!v.cbMinuteAndHourDots.isChecked) {
@@ -218,6 +218,7 @@ class SettingsActivity : FragmentActivity() {
             } else if (v.rbRotateFixHourHand.isChecked) {
                 v.cbShowSunMoonInside.isChecked = true
             }
+            colors["colorText"]?.let { c -> v.etFormat.setTextColor(c) }
         }
         updatePreview()
 

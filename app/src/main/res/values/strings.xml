@@ -14,15 +14,15 @@
     <string name="custom">Custom</string>
     <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
     <string name="optional">Optional</string>
-    <string name="minute_hand">Minute hand</string>
-    <string name="minutes_hours_dots">Minute &amp; Hour dots</string>
-    <string name="day_of_year_hand">Day of year hand</string>
-    <string name="day_of_year_dots">Month dots</string>
-    <string name="background_alpha">Background opacity</string>
-    <string name="tap_behavior">Tap action</string>
+    <string name="minute_hand">Minute Hand</string>
+    <string name="minutes_hours_dots">Minute &amp; Hour Dots</string>
+    <string name="day_of_year_hand">Day of Year Hand</string>
+    <string name="day_of_year_dots">Month Dots (Snap)</string>
+    <string name="background_alpha">Background Opacity</string>
+    <string name="tap_behavior">Tap Action</string>
     <string name="alarm">Alarm</string>
     <string name="calendar">Calendar</string>
-    <string name="other_apps">Other apps…</string>
+    <string name="other_apps">Other Apps…</string>
     <string name="apply">Apply</string>
     <string name="open_source_licenses">Open Source Licenses</string>
     <string name="colors">Colors</string>
@@ -30,17 +30,17 @@
     <string name="green">Green</string>
     <string name="blue">Blue</string>
     <string name="opacity">Opacity</string>
-    <string name="linked_with_day">Opacity (linked with Day area)</string>
-    <string name="linked_with_night">Opacity (linked with Night area)</string>
+    <string name="linked_with_day">Opacity (Linked with Day Area)</string>
+    <string name="linked_with_night">Opacity (Linked with Night Area)</string>
     <string name="rotate">Rotate</string>
-    <string name="sun_top">Sun top</string>
-    <string name="moon_top">Moon top</string>
+    <string name="sun_top">Sun Top</string>
+    <string name="moon_top">Moon Top</string>
     <string name="auto_change_at_6_00_and_18_00">Auto (Change at 6:00 and 18:00)</string>
-    <string name="moon_phase">Moon phase</string>
+    <string name="moon_phase">Moon Phase</string>
     <string name="settings">Settings</string>
     <string name="prevent_time_lag">Prevent time lag</string>
     <string name="donation_star">✨️</string>
-    <string name="donation_dialog_title">Support the developer</string>
+    <string name="donation_dialog_title">Support the Developer</string>
     <string name="donation_dialog_message">This will not unlock any features.
         \nI\'ll just enjoy a fresh cup of coffee!
     </string>
@@ -48,7 +48,7 @@
     <string name="donation_button_negative">Cancel</string>
     <string name="donation_thanks">Thanks for the drink! ☕</string>
     <string name="donation_error">Item not found</string>
-    <string name="fix_hour_hand">Fix hour hand</string>
+    <string name="fix_hour_hand">Fix Hour Hand</string>
     <string name="use_alarm_method_for_updates">Use Alarm Method for Updates</string>
     <string name="performance">Performance</string>
     <string name="use_foreground_service_for_updates">Use Foreground Service for Updates</string>
@@ -60,15 +60,15 @@
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>
-        <item>Day of year Hand</item>
+        <item>Day of Year Hand</item>
         <item>Hour Dots</item>
-        <item>Minute dots</item>
-        <item>Month dots</item>
+        <item>Minute Dots</item>
+        <item>Month Dots</item>
         <item>Border</item>
         <item>Sun</item>
         <item>Moon</item>
-        <item>Day area</item>
-        <item>Night area</item>
+        <item>Day Area</item>
+        <item>Night Area</item>
         <item>Label</item>
     </string-array>
     <string-array name="part_keys">
