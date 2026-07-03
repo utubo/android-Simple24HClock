@@ -97,13 +97,17 @@ internal fun updateAppWidgetContent(
     if (props.text.isNullOrEmpty()) {
         views.setTextViewText(R.id.tv_label, "")
     } else {
-        val textLocale = props.textLocale
-        val loc = if (textLocale.isNullOrEmpty()) Locale.getDefault()
-        else Locale.forLanguageTag(textLocale)
-        val dtf = DateTimeFormatter.ofPattern(props.text).withLocale(loc)
-        val text = now.time.toInstant().atZone(ZoneId.systemDefault()).format(dtf)
         views.setTextViewTextSize(R.id.tv_label, TypedValue.COMPLEX_UNIT_PX, size / 14F)
-        views.setTextViewText(R.id.tv_label, text)
+        try {
+            val textLocale = props.textLocale
+            val loc = if (textLocale.isNullOrEmpty()) Locale.getDefault()
+            else Locale.forLanguageTag(textLocale)
+            val dtf = DateTimeFormatter.ofPattern(props.text).withLocale(loc)
+            val text = now.time.toInstant().atZone(ZoneId.systemDefault()).format(dtf)
+            views.setTextViewText(R.id.tv_label, text)
+        } catch (_: IllegalArgumentException) {
+            views.setTextViewText(R.id.tv_label, context.getString(R.string.invalid_format))
+        }
     }
 
     // Moon phase

@@ -96,10 +96,8 @@ class SettingsActivity : FragmentActivity() {
         v.llSettings.setOnClickListener { colorChipAdapter?.select(-1) }
 
         // Locales
-        val systemLocales = Locale.getAvailableLocales()
-            .filter { it.language.isNotEmpty() }
-            .distinctBy { it.language }
-            .sortedBy { it.getDisplayLanguage(Locale.getDefault()) }
+        val systemLocales = Locale.getAvailableLocales().filter { it.language.isNotEmpty() }
+            .distinctBy { it.language }.sortedBy { it.getDisplayLanguage(Locale.getDefault()) }
         val localeNames = mutableListOf(getString(R.string.system_default))
         localeNames.addAll(systemLocales.map { it.getDisplayLanguage(Locale.getDefault()) })
 
@@ -109,8 +107,7 @@ class SettingsActivity : FragmentActivity() {
         // var tapBehavior: String
         // get widget id
         val appWidgetId = intent?.extras?.getInt(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
+            AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -230,9 +227,8 @@ class SettingsActivity : FragmentActivity() {
                 v.cbShowSunMoonInside.isChecked = true
             }
             colors["colorText"]?.let { c -> v.etFormat.setTextColor(c) }
-            v.tvTextLocale.text =
-                if (textLocale.isEmpty()) getString(R.string.system_default)
-                else Locale.forLanguageTag(textLocale).getDisplayLanguage(Locale.ENGLISH)
+            v.tvTextLocale.text = if (textLocale.isEmpty()) getString(R.string.system_default)
+            else Locale.forLanguageTag(textLocale).getDisplayLanguage(Locale.ENGLISH)
         }
         updatePreview()
 
@@ -276,15 +272,12 @@ class SettingsActivity : FragmentActivity() {
                 val index = systemLocales.indexOfFirst { it.language == textLocale }
                 if (index != -1) index + 1 else 0
             }
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.text_locale))
+            AlertDialog.Builder(this).setTitle(getString(R.string.text_locale))
                 .setSingleChoiceItems(localeNames.toTypedArray(), checkedItem) { dialog, which ->
                     textLocale = if (which == 0) "" else systemLocales[which - 1].language
                     updatePreview()
                     dialog.dismiss()
-                }
-                .setNegativeButton(getString(R.string.cancel), null)
-                .show()
+                }.setNegativeButton(getString(R.string.cancel), null).show()
         }
         v.tvTextLocale.setOnClickListener {
             showLanguageDialog()
@@ -315,10 +308,7 @@ class SettingsActivity : FragmentActivity() {
                 alpha = 255
             }
             colors[selectedPart] = Color.argb(
-                alpha,
-                v.sbRed.progress,
-                v.sbGreen.progress,
-                v.sbBlue.progress
+                alpha, v.sbRed.progress, v.sbGreen.progress, v.sbBlue.progress
             )
             colorChipAdapter?.notifyItemChanged(partKeys.indexOf(selectedPart))
             updatePreview()
@@ -391,8 +381,7 @@ class SettingsActivity : FragmentActivity() {
             if (result.resultCode == RESULT_OK) {
                 result.data?.component?.let {
                     tapBehavior = it.flattenToString()
-                    v.tvTapBehavior.text =
-                        getAppLabel(this@SettingsActivity, it.packageName)
+                    v.tvTapBehavior.text = getAppLabel(this@SettingsActivity, it.packageName)
                 }
             }
         }
@@ -404,8 +393,7 @@ class SettingsActivity : FragmentActivity() {
             getString(R.string.other_apps),
         )
         v.tvTapBehavior.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle(R.string.tap_behavior)
+            AlertDialog.Builder(this).setTitle(R.string.tap_behavior)
                 .setItems(tapBehaviors) { _, which ->
                     v.tvTapBehavior.text = tapBehaviors[which]
                     tapBehavior = when (which) {
@@ -424,8 +412,7 @@ class SettingsActivity : FragmentActivity() {
                         }
                         appPickerLauncher.launch(intent)
                     }
-                }
-                .show()
+                }.show()
         }
 
         // Performance
@@ -434,10 +421,9 @@ class SettingsActivity : FragmentActivity() {
                 startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
             }
             if (!isIgnoringBatteryOpt()) {
-                val intent =
-                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = "package:${applicationContext.packageName}".toUri()
-                    }
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = "package:${applicationContext.packageName}".toUri()
+                }
                 startActivity(intent)
             }
         }
@@ -451,9 +437,7 @@ class SettingsActivity : FragmentActivity() {
                 ) == PackageManager.PERMISSION_GRANTED
             ) return@setOnCheckedChangeListener
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                101
+                this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101
             )
         }
 
@@ -476,13 +460,12 @@ class SettingsActivity : FragmentActivity() {
         // Apply
         v.btnApply.setOnClickListener {
             val formatValue = v.etFormat.text.toString()
-            val textValue =
-                if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT
-                else if (v.rbLabelCustom.isChecked) formatValue
-                else ""
+            val textValue = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT
+            else if (v.rbLabelCustom.isChecked) formatValue
+            else ""
             prefs.edit().apply {
                 val wp = newAppWidgetProps()
-                wp.text = textValue
+                wp.text = escapeInvalidDateFormat(textValue)
                 wp.format = formatValue
                 wp.tapBehavior = tapBehavior
                 wp.tapBehaviorLabel = v.tvTapBehavior.text.toString()
@@ -546,4 +529,46 @@ class SettingsActivity : FragmentActivity() {
         val pm = getSystemService(POWER_SERVICE) as PowerManager
         return pm.isIgnoringBatteryOptimizations(packageName)
     }
+
+    fun escapeInvalidDateFormat(input: String): String {
+        if (input.isEmpty()) return input
+        val invalidLetters = "BCIJNPSTUVYZbfhijklnorstux"
+        return buildString {
+            var inUserQuotes = false
+            var inAutoQuotes = false
+            val qt = '\''
+            for (char in input) {
+                if (char == qt) {
+                    if (inAutoQuotes) {
+                        append(qt) // Close the auto-inserted quote first
+                        inAutoQuotes = false
+                    }
+                    inUserQuotes = !inUserQuotes
+                    append(char)
+                    continue
+                }
+                // Keep everything inside user-defined quotes as-is
+                if (inUserQuotes) {
+                    append(char)
+                    continue
+                }
+                // An alphabet is invalid if it is not in the DateTimeFormatter specs
+                if (invalidLetters.contains(char)) {
+                    if (!inAutoQuotes) {
+                        append(qt)
+                        inAutoQuotes = true
+                    }
+                } else if (inAutoQuotes) {
+                    append(qt)
+                    inAutoQuotes = false
+                }
+                append(char)
+            }
+            // Ensure any remaining open auto-quote is closed at the end
+            if (inAutoQuotes) {
+                append('\'')
+            }
+        }
+    }
+
 }
