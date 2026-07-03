@@ -13,7 +13,7 @@
     <string name="none">None</string>
     <string name="recommended_e_g_sun_31">Recommended (e.g. Sun 31)</string>
     <string name="custom">Custom</string>
-    <string name="text_locale">Text Language</string>
+    <string name="text_locale">Display Language</string>
     <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
     <string name="optional">Optional</string>
     <string name="minute_hand">Minute Hand</string>
