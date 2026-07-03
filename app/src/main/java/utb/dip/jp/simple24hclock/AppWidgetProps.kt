@@ -16,6 +16,7 @@ data class AppWidgetProps(
     val dayOfYear: Float,
     val dayOfYearDots: Float,
     var text: String? = "",
+    var textLocale: String? = "",
     var format: String? = "",
     var tapBehavior: String? = "",
     var tapBehaviorLabel: String? = "",
@@ -51,6 +52,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         dayOfYear = prefs.getFloat("day_of_year_$id", 0F),
         dayOfYearDots = prefs.getFloat("day_of_year_dots_$id", 0F),
         text = prefs.getString("text_$id", ""),
+        textLocale = prefs.getString("text_locale_$id", ""),
         format = prefs.getString("format_$id", ""),
         tapBehavior = prefs.getString("tap_behavior_$id", ""),
         tapBehaviorLabel = prefs.getString("tap_behavior_label_$id", ""),
@@ -88,6 +90,7 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putFloat("day_of_year_$id", props.dayOfYear)
     editor.putFloat("day_of_year_dots_$id", props.dayOfYearDots)
     editor.putString("text_$id", props.text)
+    editor.putString("text_locale_$id", props.textLocale)
     editor.putString("format_$id", props.format)
     editor.putString("tap_behavior_$id", props.tapBehavior)
     editor.putString("tap_behavior_label_$id", props.tapBehaviorLabel)

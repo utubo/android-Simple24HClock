@@ -38,6 +38,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
 import androidx.core.net.toUri
+import java.util.Locale
 import kotlin.let
 
 
@@ -94,6 +95,14 @@ class SettingsActivity : FragmentActivity() {
         v.llSettingsMain.setOnClickListener { colorChipAdapter?.select(-1) }
         v.llSettings.setOnClickListener { colorChipAdapter?.select(-1) }
 
+        // Locales
+        val systemLocales = Locale.getAvailableLocales()
+            .filter { it.language.isNotEmpty() }
+            .distinctBy { it.language }
+            .sortedBy { it.getDisplayLanguage(Locale.getDefault()) }
+        val localeNames = mutableListOf(getString(R.string.system_default))
+        localeNames.addAll(systemLocales.map { it.getDisplayLanguage(Locale.getDefault()) })
+
         // other items
         // NOTE: initialize on load prefs.
         // var backgroundAlpha: Float
@@ -118,6 +127,7 @@ class SettingsActivity : FragmentActivity() {
             else -> v.rbLabelCustom.toggle()
         }
         v.etFormat.setText(wp.format)
+        var textLocale = wp.textLocale ?: ""
         v.rgRotate.check(
             when (wp.rotate) {
                 180F -> R.id.rb_rotate_moon_top
@@ -167,6 +177,7 @@ class SettingsActivity : FragmentActivity() {
                 dayOfYearDots = if (v.cbMonthDots.isChecked) 1F else 0F,
                 showSunMoonInside = v.cbShowSunMoonInside.isChecked,
                 text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
+                textLocale = textLocale,
                 format = "",
                 tapBehavior = "",
                 backgroundAlpha = backgroundAlpha,
@@ -219,6 +230,9 @@ class SettingsActivity : FragmentActivity() {
                 v.cbShowSunMoonInside.isChecked = true
             }
             colors["colorText"]?.let { c -> v.etFormat.setTextColor(c) }
+            v.tvTextLocale.text =
+                if (textLocale.isEmpty()) getString(R.string.system_default)
+                else Locale.forLanguageTag(textLocale).getDisplayLanguage(Locale.ENGLISH)
         }
         updatePreview()
 
@@ -253,6 +267,28 @@ class SettingsActivity : FragmentActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
+
+        // Text Locale
+        fun showLanguageDialog() {
+            val checkedItem = if (textLocale.isEmpty()) {
+                0 // System Default
+            } else {
+                val index = systemLocales.indexOfFirst { it.language == textLocale }
+                if (index != -1) index + 1 else 0
+            }
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.text_locale))
+                .setSingleChoiceItems(localeNames.toTypedArray(), checkedItem) { dialog, which ->
+                    textLocale = if (which == 0) "" else systemLocales[which - 1].language
+                    updatePreview()
+                    dialog.dismiss()
+                }
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show()
+        }
+        v.tvTextLocale.setOnClickListener {
+            showLanguageDialog()
+        }
 
         // Color
         fun setupARGBSeekBars(argb: Int, alpha: Boolean) {

@@ -3,15 +3,17 @@
     <string name="app_widget_description" />
     <string name="title_activity_app_widget_settings">Simple 24H Clock</string>
     <string name="custom_text_note" formatted="false">Input the format directly into the preview.
-        \nSee <a href="https://developers.google.com/j2objc/javadoc/jre/reference/java/text/SimpleDateFormat">SimpleDateFormat</a>.
+        \nSee <a href="https://developer.android.com/reference/kotlin/java/time/format/DateTimeFormatter#patterns-for-formatting-and-parsing">DateTimeFormatter</a>.
         \nSeconds and milliseconds are not supported.
         \nThe label is displayed in the center.
         \nUse line breaks to adjust position.
     </string>
+    <string name="cancel">Cancel</string>
     <string name="label">Label</string>
     <string name="none">None</string>
     <string name="recommended_e_g_sun_31">Recommended (e.g. Sun 31)</string>
     <string name="custom">Custom</string>
+    <string name="text_locale">Text Language</string>
     <string name="edit_here">Edit here.\n\n\ne.g.\nE dd</string>
     <string name="optional">Optional</string>
     <string name="minute_hand">Minute Hand</string>
@@ -57,6 +59,7 @@
     <string name="use_alarm_method_summary">[Experimental] Uses system alarm for higher priority.</string>
     <string name="_default">Default</string>
     <string name="show_sun_moon_inside">Show Sun &amp; Moon inside</string>
+    <string name="system_default">System Default</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>

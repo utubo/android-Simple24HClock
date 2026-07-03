@@ -12,15 +12,16 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
-import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Locale
+
 
 private const val MASK_OPAQUE = 0xFF000000.toInt()
 
 internal fun updateAppWidget(
-    context: Context,
-    appWidgetManager: AppWidgetManager,
-    appWidgetId: Int
+    context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int
 ) {
     val views = RemoteViews(context.packageName, R.layout.app_widget)
     val size = getWidgetMinimumDimensionInDp(appWidgetManager, appWidgetId)
@@ -38,30 +39,25 @@ internal fun updateAppWidget(
 
         else -> {
             val comp = ComponentName.unflattenFromString(props.tapBehavior!!)
-            if (comp?.packageName == context.packageName)
-                Intent(context, SettingsActivity::class.java).apply {
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                }
-            else
-                Intent().apply { component = comp }
+            if (comp?.packageName == context.packageName) Intent(
+                context,
+                SettingsActivity::class.java
+            ).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            else Intent().apply { component = comp }
         }
     }
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     val pendingIntent = PendingIntent.getActivity(
-        context,
-        0,
-        intent,
-        PendingIntent.FLAG_IMMUTABLE
+        context, 0, intent, PendingIntent.FLAG_IMMUTABLE
     )
     views.setOnClickPendingIntent(R.id.container, pendingIntent)
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
 internal fun updateAppWidgetContent(
-    context: Context,
-    views: RemoteViews,
-    props: AppWidgetProps,
-    size: Float
+    context: Context, views: RemoteViews, props: AppWidgetProps, size: Float
 ) {
     val now = Calendar.getInstance()
 
@@ -92,21 +88,22 @@ internal fun updateAppWidgetContent(
     }
 
     // Back
-    val bgBitmap =
-        SunCycleManager.getOrUpdateBackground(
-            context,
-            props,
-            size.toInt()
-        )
+    val bgBitmap = SunCycleManager.getOrUpdateBackground(
+        context, props, size.toInt()
+    )
     views.setImageViewBitmap(R.id.iv_background, bgBitmap)
 
     // Text
     if (props.text.isNullOrEmpty()) {
         views.setTextViewText(R.id.tv_label, "")
     } else {
-        val fmt = SimpleDateFormat(props.text, java.util.Locale.getDefault())
+        val textLocale = props.textLocale
+        val loc = if (textLocale.isNullOrEmpty()) Locale.getDefault()
+        else Locale.forLanguageTag(textLocale)
+        val dtf = DateTimeFormatter.ofPattern(props.text).withLocale(loc)
+        val text = now.time.toInstant().atZone(ZoneId.systemDefault()).format(dtf)
         views.setTextViewTextSize(R.id.tv_label, TypedValue.COMPLEX_UNIT_PX, size / 14F)
-        views.setTextViewText(R.id.tv_label, fmt.format(now.time))
+        views.setTextViewText(R.id.tv_label, text)
     }
 
     // Moon phase
@@ -121,8 +118,7 @@ internal fun updateAppWidgetContent(
 
     // Sun and Moon position
     val isInnerSunAndMoon =
-        props.showSunMoonInside ||
-                props.rotate == ROTATE_FIX_HOUR_HAND && props.minuteAndHourDots != WP_HIDDEN
+        props.showSunMoonInside || props.rotate == ROTATE_FIX_HOUR_HAND && props.minuteAndHourDots != WP_HIDDEN
     var sunAndMoonPadding = 0F
     if (isInnerSunAndMoon) {
         sunAndMoonPadding = size * 0.12F
