@@ -117,7 +117,7 @@ internal fun updateAppWidgetContent(
         views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase())
         moonRotate = if (0 <= coordinates.first) 1F else -1F
     } else {
-        views.setImageViewResource(R.id.iv_moon, R.drawable.moon_7)
+        views.setImageViewResource(R.id.iv_moon, R.drawable.moon)
     }
 
     // Sun and Moon position

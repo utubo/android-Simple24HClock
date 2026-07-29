@@ -3,14 +3,14 @@
     android:height="200dp"
     android:viewportWidth="200"
     android:viewportHeight="200">
-    <!-- move x -1.0 to centering totality -->
+    <!-- move x to centering totality -->
     <path
         android:fillColor="@color/white"
         android:pathData="
             M 100, 180
-            m -4.7, -4.9
-            a 6,6 1 1,1 0,10
-            a 2,2.5 0 0,0 0,-10
+            m -3.92, -4.1
+            a 5,5 1 1,1 0,8.3
+            a 1.7,2.1 0 0,0 0,-8.3
             z
         " />
     <!-- moon
@@ -18,9 +18,9 @@
         android:fillColor="@color/white"
         android:pathData="
             M 100, 180
-            m -3.3, -4.9
-            a 6,6 1 1,1 0,10
-            a 2,2.5 0 0,0 0,-10
+            m -2.75, -4.1
+            a 5,5 1 1,1 0,8.3
+            a 1.7,2.1 0 0,0 0,-8.3
             z
         " />
     -->
@@ -30,9 +30,9 @@
         android:fillAlpha="0.3"
         android:pathData="
             M 100, 180
-            m 6, 0
-            a 6,6 0 1,0 -12,0
-            a 6,6 0 1,0  12,0
+            m 5, 0
+            a 5,5 0 1,0 -10,0
+            a 5,5 0 1,0  10,0
             z
         " />
     -->

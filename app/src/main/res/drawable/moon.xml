@@ -7,10 +7,10 @@
     <path
         android:fillColor="@color/white"
         android:pathData="
-            M 100, 180
-            m 0, -5
-            a 5,5 0 1,0 0,10
-            a 5,5 0 0,0 0,-10
-            z
+        M 100, 180
+        m 0, -6
+        a 6,6 0 1,0 6,6
+        a 3,3 0 0,1 -6,-6
+        z
         " />
 </vector>
