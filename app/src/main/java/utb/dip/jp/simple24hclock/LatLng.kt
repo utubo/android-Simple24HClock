@@ -28,22 +28,24 @@ object LatLng {
             val jsonString =
                 context.assets.open("timezones.json").bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(jsonString)
+            var lat = 0.0
+            var lng = 0.0
             for (i in 0 until jsonArray.length()) {
                 val obj = jsonArray.getJSONObject(i)
                 if (obj.getString("id") == zoneId) {
-                    val lat = obj.getDouble("lat")
-                    val lng = obj.getDouble("lng")
-                    cachedCoordinates = Pair(lat, lng)
-                    props.lat = lat.toFloat()
-                    props.lng = lng.toFloat()
-                    props.updateNow = false
-                    val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-                    prefs.edit().apply {
-                        putAppWidgetProps(this, props)
-                        apply()
-                    }
+                    lat = obj.getDouble("lat")
+                    lng = obj.getDouble("lng")
                     break
                 }
+            }
+            cachedCoordinates = Pair(lat, lng)
+            props.lat = lat.toFloat()
+            props.lng = lng.toFloat()
+            props.updateNow = false
+            val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+            prefs.edit().apply {
+                putAppWidgetProps(this, props)
+                apply()
             }
             cachedCoordinates
         } catch (_: Exception) {

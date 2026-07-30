@@ -110,14 +110,28 @@ internal fun updateAppWidgetContent(
         }
     }
 
+    // Rotation
+    val deg = when (props.rotate) {
+        ROTATE_AUTO -> if (hour in 6..17) 0F else 180F
+        ROTATE_FIX_HOUR_HAND -> -hourDeg - 180F
+        else -> props.rotate
+    }
+    views.setFloat(R.id.rl_background, "setRotation", deg)
+    views.setFloat(R.id.rl_foreground, "setRotation", deg)
+
     // Moon phase
     val coordinates = if (props.moonPhase) LatLng.getCoordinates(context, props) else null
-    var moonRotate = 1F
     if (coordinates != null) {
         views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase())
-        moonRotate = if (0 <= coordinates.first) 1F else -1F
-    } else {
+        var moonRotate = if (0 <= coordinates.first) 1F else -1F
+        if (deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND) {
+            moonRotate *= -1
+        }
+        views.setFloat(R.id.iv_moon, "setScaleX", moonRotate)
+    } else if (deg <= 90F || 270F < deg) {
         views.setImageViewResource(R.id.iv_moon, R.drawable.moon)
+    } else {
+        views.setImageViewResource(R.id.iv_moon, R.drawable.moon_top)
     }
 
     // Sun and Moon position
@@ -136,19 +150,6 @@ internal fun updateAppWidgetContent(
     }
     views.setFloat(R.id.iv_sun, "setTranslationY", sunAndMoonPadding)
     views.setFloat(R.id.iv_moon, "setTranslationY", -sunAndMoonPadding)
-
-    // Rotation
-    val deg = when (props.rotate) {
-        ROTATE_AUTO -> if (hour in 6..17) 0F else 180F
-        ROTATE_FIX_HOUR_HAND -> -hourDeg - 180F
-        else -> props.rotate
-    }
-    views.setFloat(R.id.rl_background, "setRotation", deg)
-    views.setFloat(R.id.rl_foreground, "setRotation", deg)
-    if (deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND) {
-        moonRotate *= -1
-    }
-    views.setFloat(R.id.iv_moon, "setScaleX", moonRotate)
 
     // Colors
     fun setColor(id: Int, color: Int, visible: Float = 1F) {
