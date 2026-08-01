@@ -120,18 +120,19 @@ internal fun updateAppWidgetContent(
     views.setFloat(R.id.rl_foreground, "setRotation", deg)
 
     // Moon phase
+    val maybeMoonTop = deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND
     val coordinates = if (props.moonPhase) LatLng.getCoordinates(context, props) else null
     if (coordinates != null) {
         views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase())
         var moonRotate = if (0 <= coordinates.first) 1F else -1F
-        if (deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND) {
+        if (maybeMoonTop) {
             moonRotate *= -1
         }
         views.setFloat(R.id.iv_moon, "setScaleX", moonRotate)
-    } else if (deg <= 90F || 270F < deg) {
-        views.setImageViewResource(R.id.iv_moon, R.drawable.moon)
-    } else {
+    } else if (maybeMoonTop) {
         views.setImageViewResource(R.id.iv_moon, R.drawable.moon_top)
+    } else {
+        views.setImageViewResource(R.id.iv_moon, R.drawable.moon)
     }
 
     // Sun and Moon position
