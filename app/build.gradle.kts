@@ -19,7 +19,7 @@ android {
         //noinspection OldTargetApi
         targetSdk = 36
         versionCode = 49
-        versionName = "11.0"
+        versionName = "11.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
