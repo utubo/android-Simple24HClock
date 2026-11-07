@@ -18,7 +18,6 @@ import android.provider.Settings
 import android.text.method.LinkMovementMethod
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.MotionEvent
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RemoteViews
@@ -38,7 +37,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import utb.dip.jp.simple24hclock.databinding.ActivitySettingsBinding
 import androidx.core.net.toUri
+import androidx.core.view.children
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.let
 
 
@@ -46,16 +49,30 @@ const val DEFAULT_TEXT = "\n\n\n\nE  dd"
 
 class SettingsActivity : FragmentActivity() {
 
+    private lateinit var v: ActivitySettingsBinding
+
+    private val fusedLocationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted ->
+        if (isGranted) {
+            fetchAndFillCurrentLocation()
+        }
+    }
+
     @SuppressLint("QueryPermissionsNeeded", "ClickableViewAccessibility", "BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Views
-        val v = ActivitySettingsBinding.inflate(layoutInflater)
+        v = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(v.root)
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fl_settings_main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fl_settings_main)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
         // color tip
@@ -101,10 +118,6 @@ class SettingsActivity : FragmentActivity() {
         val localeNames = mutableListOf(getString(R.string.system_default))
         localeNames.addAll(systemLocales.map { it.getDisplayLanguage(Locale.getDefault()) })
 
-        // other items
-        // NOTE: initialize on load prefs.
-        // var backgroundAlpha: Float
-        // var tapBehavior: String
         // get widget id
         val appWidgetId = intent?.extras?.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID
@@ -139,11 +152,23 @@ class SettingsActivity : FragmentActivity() {
         v.cbDayOfYear.isChecked = 0 < wp.dayOfYear
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
+
+        if (wp.timezone == LOCATION_FIXED) {
+            v.etLatitude.setText(wp.lat.toString())
+            v.etLongitude.setText(wp.lng.toString())
+            v.rbLocationFixed.isChecked = true
+        } else {
+            LatLng.getCoordinatesByTimeZone(applicationContext)?.let { (lat, lng) ->
+                v.etLatitude.setText(lat.toString())
+                v.etLongitude.setText(lng.toString())
+            }
+            v.rbLocationTimezone.isChecked = true
+        }
+
         v.rgTrigger.check(
             if (wp.useFgs) R.id.rb_use_fgs else if (wp.useAlarmMethod) R.id.rb_use_alarm_method else R.id.rb_trigger_default
         )
         var backgroundAlpha = wp.backgroundAlpha
-        // NOTE: DON'T USE libs.kotlin.reflect.
         colors["colorHour"] = wp.colorHour
         colors["colorMinute"] = wp.colorMinute
         colors["colorDayOfYear"] = wp.colorDayOfYear
@@ -185,6 +210,9 @@ class SettingsActivity : FragmentActivity() {
                     else -> 0F
                 },
                 moonPhase = v.cbMoonPhase.isChecked,
+                timezone = if (v.rbLocationTimezone.isChecked) TimeZone.getDefault().id else LOCATION_FIXED,
+                lat = v.etLatitude.text.toString().toFloatOrNull() ?: Float.NaN,
+                lng = v.etLongitude.text.toString().toFloatOrNull() ?: Float.NaN,
                 updateNow = true,
             )
             wp.colorHour = colors["colorHour"] ?: -1
@@ -203,6 +231,7 @@ class SettingsActivity : FragmentActivity() {
         }
 
         fun updatePreview() {
+            LatLng.clearCache()
             val views = RemoteViews(applicationContext.packageName, R.layout.app_widget)
             views.setTextViewTextSize(R.id.tv_label, COMPLEX_UNIT_PX, v.etFormat.textSize)
             updateAppWidgetContent(
@@ -229,6 +258,12 @@ class SettingsActivity : FragmentActivity() {
             colors["colorText"]?.let { c -> v.etFormat.setTextColor(c) }
             v.tvTextLocale.text = if (textLocale.isEmpty()) getString(R.string.system_default)
             else Locale.forLanguageTag(textLocale).getDisplayLanguage(Locale.ENGLISH)
+            val isFixed = v.rbLocationFixed.isChecked
+            v.llLocationFixed.isEnabled = isFixed
+            v.llLocationFixed.children.forEach { child ->
+                child.isEnabled = isFixed
+                child.alpha = if (isFixed) 1.0f else 0.5f
+            }
         }
         updatePreview()
 
@@ -257,11 +292,8 @@ class SettingsActivity : FragmentActivity() {
                 updatePreview()
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
         // Text Locale
@@ -374,6 +406,32 @@ class SettingsActivity : FragmentActivity() {
         colorChipAdapter.select(0)
         onClickColorChip(partKeys[0])
 
+        // Lat-Lng
+        v.rgLocationMode.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.rb_location_timezone) {
+                v.llLocationFixed.isEnabled = false
+                LatLng.getCoordinatesByTimeZone(applicationContext)?.let { (lat, lng) ->
+                    v.etLatitude.setText(lat.toString())
+                    v.etLongitude.setText(lng.toString())
+                    updatePreview()
+                }
+            } else {
+                v.llLocationFixed.isEnabled = true
+                updatePreview()
+            }
+        }
+
+        v.etLatitude.addTextChangedListener {
+            updatePreview()
+        }
+        v.etLongitude.addTextChangedListener {
+            updatePreview()
+        }
+        v.btnGetCurrentLocation.setOnClickListener {
+            checkLocationPermissionAndFetch()
+            updatePreview()
+        }
+
         // Tap behavior
         val appPickerLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -474,12 +532,63 @@ class SettingsActivity : FragmentActivity() {
                 putAppWidgetProps(this, wp)
                 apply()
             }
+            LatLng.clearCache()
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             updateAppWidget(applicationContext, appWidgetManager, appWidgetId)
             resetUpdateTrigger(applicationContext)
             val resultValue = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             setResult(RESULT_OK, resultValue)
             finish()
+        }
+    }
+
+    private fun checkLocationPermissionAndFetch() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                fetchAndFillCurrentLocation()
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun fetchAndFillCurrentLocation() {
+        try {
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                null
+            ).addOnSuccessListener { location ->
+                if (location != null) {
+                    v.etLatitude.setText(String.format(Locale.US, "%.4f", location.latitude))
+                    v.etLongitude.setText(String.format(Locale.US, "%.4f", location.longitude))
+                } else {
+                    android.widget.Toast.makeText(
+                        this,
+                        getString(R.string.location_not_found),
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
+                }
+            }.addOnFailureListener { e ->
+                e.printStackTrace()
+                android.widget.Toast.makeText(
+                    this,
+                    getString(R.string.location_failed, e.message ?: ""),
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            android.widget.Toast.makeText(
+                this,
+                getString(R.string.location_permission_required),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -496,8 +605,7 @@ class SettingsActivity : FragmentActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val llSettingsMain = findViewById<LinearLayout>(R.id.ll_settings_main)
-        llSettingsMain.orientation =
+        v.llSettingsMain.orientation =
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 LinearLayout.HORIZONTAL
             } else {
@@ -512,11 +620,10 @@ class SettingsActivity : FragmentActivity() {
 
     fun updatePreventTimeLagState() {
         val enable = canScheduleExact() && isIgnoringBatteryOpt()
-        val cb = findViewById<CheckBox>(R.id.cb_prevent_time_lag)
-        cb.isChecked = enable
-        cb.isEnabled = !enable
+        v.cbPreventTimeLag.isChecked = enable
+        v.cbPreventTimeLag.isEnabled = !enable
         if (enable) {
-            cb.buttonTintList = getColorStateList(R.color.success)
+            v.cbPreventTimeLag.buttonTintList = getColorStateList(R.color.success)
         }
     }
 
@@ -540,19 +647,17 @@ class SettingsActivity : FragmentActivity() {
             for (char in input) {
                 if (char == qt) {
                     if (inAutoQuotes) {
-                        append(qt) // Close the auto-inserted quote first
+                        append(qt)
                         inAutoQuotes = false
                     }
                     inUserQuotes = !inUserQuotes
                     append(char)
                     continue
                 }
-                // Keep everything inside user-defined quotes as-is
                 if (inUserQuotes) {
                     append(char)
                     continue
                 }
-                // An alphabet is invalid if it is not in the DateTimeFormatter specs
                 if (invalidLetters.contains(char)) {
                     if (!inAutoQuotes) {
                         append(qt)
@@ -564,7 +669,6 @@ class SettingsActivity : FragmentActivity() {
                 }
                 append(char)
             }
-            // Ensure any remaining open auto-quote is closed at the end
             if (inAutoQuotes) {
                 append('\'')
             }

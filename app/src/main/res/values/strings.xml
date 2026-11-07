@@ -61,6 +61,15 @@
     <string name="show_sun_moon_inside">Show Sun &amp; Moon inside</string>
     <string name="system_default">System Default</string>
     <string name="invalid_format">[ERROR]</string>
+    <string name="coordinates">Coordinates</string>
+    <string name="timezone">Time Zone</string>
+    <string name="fixed">Fixed</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="get_current_location">Get Current Location</string>
+    <string name="location_not_found">Could not retrieve location. Please send location from emulator settings.</string>
+    <string name="location_failed">Failed to get location: %1$s</string>
+    <string name="location_permission_required">Location permission is required.</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>

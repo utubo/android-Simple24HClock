@@ -7,6 +7,7 @@ import android.graphics.Color.argb
 const val WP_HIDDEN = 0F
 const val ROTATE_AUTO = -1F
 const val ROTATE_FIX_HOUR_HAND = -2F
+const val LOCATION_FIXED = "FIXED"
 
 data class AppWidgetProps(
     val id: Int,
@@ -21,9 +22,9 @@ data class AppWidgetProps(
     var tapBehavior: String? = "",
     var tapBehaviorLabel: String? = "",
     val backgroundAlpha: Float = 0.3F,
-    val timezone: String? = "",
-    var lat: Float = 0F,
-    var lng: Float = 0F,
+    var timezone: String? = "",
+    var lat: Float = Float.NaN,
+    var lng: Float = Float.NaN,
     var rotate: Float = 0F,
     var moonPhase: Boolean = false,
     var colorHour: Int = Color.WHITE,
@@ -58,8 +59,8 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         tapBehaviorLabel = prefs.getString("tap_behavior_label_$id", ""),
         backgroundAlpha = prefs.getFloat("backgroundAlpha_$id", 0.4F),
         timezone = prefs.getString("timezone_$id", ""),
-        lat = prefs.getFloat("lat_$id", 0F),
-        lng = prefs.getFloat("lng_$id", 0F),
+        lat = prefs.getFloat("lat_$id", Float.NaN),
+        lng = prefs.getFloat("lng_$id", Float.NaN),
         rotate = prefs.getFloat("rotate_$id", 0F),
         moonPhase = prefs.getBoolean("moon_phase_$id", false),
         colorHour = prefs.getInt("color_hour_$id", Color.WHITE),

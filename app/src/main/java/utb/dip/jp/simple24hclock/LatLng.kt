@@ -8,10 +8,18 @@ object LatLng {
 
     private var cachedCoordinates: Pair<Double, Double>? = null
 
+    internal fun clearCache() {
+        cachedCoordinates = null
+    }
+
     internal fun getCoordinates(
         context: Context,
         props: AppWidgetProps,
     ): Pair<Double, Double>? {
+        if (props.timezone == LOCATION_FIXED && !props.lat.isNaN() || !props.lng.isNaN()) {
+            return Pair(props.lat.toDouble(), props.lng.toDouble())
+        }
+
         // Form cache
         cachedCoordinates?.let { return it }
 
@@ -23,8 +31,29 @@ object LatLng {
             return cachedCoordinates
         }
 
+        // From TimeZone
+        val coordinates = getCoordinatesByTimeZone(context)
+        if (coordinates == null) {
+            return coordinates
+        }
+        props.lat = coordinates.first.toFloat()
+        props.lng = coordinates.second.toFloat()
+        props.timezone = zoneId
+        props.updateNow = false
+        val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putAppWidgetProps(this, props)
+            apply()
+        }
+        return coordinates
+    }
+
+    internal fun getCoordinatesByTimeZone(
+        context: Context,
+    ): Pair<Double, Double>? {
         // From JSON
         return try {
+            val zoneId = TimeZone.getDefault().id
             val jsonString =
                 context.assets.open("timezones.json").bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(jsonString)
@@ -39,14 +68,6 @@ object LatLng {
                 }
             }
             cachedCoordinates = Pair(lat, lng)
-            props.lat = lat.toFloat()
-            props.lng = lng.toFloat()
-            props.updateNow = false
-            val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
-            prefs.edit().apply {
-                putAppWidgetProps(this, props)
-                apply()
-            }
             cachedCoordinates
         } catch (_: Exception) {
             null

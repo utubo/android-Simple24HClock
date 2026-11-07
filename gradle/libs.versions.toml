@@ -20,6 +20,7 @@ navigationUiKtx = "2.10.2"
 activity = "1.13.0"
 commons-suncalc = "3.11"
 aboutLibraries = "15.3.0"
+play-services-location = "21.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,7 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 suncalc = { module = "org.shredzone.commons:commons-suncalc", version.ref = "commons-suncalc" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
