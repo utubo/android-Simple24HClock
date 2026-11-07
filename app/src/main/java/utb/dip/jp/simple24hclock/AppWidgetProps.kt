@@ -8,6 +8,9 @@ const val WP_HIDDEN = 0F
 const val ROTATE_AUTO = -1F
 const val ROTATE_FIX_HOUR_HAND = -2F
 const val LOCATION_FIXED = "FIXED"
+const val TAP_BEHAVIOR_ALARM = "alarm"
+const val TAP_BEHAVIOR_CALENDAR = "calendar"
+const val TAP_BEHAVIOR_APP = "app"
 
 data class AppWidgetProps(
     val id: Int,

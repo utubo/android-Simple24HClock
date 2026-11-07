@@ -32,8 +32,8 @@ internal fun updateAppWidget(
     // Tap
     val intent = when (props.tapBehavior ?: "") {
         "" -> Intent()
-        "alarm" -> Intent(ACTION_SHOW_ALARMS)
-        "calendar" -> Intent(ACTION_VIEW).apply {
+        TAP_BEHAVIOR_ALARM -> Intent(ACTION_SHOW_ALARMS)
+        TAP_BEHAVIOR_CALENDAR -> Intent(ACTION_VIEW).apply {
             data = "content://com.android.calendar/time".toUri()
         }
 
