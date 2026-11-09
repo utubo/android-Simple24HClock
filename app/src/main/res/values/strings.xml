@@ -62,8 +62,8 @@
     <string name="system_default">System Default</string>
     <string name="invalid_format">[ERROR]</string>
     <string name="coordinates">Coordinates</string>
-    <string name="timezone">Time Zone</string>
-    <string name="fixed">Fixed</string>
+    <string name="location_mode_timezone">Location via system time zone</string>
+    <string name="location_mode_fixed">Fixed</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="get_current_location">Get Current Location</string>

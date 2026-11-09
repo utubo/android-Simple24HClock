@@ -327,14 +327,14 @@
                             android:layout_height="wrap_content"
                             android:checked="true"
                             android:minHeight="48dp"
-                            android:text="@string/timezone" />
+                            android:text="@string/location_mode_timezone" />
 
                         <RadioButton
                             android:id="@+id/rb_location_fixed"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="48dp"
-                            android:text="@string/fixed" />
+                            android:text="@string/location_mode_fixed" />
                     </RadioGroup>
 
                     <LinearLayout
