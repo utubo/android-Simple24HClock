@@ -28,9 +28,7 @@ internal fun updateAppWidget(
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
     updateAppWidgetContent(context, views, props, size * context.resources.displayMetrics.density)
-
-    // Tap
-    val intent = when (props.tapBehavior ?: "") {
+    val tapIntent = when (props.tapBehavior ?: "") {
         "" -> Intent()
         TAP_BEHAVIOR_ALARM -> Intent(ACTION_SHOW_ALARMS)
         TAP_BEHAVIOR_CALENDAR -> Intent(ACTION_VIEW).apply {
@@ -48,11 +46,21 @@ internal fun updateAppWidget(
             else Intent().apply { component = comp }
         }
     }
-    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val pendingIntent = PendingIntent.getActivity(
-        context, 0, intent, PendingIntent.FLAG_IMMUTABLE
+    tapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    val tapPendingIntent = PendingIntent.getActivity(
+        context, appWidgetId * 10, tapIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
-    views.setOnClickPendingIntent(R.id.container, pendingIntent)
+    val settingsIntent = Intent(context, SettingsActivity::class.java).apply {
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    val settingsPendingIntent = PendingIntent.getActivity(
+        context, appWidgetId * 10 + 1, settingsIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+    views.setOnClickPendingIntent(R.id.container, settingsPendingIntent)
+    views.setOnClickPendingIntent(R.id.center_touch, tapPendingIntent)
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
 
@@ -141,13 +149,13 @@ internal fun updateAppWidgetContent(
     var sunAndMoonPadding = 0F
     if (isInnerSunAndMoon) {
         sunAndMoonPadding = size * 0.12F
-        views.setImageViewResource(R.id.iv_hour_dots, R.drawable.dots_hour_skiped)
+        views.setImageViewResource(R.id.iv_hour_dots, R.drawable.dots_hour_skipped)
         views.setImageViewResource(R.id.iv_month_dots, R.drawable.dots_month_skiped)
         views.setImageViewResource(R.id.iv_minute_dots, R.drawable.dots_minute_full)
     } else {
         views.setImageViewResource(R.id.iv_hour_dots, R.drawable.dots_hour_full)
         views.setImageViewResource(R.id.iv_month_dots, R.drawable.dots_month_full)
-        views.setImageViewResource(R.id.iv_minute_dots, R.drawable.dots_minute_skiped)
+        views.setImageViewResource(R.id.iv_minute_dots, R.drawable.dots_minute_skipped)
     }
     views.setFloat(R.id.iv_sun, "setTranslationY", sunAndMoonPadding)
     views.setFloat(R.id.iv_moon, "setTranslationY", -sunAndMoonPadding)
@@ -188,6 +196,10 @@ internal fun updateAppWidgetContent(
     views.setFloat(R.id.iv_background, "setAlpha", props.backgroundAlpha)
     views.setInt(R.id.tv_label, "setTextColor", props.colorText or MASK_OPAQUE)
 
+    // Center touch
+    val touchScale = (size * 0.75F)
+    views.setFloat(R.id.center_touch, "setScaleX", touchScale)
+    views.setFloat(R.id.center_touch, "setScaleY", touchScale)
 }
 
 fun getWidgetMinimumDimensionInDp(appWidgetManager: AppWidgetManager, appWidgetId: Int): Float {

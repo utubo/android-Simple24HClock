@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Simple24HClock.AppWidget.Container"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0"
-            android:src="@drawable/dots_hour_skiped"
+            android:src="@drawable/dots_hour_skipped"
             app:tint="@color/white"
             tools:ignore="ContentDescription" />
 
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:src="@drawable/dots_minute_skiped"
+        android:src="@drawable/dots_minute_skipped"
         app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
@@ -121,4 +121,11 @@
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/center_touch"
+        android:layout_width="1px"
+        android:layout_height="1px"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent" />
+
+</FrameLayout>
