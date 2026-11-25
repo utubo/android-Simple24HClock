@@ -12,6 +12,7 @@ android {
     namespace = "utb.dip.jp.simple24hclock"
     //noinspection GradleDependency
     compileSdk = 37
+    compileSdkMinor = 2
 
     defaultConfig {
         applicationId = "utb.dip.jp.simple24hclock"
