@@ -43,13 +43,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="20dp"
-            android:padding="16dp"
+            android:background="@drawable/round_corner"
             android:orientation="vertical"
-            android:background="@drawable/round_corner">
+            android:padding="16dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -66,9 +66,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="18sp"
                         android:paddingBottom="8dp"
-                        android:text="@string/settings" />
+                        android:text="@string/settings"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -108,9 +108,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:alpha="0.75"
-                            android:textSize="13sp"
                             android:linksClickable="true"
                             android:text="@string/custom_text_note"
+                            android:textSize="13sp"
                             tools:ignore="VisualLintLongText" />
                     </RadioGroup>
 
@@ -125,8 +125,8 @@
                         style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginStart="34dp"
                         android:text="@string/system_default" />
 
                     <TextView
@@ -232,19 +232,19 @@
                         android:id="@+id/rv_parts_selector"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_marginTop="8dp"
                         android:clipToPadding="false"
+                        android:orientation="horizontal"
                         android:scrollbars="none" />
 
                     <ImageView
                         android:id="@+id/iv_pallet"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:importantForAccessibility="no"
-                        android:scaleType="fitCenter"
                         android:adjustViewBounds="true"
+                        android:importantForAccessibility="no"
                         android:paddingStart="24dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/pallet"
                         tools:ignore="RtlSymmetry" />
 
@@ -266,8 +266,8 @@
                             android:id="@+id/sb_red"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:min="0"
-                            android:max="255" />
+                            android:max="255"
+                            android:min="0" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -279,8 +279,8 @@
                             android:id="@+id/sb_green"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:min="0"
-                            android:max="255" />
+                            android:max="255"
+                            android:min="0" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -292,8 +292,8 @@
                             android:id="@+id/sb_blue"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:min="0"
-                            android:max="255" />
+                            android:max="255"
+                            android:min="0" />
 
                         <TextView
                             android:id="@+id/tv_opacity"
@@ -314,94 +314,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="@string/custom_time_zone" />
-
-                    <TextView
-                        android:id="@+id/tv_custom_time_zone"
-                        style="@style/Widget.AppCompat.Spinner.DropDown"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginStart="34dp"
-                        android:minHeight="48dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/system_default" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/coordinates" />
-
-                    <RadioGroup
-                        android:id="@+id/rg_location_mode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <RadioButton
-                            android:id="@+id/rb_location_timezone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:checked="true"
-                            android:minHeight="48dp"
-                            android:text="@string/location_mode_timezone" />
-
-                        <RadioButton
-                            android:id="@+id/rb_location_fixed"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/location_mode_fixed" />
-                    </RadioGroup>
-
-                    <LinearLayout
-                        android:id="@+id/ll_location_fixed"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/et_latitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/latitude"
-                                android:inputType="numberDecimal|numberSigned" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/et_longitude"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/longitude"
-                                android:inputType="numberDecimal|numberSigned" />
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_get_current_location"
-                            style="@style/Widget.Material3.Button.TonalButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="@string/get_current_location" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:text="@string/tap_behavior" />
 
                     <TextView
@@ -409,67 +321,189 @@
                         style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
                         android:text="@string/none" />
 
+
                     <TextView
+                        android:id="@+id/tv_advanced_settings_header"
+                        style="@style/Widget.AppCompat.Spinner.DropDown"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="@string/performance" />
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:minHeight="48dp"
+                        android:text="@string/advanced_settings" />
 
-                    <CheckBox
-                        android:id="@+id/cb_prevent_time_lag"
+                    <LinearLayout
+                        android:id="@+id/ll_advanced_settings"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="48dp"
-                        android:text="@string/prevent_time_lag" />
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="12dp"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                    <RadioGroup
-                        android:id="@+id/rg_trigger"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/custom_time_zone" />
+
+                        <TextView
+                            android:id="@+id/tv_custom_time_zone"
+                            style="@style/Widget.AppCompat.Spinner.DropDown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:minHeight="48dp"
+                            android:text="@string/system_default" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/coordinates" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_location_mode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/rb_location_timezone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:minHeight="48dp"
+                                android:text="@string/location_mode_timezone" />
+
+                            <RadioButton
+                                android:id="@+id/rb_location_fixed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:text="@string/location_mode_fixed" />
+                        </RadioGroup>
+
+                        <LinearLayout
+                            android:id="@+id/ll_location_fixed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="24dp"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_latitude"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/latitude"
+                                    android:inputType="numberDecimal|numberSigned" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_longitude"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="@string/longitude"
+                                    android:inputType="numberDecimal|numberSigned" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btn_get_current_location"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:text="@string/get_current_location" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="@string/performance" />
+
+                        <CheckBox
+                            android:id="@+id/cb_prevent_time_lag"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:text="@string/prevent_time_lag" />
+
+                        <RadioGroup
+                            android:id="@+id/rg_trigger"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/rb_trigger_default"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:text="@string/_default" />
+
+                            <RadioButton
+                                android:id="@+id/rb_use_fgs"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:text="@string/use_foreground_service_for_updates" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:layout_marginBottom="8dp"
+                                android:alpha="0.75"
+                                android:text="@string/use_fgs_summery"
+                                android:textSize="13sp" />
+
+                            <RadioButton
+                                android:id="@+id/rb_use_alarm_method"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:text="@string/use_alarm_method_for_updates" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:layout_marginBottom="8dp"
+                                android:alpha="0.75"
+                                android:text="@string/use_alarm_method_summary"
+                                android:textSize="13sp" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <RadioButton
-                            android:id="@+id/rb_trigger_default"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/_default" />
-
-                        <RadioButton
-                            android:id="@+id/rb_use_fgs"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/use_foreground_service_for_updates" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:text="@string/use_fgs_summery"
-                            android:textSize="13sp"
-                            android:layout_marginBottom="8dp"
-                            android:alpha="0.75" />
-
-                        <RadioButton
-                            android:id="@+id/rb_use_alarm_method"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/use_alarm_method_for_updates" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:text="@string/use_alarm_method_summary"
-                            android:textSize="13sp"
-                            android:layout_marginBottom="8dp"
-                            android:alpha="0.75" />
-                    </RadioGroup>
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:alpha="0.2"
+                        android:background="?android:attr/textColorSecondary" />
 
                     <TextView
                         android:id="@+id/tv_licenses"
@@ -490,7 +524,6 @@
             </ScrollView>
         </LinearLayout>
     </LinearLayout>
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_apply"

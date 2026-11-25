@@ -100,6 +100,7 @@ class SettingsActivity : FragmentActivity() {
         setupPreviewListeners()
         setupColorPalette()
         setupLocationSettings()
+        setupAdvancedSettings()
         setupTapBehavior()
         setupPerformanceSettings()
         setupSupportAndLicenses()
@@ -775,6 +776,16 @@ class SettingsActivity : FragmentActivity() {
             customTimeZone = selectedZoneId?.takeIf { it.isNotBlank() }
             syncCoordinatesFromTimeZone()
             updatePreview()
+        }
+    }
+
+    private fun setupAdvancedSettings() {
+        val hasCustomSettings =
+            !customTimeZone.isNullOrBlank() || v.rbLocationFixed.isChecked
+        v.llAdvancedSettings.isVisible = hasCustomSettings
+
+        v.tvAdvancedSettingsHeader.setOnClickListener {
+            v.llAdvancedSettings.isVisible = !v.llAdvancedSettings.isVisible
         }
     }
 }

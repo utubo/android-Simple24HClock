@@ -72,6 +72,7 @@
     <string name="location_failed">Failed to get location: %1$s</string>
     <string name="location_permission_required">Location permission is required.</string>
     <string name="search_e_g_tokyo_new_york_09_00">Search (e.g. Tokyo, New_York, +09:00)</string>
+    <string name="advanced_settings">Advanced settings</string>
     <string-array name="part_names">
         <item>Hour Hand</item>
         <item>Minute Hand</item>
