@@ -12,7 +12,6 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.net.toUri
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -21,13 +20,20 @@ import java.util.Locale
 private const val MASK_OPAQUE = 0xFF000000.toInt()
 
 internal fun updateAppWidget(
-    context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int
+    context: Context,
+    appWidgetManager: AppWidgetManager,
+    appWidgetId: Int,
 ) {
     val views = RemoteViews(context.packageName, R.layout.app_widget)
     val size = getWidgetMinimumDimensionInDp(appWidgetManager, appWidgetId)
     val widgetPrefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
-    updateAppWidgetContent(context, views, props, size * context.resources.displayMetrics.density)
+    updateAppWidgetContent(
+        context,
+        views,
+        props,
+        size * context.resources.displayMetrics.density,
+    )
     val tapIntent = when (props.tapBehavior ?: "") {
         "" -> Intent()
         TAP_BEHAVIOR_ALARM -> Intent(ACTION_SHOW_ALARMS)
@@ -36,7 +42,7 @@ internal fun updateAppWidget(
         }
 
         else -> {
-            val comp = ComponentName.unflattenFromString(props.tapBehavior!!)
+            val comp = ComponentName.unflattenFromString(props.tapBehavior.orEmpty())
             if (comp?.packageName == context.packageName) Intent(
                 context,
                 SettingsActivity::class.java
@@ -65,9 +71,14 @@ internal fun updateAppWidget(
 }
 
 internal fun updateAppWidgetContent(
-    context: Context, views: RemoteViews, props: AppWidgetProps, size: Float
+    context: Context,
+    views: RemoteViews,
+    props: AppWidgetProps,
+    size: Float,
 ) {
-    val now = Calendar.getInstance()
+    val zoneId = TimeUtils.resolveZoneId(props)
+    val now = TimeUtils.nowCalendar(props)
+    val nowInstant = now.time.toInstant()
 
     // Hour
     val hour = now.get(Calendar.HOUR_OF_DAY)
@@ -82,22 +93,28 @@ internal fun updateAppWidgetContent(
 
     // Day of year
     if (0 < props.dayOfYear) {
-        if (0 < props.dayOfYearDots) {
-            val m = now.get(Calendar.MONDAY).toFloat()
-            val dOfM =
-                (now.get(Calendar.DAY_OF_MONTH) - 1).toFloat() / now.getLeastMaximum(Calendar.DAY_OF_MONTH)
-            val d = 360F / 12 * (m + dOfM)
-            views.setFloat(R.id.iv_day_of_year, "setRotation", d)
+        val angle = if (0 < props.dayOfYearDots) {
+            val monthIndex = now.get(Calendar.MONTH)
+            val dayOfMonth = now.get(Calendar.DAY_OF_MONTH)
+            val daysInMonth = now.getActualMaximum(Calendar.DAY_OF_MONTH).coerceAtLeast(1)
+
+            val monthProgress = if (dayOfMonth <= 1) {
+                0F
+            } else {
+                (dayOfMonth - 1).toFloat() / daysInMonth.toFloat()
+            }
+            (360F / 12F) * (monthIndex + monthProgress)
         } else {
-            val maxDoY = now.getMaximum(Calendar.DAY_OF_YEAR)
-            val d = 360F / maxDoY * (now.get(Calendar.DAY_OF_YEAR) - 1)
-            views.setFloat(R.id.iv_day_of_year, "setRotation", d)
+            val dayOfYear = now.get(Calendar.DAY_OF_YEAR) // 1..365 or 366
+            val daysInYear = now.getActualMaximum(Calendar.DAY_OF_YEAR).coerceAtLeast(1)
+            (360F / daysInYear.toFloat()) * (dayOfYear - 1).toFloat()
         }
+        views.setFloat(R.id.iv_day_of_year, "setRotation", angle)
     }
 
     // Back
     val bgBitmap = SunCycleManager.getOrUpdateBackground(
-        context, props, size.toInt()
+        context, props, size.toInt(), nowInstant, zoneId
     )
     views.setImageViewBitmap(R.id.iv_background, bgBitmap)
 
@@ -111,7 +128,7 @@ internal fun updateAppWidgetContent(
             val loc = if (textLocale.isNullOrEmpty()) Locale.getDefault()
             else Locale.forLanguageTag(textLocale)
             val dtf = DateTimeFormatter.ofPattern(props.text).withLocale(loc)
-            val text = now.time.toInstant().atZone(ZoneId.systemDefault()).format(dtf)
+            val text = nowInstant.atZone(zoneId).format(dtf)
             views.setTextViewText(R.id.tv_label, text)
         } catch (_: IllegalArgumentException) {
             views.setTextViewText(R.id.tv_label, context.getString(R.string.invalid_format))
@@ -131,7 +148,7 @@ internal fun updateAppWidgetContent(
     val maybeMoonTop = deg != 0F || props.rotate == ROTATE_FIX_HOUR_HAND
     val coordinates = if (props.moonPhase) LatLng.getCoordinates(context, props) else null
     if (coordinates != null) {
-        views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase())
+        views.setImageViewResource(R.id.iv_moon, MoonPhase.getMoonPhase(nowInstant))
         var moonRotate = if (0 <= coordinates.first) 1F else -1F
         if (maybeMoonTop) {
             moonRotate *= -1
@@ -200,6 +217,15 @@ internal fun updateAppWidgetContent(
     val touchScale = (size * 0.75F)
     views.setFloat(R.id.center_touch, "setScaleX", touchScale)
     views.setFloat(R.id.center_touch, "setScaleY", touchScale)
+
+    if (props.updateNow) {
+        props.updateNow = false
+        val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putAppWidgetProps(this, props)
+            apply()
+        }
+    }
 }
 
 fun getWidgetMinimumDimensionInDp(appWidgetManager: AppWidgetManager, appWidgetId: Int): Float {

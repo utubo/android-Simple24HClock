@@ -3,7 +3,6 @@ package utb.dip.jp.simple24hclock
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.AlertDialog
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
@@ -57,6 +56,7 @@ class SettingsActivity : FragmentActivity() {
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private var selectedPart = ""
     private var textLocale = ""
+    private var customTimeZone: String? = null
     private var backgroundAlpha = 1.0f
     private var tapBehavior = TAP_BEHAVIOR_NONE
 
@@ -70,11 +70,6 @@ class SettingsActivity : FragmentActivity() {
     private val systemLocales by lazy {
         Locale.getAvailableLocales().filter { it.language.isNotEmpty() }
             .distinctBy { it.language }.sortedBy { it.getDisplayLanguage(Locale.getDefault()) }
-    }
-    private val localeNames by lazy {
-        mutableListOf(getString(R.string.system_default)).apply {
-            addAll(systemLocales.map { it.getDisplayLanguage(Locale.getDefault()) })
-        }
     }
 
     private val fusedLocationClient by lazy {
@@ -152,6 +147,8 @@ class SettingsActivity : FragmentActivity() {
         }
         v.etFormat.setText(wp.format)
         textLocale = wp.textLocale ?: ""
+        customTimeZone = wp.customTimeZone
+        updateCustomTimeZoneLabel()
         v.rgRotate.check(
             when (wp.rotate) {
                 180F -> R.id.rb_rotate_moon_top
@@ -167,15 +164,16 @@ class SettingsActivity : FragmentActivity() {
         v.cbMonthDots.isChecked = 0 < wp.dayOfYearDots
         v.cbMoonPhase.isChecked = wp.moonPhase
 
-        if (wp.timezone == LOCATION_FIXED) {
+        if (wp.timeZone == LOCATION_FIXED) {
             v.etLatitude.setText(wp.lat.toString())
             v.etLongitude.setText(wp.lng.toString())
             v.rbLocationFixed.isChecked = true
         } else {
-            LatLng.getCoordinatesByTimeZone(applicationContext)?.let { (lat, lng) ->
-                v.etLatitude.setText(lat.toString())
-                v.etLongitude.setText(lng.toString())
-            }
+            LatLng.getCoordinatesByTimeZone(applicationContext, customTimeZone)
+                .let { (lat, lng) ->
+                    v.etLatitude.setText(lat.toString())
+                    v.etLongitude.setText(lng.toString())
+                }
             v.rbLocationTimezone.isChecked = true
         }
 
@@ -239,6 +237,7 @@ class SettingsActivity : FragmentActivity() {
         })
 
         v.tvTextLocale.setOnClickListener { showLanguageDialog() }
+        v.tvCustomTimeZone.setOnClickListener { showTimeZonePickerDialog() }
     }
 
     private fun setupColorPalette() {
@@ -291,11 +290,12 @@ class SettingsActivity : FragmentActivity() {
         v.rgLocationMode.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.rb_location_timezone) {
                 v.llLocationFixed.isEnabled = false
-                LatLng.getCoordinatesByTimeZone(applicationContext)?.let { (lat, lng) ->
-                    v.etLatitude.setText(lat.toString())
-                    v.etLongitude.setText(lng.toString())
-                    updatePreview()
-                }
+                LatLng.getCoordinatesByTimeZone(applicationContext, customTimeZone)
+                    .let { (lat, lng) ->
+                        v.etLatitude.setText(lat.toString())
+                        v.etLongitude.setText(lng.toString())
+                        updatePreview()
+                    }
             } else {
                 v.llLocationFixed.isEnabled = true
                 updatePreview()
@@ -322,33 +322,46 @@ class SettingsActivity : FragmentActivity() {
             }
         }
 
-        val tapBehaviors = arrayOf(
-            getString(R.string.none),
-            getString(R.string.alarm),
-            getString(R.string.calendar),
-            getString(R.string.other_apps),
+        val options = listOf(
+            SelectableOption(0, getString(R.string.none)),
+            SelectableOption(1, getString(R.string.alarm)),
+            SelectableOption(2, getString(R.string.calendar)),
+            SelectableOption(3, getString(R.string.other_apps)),
         )
+
+        val currentWhich = when (tapBehavior) {
+            TAP_BEHAVIOR_NONE -> 0
+            TAP_BEHAVIOR_ALARM -> 1
+            TAP_BEHAVIOR_CALENDAR -> 2
+            else -> 3
+        }
+
         v.tvTapBehavior.setOnClickListener {
-            AlertDialog.Builder(this).setTitle(R.string.tap_behavior)
-                .setItems(tapBehaviors) { _, which ->
-                    v.tvTapBehavior.text = tapBehaviors[which]
-                    tapBehavior = when (which) {
-                        0 -> TAP_BEHAVIOR_NONE
-                        1 -> TAP_BEHAVIOR_ALARM
-                        2 -> TAP_BEHAVIOR_CALENDAR
-                        else -> TAP_BEHAVIOR_APP
-                    }
-                    if (tapBehavior == TAP_BEHAVIOR_APP) {
-                        val intent = Intent(Intent.ACTION_PICK_ACTIVITY).apply {
-                            val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
-                                addCategory(Intent.CATEGORY_LAUNCHER)
-                            }
-                            putExtra(Intent.EXTRA_INTENT, mainIntent)
-                            putExtra(Intent.EXTRA_TITLE, getString(R.string.tap_behavior))
+            showCommonPickerDialog(
+                context = this,
+                titleResId = R.string.tap_behavior,
+                options = options,
+                selectedValue = currentWhich,
+                enableSearch = false,
+            ) { which ->
+                v.tvTapBehavior.text = options[which].title
+                tapBehavior = when (which) {
+                    0 -> TAP_BEHAVIOR_NONE
+                    1 -> TAP_BEHAVIOR_ALARM
+                    2 -> TAP_BEHAVIOR_CALENDAR
+                    else -> TAP_BEHAVIOR_APP
+                }
+                if (tapBehavior == TAP_BEHAVIOR_APP) {
+                    val intent = Intent(Intent.ACTION_PICK_ACTIVITY).apply {
+                        val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
+                            addCategory(Intent.CATEGORY_LAUNCHER)
                         }
-                        appPickerLauncher.launch(intent)
+                        putExtra(Intent.EXTRA_INTENT, mainIntent)
+                        putExtra(Intent.EXTRA_TITLE, getString(R.string.tap_behavior))
                     }
-                }.show()
+                    appPickerLauncher.launch(intent)
+                }
+            }
         }
     }
 
@@ -428,18 +441,25 @@ class SettingsActivity : FragmentActivity() {
     // --- Handlers and Utility Functions ---
 
     private fun showLanguageDialog() {
-        val checkedItem = if (textLocale.isEmpty()) {
-            0
-        } else {
-            val index = systemLocales.indexOfFirst { it.language == textLocale }
-            if (index != -1) index + 1 else 0
+        val currentValue = textLocale.ifEmpty { null }
+        val options = buildList {
+            add(SelectableOption<String?>(value = null, title = getString(R.string.system_default)))
+            systemLocales.forEach { locale ->
+                val label = locale.getDisplayLanguage(Locale.getDefault())
+                add(SelectableOption<String?>(value = locale.language, title = label))
+            }
         }
-        AlertDialog.Builder(this).setTitle(getString(R.string.text_locale))
-            .setSingleChoiceItems(localeNames.toTypedArray(), checkedItem) { dialog, which ->
-                textLocale = if (which == 0) "" else systemLocales[which - 1].language
-                updatePreview()
-                dialog.dismiss()
-            }.setNegativeButton(getString(R.string.cancel), null).show()
+
+        showCommonPickerDialog(
+            context = this,
+            titleResId = R.string.text_locale,
+            options = options,
+            selectedValue = currentValue,
+            enableSearch = true,
+        ) { selectedLang ->
+            textLocale = selectedLang ?: ""
+            updatePreview()
+        }
     }
 
     private fun setupARGBSeekBars(argb: Int, alpha: Boolean) {
@@ -546,6 +566,7 @@ class SettingsActivity : FragmentActivity() {
             child.isEnabled = isFixed
             child.alpha = if (isFixed) 1.0f else 0.5f
         }
+        updateCustomTimeZoneLabel()
     }
 
     private fun createAppWidgetProps(): AppWidgetProps {
@@ -558,6 +579,7 @@ class SettingsActivity : FragmentActivity() {
             showSunMoonInside = v.cbShowSunMoonInside.isChecked,
             text = if (v.rbLabelRecommended.isChecked) DEFAULT_TEXT else "",
             textLocale = textLocale,
+            customTimeZone = customTimeZone,
             format = "",
             tapBehavior = "",
             backgroundAlpha = backgroundAlpha,
@@ -568,11 +590,16 @@ class SettingsActivity : FragmentActivity() {
                 else -> 0F
             },
             moonPhase = v.cbMoonPhase.isChecked,
-            timezone = if (v.rbLocationTimezone.isChecked) TimeZone.getDefault().id else LOCATION_FIXED,
+            timeZone = LOCATION_FIXED, // Temporary, set after this.
             lat = v.etLatitude.text.toString().toFloatOrNull() ?: Float.NaN,
             lng = v.etLongitude.text.toString().toFloatOrNull() ?: Float.NaN,
             updateNow = true,
         )
+        wp.timeZone = if (v.rbLocationTimezone.isChecked) {
+            TimeUtils.resolveZoneId(wp).id
+        } else {
+            LOCATION_FIXED
+        }
         wp.colorHour = colors["colorHour"] ?: -1
         wp.colorMinute = colors["colorMinute"] ?: -1
         wp.colorDayOfYear = colors["colorDayOfYear"] ?: -1
@@ -722,6 +749,32 @@ class SettingsActivity : FragmentActivity() {
             if (inAutoQuotes) {
                 append('\'')
             }
+        }
+    }
+
+    // Helper methods in SettingsActivity:
+    private fun updateCustomTimeZoneLabel() {
+        v.tvCustomTimeZone.text = customTimeZone?.takeIf { it.isNotBlank() }
+            ?: getString(R.string.system_default)
+    }
+
+    private fun syncCoordinatesFromTimeZone() {
+        if (!v.rbLocationTimezone.isChecked) return
+        val zoneId = customTimeZone?.takeIf { it.isNotBlank() } ?: TimeZone.getDefault().id
+        LatLng.getCoordinatesByTimeZone(applicationContext, zoneId).let { (lat, lng) ->
+            v.etLatitude.setText(lat.toString())
+            v.etLongitude.setText(lng.toString())
+        }
+    }
+
+    private fun showTimeZonePickerDialog() {
+        showTimeZonePickerDialog(
+            context = this,
+            currentZoneId = customTimeZone
+        ) { selectedZoneId ->
+            customTimeZone = selectedZoneId?.takeIf { it.isNotBlank() }
+            syncCoordinatesFromTimeZone()
+            updatePreview()
         }
     }
 }

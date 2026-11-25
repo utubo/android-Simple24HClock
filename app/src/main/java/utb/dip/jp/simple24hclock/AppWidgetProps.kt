@@ -25,7 +25,8 @@ data class AppWidgetProps(
     var tapBehavior: String? = "",
     var tapBehaviorLabel: String? = "",
     val backgroundAlpha: Float = 0.3F,
-    var timezone: String? = "",
+    var timeZone: String? = "",
+    var customTimeZone: String? = "",
     var lat: Float = Float.NaN,
     var lng: Float = Float.NaN,
     var rotate: Float = 0F,
@@ -61,7 +62,8 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         tapBehavior = prefs.getString("tap_behavior_$id", ""),
         tapBehaviorLabel = prefs.getString("tap_behavior_label_$id", ""),
         backgroundAlpha = prefs.getFloat("backgroundAlpha_$id", 0.4F),
-        timezone = prefs.getString("timezone_$id", ""),
+        timeZone = prefs.getString("timezone_$id", ""),
+        customTimeZone = prefs.getString("custom_timezone_$id", ""),
         lat = prefs.getFloat("lat_$id", Float.NaN),
         lng = prefs.getFloat("lng_$id", Float.NaN),
         rotate = prefs.getFloat("rotate_$id", 0F),
@@ -99,7 +101,8 @@ internal fun putAppWidgetProps(editor: SharedPreferences.Editor, props: AppWidge
     editor.putString("tap_behavior_$id", props.tapBehavior)
     editor.putString("tap_behavior_label_$id", props.tapBehaviorLabel)
     editor.putFloat("backgroundAlpha_$id", props.backgroundAlpha)
-    editor.putString("timezone_$id", props.timezone)
+    editor.putString("timezone_$id", props.timeZone)
+    editor.putString("custom_timezone_$id", props.customTimeZone)
     editor.putFloat("lat_$id", props.lat)
     editor.putFloat("lng_$id", props.lng)
     editor.putFloat("rotate_$id", props.rotate)

@@ -1,45 +1,55 @@
 package utb.dip.jp.simple24hclock
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONArray
-import java.util.TimeZone
+import java.util.concurrent.ConcurrentHashMap
 
 object LatLng {
 
-    private var cachedCoordinates: Pair<Double, Double>? = null
+    private val cachedCoordinatesByZone = ConcurrentHashMap<String, Pair<Double, Double>>()
+
+    // Fallback coordinates for "GMT" when not directly listed in timezones.json
+    private val gmtCoordinates = Pair(0.0, 0.0)
 
     internal fun clearCache() {
-        cachedCoordinates = null
+        cachedCoordinatesByZone.clear()
     }
 
     internal fun getCoordinates(
         context: Context,
         props: AppWidgetProps,
-    ): Pair<Double, Double>? {
-        if (props.timezone == LOCATION_FIXED && !props.lat.isNaN() || !props.lng.isNaN()) {
+    ): Pair<Double, Double> {
+        // Use explicit fixed coordinates only when both latitude and longitude are valid
+        if (props.timeZone == LOCATION_FIXED && !props.lat.isNaN() && !props.lng.isNaN()) {
             return Pair(props.lat.toDouble(), props.lng.toDouble())
         }
 
-        // Form cache
-        cachedCoordinates?.let { return it }
+        val zoneId = TimeUtils.resolveZoneId(props).id
+        Log.d("LatLngDebug", "rawZoneId='$zoneId' -> targetZoneId='$zoneId'")
 
-        val zoneId = TimeZone.getDefault().id
+        // Bypass cached coordinates for this time zone when an immediate refresh is requested
+        if (props.updateNow) {
+            cachedCoordinatesByZone.remove(zoneId)
+        } else {
+            // 1. In-memory cache keyed by time zone ID
+            cachedCoordinatesByZone[zoneId]?.let { return it }
 
-        // From SharedPreference
-        if (props.timezone == zoneId) {
-            cachedCoordinates = Pair(props.lat.toDouble(), props.lng.toDouble())
-            return cachedCoordinates
+            // 2. Persisted coordinates in SharedPreferences for the same time zone
+            if (props.timeZone == zoneId && !props.lat.isNaN() && !props.lng.isNaN()) {
+                val pair = Pair(props.lat.toDouble(), props.lng.toDouble())
+                cachedCoordinatesByZone[zoneId] = pair
+                return pair
+            }
         }
 
-        // From TimeZone
-        val coordinates = getCoordinatesByTimeZone(context)
-        if (coordinates == null) {
-            return coordinates
-        }
+        // 3. Look up coordinates from timezones.json and cache per time zone
+        val coordinates = getCoordinatesByTimeZone(context, zoneId)
+
         props.lat = coordinates.first.toFloat()
         props.lng = coordinates.second.toFloat()
-        props.timezone = zoneId
-        props.updateNow = false
+        props.timeZone = zoneId
+
         val prefs = context.getSharedPreferences(WIDGET_PREF_KEY, Context.MODE_PRIVATE)
         prefs.edit().apply {
             putAppWidgetProps(this, props)
@@ -50,27 +60,71 @@ object LatLng {
 
     internal fun getCoordinatesByTimeZone(
         context: Context,
-    ): Pair<Double, Double>? {
-        // From JSON
-        return try {
-            val zoneId = TimeZone.getDefault().id
+        zoneId: String? = "",
+    ): Pair<Double, Double> {
+        val targetZoneId = zoneId?.trim()?.takeIf { it.isNotEmpty() } ?: return gmtCoordinates
+        cachedCoordinatesByZone[targetZoneId]?.let { return it }
+
+        val resolved = try {
             val jsonString =
                 context.assets.open("timezones.json").bufferedReader().use { it.readText() }
             val jsonArray = JSONArray(jsonString)
-            var lat = 0.0
-            var lng = 0.0
+            var matched: Pair<Double, Double>? = null
             for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                if (obj.getString("id") == zoneId) {
-                    lat = obj.getDouble("lat")
-                    lng = obj.getDouble("lng")
-                    break
+                val obj = jsonArray.optJSONObject(i) ?: continue
+                if (obj.optString("id") == targetZoneId && obj.has("lat") && obj.has("lng")) {
+                    val lat = obj.getDouble("lat")
+                    val lng = obj.getDouble("lng")
+                    if (!lat.isNaN() && !lng.isNaN()) {
+                        matched = Pair(lat, lng)
+                        break
+                    }
                 }
             }
-            cachedCoordinates = Pair(lat, lng)
-            cachedCoordinates
+            matched ?: gmtCoordinates
         } catch (_: Exception) {
-            null
+            gmtCoordinates
+        }
+
+        cachedCoordinatesByZone[targetZoneId] = resolved
+        return resolved
+    }
+
+    // Load all time zone coordinates from assets/timezones.json once into memory
+    @Volatile
+    private var allTimeZoneCoordinates: Map<String, Pair<Double, Double>>? = null
+
+    internal fun getAllTimeZoneCoordinates(context: Context): Map<String, Pair<Double, Double>> {
+        allTimeZoneCoordinates?.let { return it }
+
+        return synchronized(this) {
+            allTimeZoneCoordinates?.let { return it }
+
+            val loaded = LinkedHashMap<String, Pair<Double, Double>>()
+            try {
+                val jsonString =
+                    context.assets.open("timezones.json").bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(jsonString)
+                for (i in 0 until jsonArray.length()) {
+                    val obj = jsonArray.getJSONObject(i)
+                    val id = obj.optString("id").takeIf { it.isNotBlank() } ?: continue
+                    if (obj.has("lat") && obj.has("lng")) {
+                        val lat = obj.getDouble("lat")
+                        val lng = obj.getDouble("lng")
+                        if (!lat.isNaN() && !lng.isNaN()) {
+                            loaded[id] = Pair(lat, lng)
+                            cachedCoordinatesByZone.putIfAbsent(id, Pair(lat, lng))
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                // Keep partial/empty map on read or parse error
+            }
+
+            allTimeZoneCoordinates = loaded
+            loaded
         }
     }
+
 }
+

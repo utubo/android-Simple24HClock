@@ -20,7 +20,7 @@ fun createIntent(context: Context): PendingIntent {
 fun setupNext(context: Context) {
     val manager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val now = System.currentTimeMillis()
-    val calendar = Calendar.getInstance().apply {
+    val calendar = TimeUtils.rawCalendar().apply {
         timeInMillis = now
         set(Calendar.SECOND, 0)
         set(Calendar.MILLISECOND, 0)

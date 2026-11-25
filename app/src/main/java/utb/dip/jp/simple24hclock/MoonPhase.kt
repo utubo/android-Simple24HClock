@@ -6,9 +6,8 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 object MoonPhase {
-    internal fun getMoonPhase(): Int {
+    internal fun getMoonPhase(now: Instant): Int {
         val baseNewMoon = ZonedDateTime.of(2000, 1, 6, 18, 14, 0, 0, ZoneOffset.UTC).toInstant()
-        val now = Instant.now()
         val diffSeconds = Duration.between(baseNewMoon, now).seconds
         val diffDays = diffSeconds / 86400.0
         val synodicMonth = 29.530588853
