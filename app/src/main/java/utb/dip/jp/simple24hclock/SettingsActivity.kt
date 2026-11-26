@@ -67,6 +67,21 @@ class SettingsActivity : FragmentActivity() {
     private lateinit var masterPartKeys: List<String>
     private val partNames = mutableListOf<String>()
     private val partKeys = mutableListOf<String>()
+
+    private val tapBehaviors by lazy {
+        listOf(
+            SelectableOption(TAP_BEHAVIOR_NONE, getString(R.string.none)),
+            SelectableOption(TAP_BEHAVIOR_ALARM, getString(R.string.alarm)),
+            SelectableOption(TAP_BEHAVIOR_CALENDAR, getString(R.string.calendar)),
+            SelectableOption(TAP_BEHAVIOR_SETTINGS, getString(R.string.widget_settings)),
+            SelectableOption(TAP_BEHAVIOR_APP, getString(R.string.other_apps)),
+        )
+    }
+
+    private fun getTapBehaviorById(id: String): SelectableOption<String>? {
+        return tapBehaviors.find { it.value == id }
+    }
+
     private val systemLocales by lazy {
         Locale.getAvailableLocales().filter { it.language.isNotEmpty() }
             .distinctBy { it.language }.sortedBy { it.getDisplayLanguage(Locale.getDefault()) }
@@ -196,12 +211,8 @@ class SettingsActivity : FragmentActivity() {
         colors["colorText"] = wp.colorText
 
         tapBehavior = wp.tapBehavior ?: TAP_BEHAVIOR_NONE
-        v.tvTapBehavior.text = when (tapBehavior) {
-            TAP_BEHAVIOR_NONE -> getString(R.string.none)
-            TAP_BEHAVIOR_ALARM -> getString(R.string.alarm)
-            TAP_BEHAVIOR_CALENDAR -> getString(R.string.calendar)
-            else -> wp.tapBehaviorLabel
-        }
+        val b = getTapBehaviorById(tapBehavior)
+        v.tvTapBehavior.text = b?.title ?: wp.tapBehaviorLabel
     }
 
     // --- Event Listeners and UI Operations ---
@@ -323,35 +334,17 @@ class SettingsActivity : FragmentActivity() {
             }
         }
 
-        val options = listOf(
-            SelectableOption(0, getString(R.string.none)),
-            SelectableOption(1, getString(R.string.alarm)),
-            SelectableOption(2, getString(R.string.calendar)),
-            SelectableOption(3, getString(R.string.other_apps)),
-        )
-
-        val currentWhich = when (tapBehavior) {
-            TAP_BEHAVIOR_NONE -> 0
-            TAP_BEHAVIOR_ALARM -> 1
-            TAP_BEHAVIOR_CALENDAR -> 2
-            else -> 3
-        }
-
         v.tvTapBehavior.setOnClickListener {
             showCommonPickerDialog(
                 context = this,
                 titleResId = R.string.tap_behavior,
-                options = options,
-                selectedValue = currentWhich,
+                options = tapBehaviors,
+                selectedValue = tapBehavior,
                 enableSearch = false,
-            ) { which ->
-                v.tvTapBehavior.text = options[which].title
-                tapBehavior = when (which) {
-                    0 -> TAP_BEHAVIOR_NONE
-                    1 -> TAP_BEHAVIOR_ALARM
-                    2 -> TAP_BEHAVIOR_CALENDAR
-                    else -> TAP_BEHAVIOR_APP
-                }
+            ) { value ->
+                val option = getTapBehaviorById(value) ?: tapBehaviors[0]
+                v.tvTapBehavior.text = option.title
+                tapBehavior = option.value
                 if (tapBehavior == TAP_BEHAVIOR_APP) {
                     val intent = Intent(Intent.ACTION_PICK_ACTIVITY).apply {
                         val mainIntent = Intent(Intent.ACTION_MAIN, null).apply {
@@ -641,6 +634,7 @@ class SettingsActivity : FragmentActivity() {
                 if (location != null) {
                     v.etLatitude.setText(String.format(Locale.US, "%.4f", location.latitude))
                     v.etLongitude.setText(String.format(Locale.US, "%.4f", location.longitude))
+                    updatePreview()
                 } else {
                     android.widget.Toast.makeText(
                         this,

@@ -11,6 +11,7 @@ const val LOCATION_FIXED = "FIXED"
 const val TAP_BEHAVIOR_ALARM = "alarm"
 const val TAP_BEHAVIOR_CALENDAR = "calendar"
 const val TAP_BEHAVIOR_APP = "app"
+const val TAP_BEHAVIOR_SETTINGS = "settings"
 
 data class AppWidgetProps(
     val id: Int,
@@ -24,7 +25,7 @@ data class AppWidgetProps(
     var format: String? = "",
     var tapBehavior: String? = "",
     var tapBehaviorLabel: String? = "",
-    val backgroundAlpha: Float = 0.3F,
+    val backgroundAlpha: Float = 0F,
     var timeZone: String? = "",
     var customTimeZone: String? = "",
     var lat: Float = Float.NaN,
@@ -59,7 +60,7 @@ internal fun getAppWidgetProps(prefs: SharedPreferences, id: Int): AppWidgetProp
         text = prefs.getString("text_$id", ""),
         textLocale = prefs.getString("text_locale_$id", ""),
         format = prefs.getString("format_$id", ""),
-        tapBehavior = prefs.getString("tap_behavior_$id", ""),
+        tapBehavior = prefs.getString("tap_behavior_$id", TAP_BEHAVIOR_SETTINGS),
         tapBehaviorLabel = prefs.getString("tap_behavior_label_$id", ""),
         backgroundAlpha = prefs.getFloat("backgroundAlpha_$id", 0.4F),
         timeZone = prefs.getString("timezone_$id", ""),

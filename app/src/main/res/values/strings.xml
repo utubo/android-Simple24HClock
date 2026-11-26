@@ -24,6 +24,7 @@
     <string name="tap_behavior">Tap Action</string>
     <string name="alarm">Alarm</string>
     <string name="calendar">Calendar</string>
+    <string name="widget_settings">Widget settings</string>
     <string name="other_apps">Other Apps…</string>
     <string name="apply">Apply</string>
     <string name="open_source_licenses">Open Source Licenses</string>

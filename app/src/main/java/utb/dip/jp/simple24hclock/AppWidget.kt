@@ -34,8 +34,13 @@ internal fun updateAppWidget(
         props,
         size * context.resources.displayMetrics.density,
     )
+    val settingsIntent = Intent(context, SettingsActivity::class.java).apply {
+        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
     val tapIntent = when (props.tapBehavior ?: "") {
         "" -> Intent()
+        TAP_BEHAVIOR_SETTINGS -> settingsIntent
         TAP_BEHAVIOR_ALARM -> Intent(ACTION_SHOW_ALARMS)
         TAP_BEHAVIOR_CALENDAR -> Intent(ACTION_VIEW).apply {
             data = "content://com.android.calendar/time".toUri()
@@ -43,31 +48,38 @@ internal fun updateAppWidget(
 
         else -> {
             val comp = ComponentName.unflattenFromString(props.tapBehavior.orEmpty())
-            if (comp?.packageName == context.packageName) Intent(
-                context,
-                SettingsActivity::class.java
-            ).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            if (comp?.packageName == context.packageName) {
+                settingsIntent
+            } else {
+                Intent().apply { component = comp }
             }
-            else Intent().apply { component = comp }
         }
     }
-    tapIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val tapPendingIntent = PendingIntent.getActivity(
+    val tapPendingIntent = createActivityPendingIntent(
         context, appWidgetId * 10, tapIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
-    val settingsIntent = Intent(context, SettingsActivity::class.java).apply {
-        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-    }
-    val settingsPendingIntent = PendingIntent.getActivity(
+    val settingsPendingIntent = createActivityPendingIntent(
         context, appWidgetId * 10 + 1, settingsIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
     views.setOnClickPendingIntent(R.id.container, settingsPendingIntent)
     views.setOnClickPendingIntent(R.id.center_touch, tapPendingIntent)
     appWidgetManager.updateAppWidget(appWidgetId, views)
+}
+
+private fun createActivityPendingIntent(
+    context: Context,
+    requestCode: Int,
+    intent: Intent,
+): PendingIntent {
+    val launchIntent = Intent(intent).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    return PendingIntent.getActivity(
+        context,
+        requestCode,
+        launchIntent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
 }
 
 internal fun updateAppWidgetContent(
