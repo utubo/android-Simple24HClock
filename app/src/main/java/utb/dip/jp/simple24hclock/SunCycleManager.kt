@@ -91,24 +91,27 @@ object SunCycleManager {
         zoneId: ZoneId,
         now: Instant
     ): Pair<Float, Float> {
-        val coordinates = getCoordinates(context, props)
-        val targetDate = now.atZone(zoneId).toLocalDate()
-        val startOfTargetDay = targetDate.atStartOfDay(zoneId)
+        try {
+            val coordinates = getCoordinates(context, props)
+            val targetDate = now.atZone(zoneId).toLocalDate()
+            val startOfTargetDay = targetDate.atStartOfDay(zoneId)
 
-        val times = SunTimes.compute()
-            .at(coordinates.first, coordinates.second)
-            .on(startOfTargetDay)
-            .timezone(zoneId.id)
-            .execute()
+            val times = SunTimes.compute()
+                .at(coordinates.first, coordinates.second)
+                .on(startOfTargetDay)
+                .timezone(zoneId.id)
+                .execute()
 
-        val rise = times.rise?.toInstant()?.atZone(zoneId)
-        val set = times.set?.toInstant()?.atZone(zoneId)
+            val rise = times.rise?.toInstant()?.atZone(zoneId)
+            val set = times.set?.toInstant()?.atZone(zoneId)
 
-        return if (rise != null && set != null) {
-            Pair(rise.toHoursOfDay(), set.toHoursOfDay())
-        } else {
-            Pair(6f, 18f) // Default fallback when sunrise or sunset does not occur on this date
+            if (rise != null && set != null) {
+                return Pair(rise.toHoursOfDay(), set.toHoursOfDay())
+            }
+        } catch (_: Exception) {
+            // nop
         }
+        return Pair(6f, 18f) // Default fallback when sunrise or sunset does not occur on this date
     }
 
     private fun ZonedDateTime.toHoursOfDay(): Float {
