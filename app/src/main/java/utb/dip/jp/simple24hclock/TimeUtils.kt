@@ -7,8 +7,8 @@ import java.util.TimeZone
 
 object TimeUtils {
 
-    fun resolveZoneId(props: AppWidgetProps): ZoneId {
-        val targetId = props.customTimeZone?.trim()?.takeIf { it.isNotEmpty() }
+    fun resolveZoneId(customTimeZone: String?): ZoneId {
+        val targetId = customTimeZone?.trim()?.takeIf { it.isNotEmpty() }
             ?: return ZoneId.systemDefault()
 
         return try {
@@ -16,6 +16,10 @@ object TimeUtils {
         } catch (_: Exception) {
             ZoneId.systemDefault()
         }
+    }
+
+    fun resolveZoneId(props: AppWidgetProps): ZoneId {
+        return resolveZoneId(props.customTimeZone)
     }
 
     fun resolveTimeZone(props: AppWidgetProps): TimeZone {

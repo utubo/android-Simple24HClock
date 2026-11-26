@@ -40,7 +40,6 @@ import androidx.core.view.children
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import java.util.Locale
-import java.util.TimeZone
 
 // --- Constants (Eliminating Magic Numbers) ---
 private const val DEFAULT_TEXT = "\n\n\n\nE  dd"
@@ -185,11 +184,7 @@ class SettingsActivity : FragmentActivity() {
             v.etLongitude.setText(wp.lng.toString())
             v.rbLocationFixed.isChecked = true
         } else {
-            LatLng.getCoordinatesByTimeZone(applicationContext, customTimeZone)
-                .let { (lat, lng) ->
-                    v.etLatitude.setText(lat.toString())
-                    v.etLongitude.setText(lng.toString())
-                }
+            updateCoordinatesByTimeZone()
             v.rbLocationTimezone.isChecked = true
         }
 
@@ -302,12 +297,8 @@ class SettingsActivity : FragmentActivity() {
         v.rgLocationMode.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.rb_location_timezone) {
                 v.llLocationFixed.isEnabled = false
-                LatLng.getCoordinatesByTimeZone(applicationContext, customTimeZone)
-                    .let { (lat, lng) ->
-                        v.etLatitude.setText(lat.toString())
-                        v.etLongitude.setText(lng.toString())
-                        updatePreview()
-                    }
+                updateCoordinatesByTimeZone()
+                updatePreview()
             } else {
                 v.llLocationFixed.isEnabled = true
                 updatePreview()
@@ -755,8 +746,14 @@ class SettingsActivity : FragmentActivity() {
 
     private fun syncCoordinatesFromTimeZone() {
         if (!v.rbLocationTimezone.isChecked) return
-        val zoneId = customTimeZone?.takeIf { it.isNotBlank() } ?: TimeZone.getDefault().id
-        LatLng.getCoordinatesByTimeZone(applicationContext, zoneId).let { (lat, lng) ->
+        updateCoordinatesByTimeZone()
+    }
+
+    private fun updateCoordinatesByTimeZone() {
+        return LatLng.getCoordinatesByTimeZone(
+            applicationContext,
+            TimeUtils.resolveZoneId(customTimeZone).id
+        ).let { (lat, lng) ->
             v.etLatitude.setText(lat.toString())
             v.etLongitude.setText(lng.toString())
         }

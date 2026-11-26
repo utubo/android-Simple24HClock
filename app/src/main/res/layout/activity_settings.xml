@@ -334,8 +334,6 @@
                         android:layout_marginTop="16dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:minHeight="48dp"
                         android:text="@string/advanced_settings" />
 
                     <LinearLayout
@@ -364,8 +362,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="16dp"
-                            android:gravity="center_vertical"
-                            android:minHeight="48dp"
                             android:text="@string/system_default" />
 
                         <TextView

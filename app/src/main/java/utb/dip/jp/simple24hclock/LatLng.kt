@@ -1,7 +1,6 @@
 package utb.dip.jp.simple24hclock
 
 import android.content.Context
-import android.util.Log
 import org.json.JSONArray
 import java.util.concurrent.ConcurrentHashMap
 
@@ -26,7 +25,6 @@ object LatLng {
         }
 
         val zoneId = TimeUtils.resolveZoneId(props).id
-        Log.d("LatLngDebug", "rawZoneId='$zoneId' -> targetZoneId='$zoneId'")
 
         // Bypass cached coordinates for this time zone when an immediate refresh is requested
         if (props.updateNow) {
@@ -60,9 +58,9 @@ object LatLng {
 
     internal fun getCoordinatesByTimeZone(
         context: Context,
-        zoneId: String? = "",
+        zoneId: String,
     ): Pair<Double, Double> {
-        val targetZoneId = zoneId?.trim()?.takeIf { it.isNotEmpty() } ?: return gmtCoordinates
+        val targetZoneId = zoneId.trim().takeIf { it.isNotEmpty() } ?: return gmtCoordinates
         cachedCoordinatesByZone[targetZoneId]?.let { return it }
 
         val resolved = try {
