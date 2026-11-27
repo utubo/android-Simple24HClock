@@ -522,6 +522,7 @@ class SettingsActivity : FragmentActivity() {
         views.setTextViewTextSize(R.id.tv_label, COMPLEX_UNIT_PX, v.etFormat.textSize)
         updateAppWidgetContent(
             applicationContext,
+            appWidgetId,
             views,
             createAppWidgetProps(),
             resources.getDimension(R.dimen.preview_size)

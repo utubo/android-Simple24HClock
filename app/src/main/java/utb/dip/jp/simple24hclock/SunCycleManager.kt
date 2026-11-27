@@ -14,43 +14,62 @@ import java.time.ZonedDateTime
 
 object SunCycleManager {
 
-    // Cache to minimize CPU/Memory usage during 1-minute updates
-    private var cachedBackground: Bitmap? = null
-    private var lastUpdateDay = -1
-    private var lastZoneId: String? = null
+    private data class CacheKey(
+        val appWidgetId: Int,
+        val dayOfYear: Int,
+        val zoneId: String,
+        val size: Int,
+        val lat: Double,
+        val lng: Double,
+        val colorDayArea: Int,
+        val colorNightArea: Int,
+    )
 
-    /**
-     * Returns a high-quality background bitmap.
-     * Re-generates only when the date changes or the widget is resized.
-     */
+    private val cacheByWidgetId = mutableMapOf<Int, Pair<CacheKey, Bitmap>>()
+
     fun getOrUpdateBackground(
         context: Context,
         props: AppWidgetProps,
+        appWidgetId: Int,
         size: Int,
         now: Instant,
         zoneId: ZoneId,
     ): Bitmap {
         val today = now.atZone(zoneId).dayOfYear
-        if (props.updateNow ||
-            cachedBackground == null ||
-            lastUpdateDay != today ||
-            cachedBackground?.width != size ||
-            lastZoneId != zoneId.id
-        ) {
-            cachedBackground = createDayNightBackground(context, props, size, zoneId, now)
-            lastUpdateDay = today
-            lastZoneId = zoneId.id
+        val coordinates = getCoordinates(context, props)
+        val key = CacheKey(
+            appWidgetId = appWidgetId,
+            dayOfYear = today,
+            zoneId = zoneId.id,
+            size = size,
+            lat = coordinates.first,
+            lng = coordinates.second,
+            colorDayArea = props.colorDayArea,
+            colorNightArea = props.colorNightArea,
+        )
+
+        val cached = cacheByWidgetId[appWidgetId]
+        if (props.updateNow || cached == null || cached.first != key || cached.second.isRecycled) {
+            val bitmap = createDayNightBackground(props, size, zoneId, now, coordinates)
+            cacheByWidgetId[appWidgetId] = key to bitmap
+            return bitmap
         }
 
-        return cachedBackground!!
+        return cached.second
+    }
+
+    fun removeCache(appWidgetIds: IntArray?) {
+        appWidgetIds?.forEach {
+            cacheByWidgetId.remove(it)?.second?.recycle()
+        }
     }
 
     private fun createDayNightBackground(
-        context: Context,
         props: AppWidgetProps,
         size: Int,
         zoneId: ZoneId,
         now: Instant,
+        coordinates: Pair<Double, Double>,
     ): Bitmap {
         val bitmap = createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -58,27 +77,21 @@ object SunCycleManager {
             style = Paint.Style.FILL
         }
 
-        // Apply 5% padding
         val padding = size * 0.05f
         val rect = RectF(padding, padding, size - padding, size - padding)
         val center = size / 2f
         val radius = center - padding
 
-        // 1. Get sunrise and sunset times
-        val (sunrise, sunset) = getSunHours(context, props, zoneId, now)
+        val (sunrise, sunset) = getSunHours(coordinates, zoneId, now)
 
-        // 2. Calculate angles (24h clock: 00:00 at bottom +90deg)
         val startAngle = (sunrise * 15f) + 90f
         val endAngle = (sunset * 15f) + 90f
         var sweepAngle = endAngle - startAngle
         if (sweepAngle < 0) sweepAngle += 360f
 
-        // 3. Draw Background Layers
-        // Night area
         paint.color = props.colorNightArea
         canvas.drawCircle(center, center, radius, paint)
 
-        // Day area
         paint.color = props.colorDayArea
         canvas.drawArc(rect, startAngle, sweepAngle, true, paint)
 
@@ -86,13 +99,11 @@ object SunCycleManager {
     }
 
     private fun getSunHours(
-        context: Context,
-        props: AppWidgetProps,
+        coordinates: Pair<Double, Double>,
         zoneId: ZoneId,
         now: Instant
     ): Pair<Float, Float> {
         try {
-            val coordinates = getCoordinates(context, props)
             val targetDate = now.atZone(zoneId).toLocalDate()
             val startOfTargetDay = targetDate.atStartOfDay(zoneId)
 
@@ -111,7 +122,7 @@ object SunCycleManager {
         } catch (_: Exception) {
             // nop
         }
-        return Pair(6f, 18f) // Default fallback when sunrise or sunset does not occur on this date
+        return Pair(6f, 18f)
     }
 
     private fun ZonedDateTime.toHoursOfDay(): Float {

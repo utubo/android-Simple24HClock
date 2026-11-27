@@ -35,6 +35,7 @@ class MyAppWidgetProvider : AppWidgetProvider() {
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         super.onDeleted(context, appWidgetIds)
         cleanupPrefs(context, appWidgetIds)
+        SunCycleManager.removeCache(appWidgetIds)
     }
 
     override fun onRestored(context: Context?, oldWidgetIds: IntArray?, newWidgetIds: IntArray?) {

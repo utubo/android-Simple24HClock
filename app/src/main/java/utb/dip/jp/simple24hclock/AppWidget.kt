@@ -30,6 +30,7 @@ internal fun updateAppWidget(
     val props = getAppWidgetProps(widgetPrefs, appWidgetId)
     updateAppWidgetContent(
         context,
+        appWidgetId,
         views,
         props,
         size * context.resources.displayMetrics.density,
@@ -84,6 +85,7 @@ private fun createActivityPendingIntent(
 
 internal fun updateAppWidgetContent(
     context: Context,
+    appWidgetId: Int,
     views: RemoteViews,
     props: AppWidgetProps,
     size: Float,
@@ -126,7 +128,7 @@ internal fun updateAppWidgetContent(
 
     // Back
     val bgBitmap = SunCycleManager.getOrUpdateBackground(
-        context, props, size.toInt(), nowInstant, zoneId
+        context, props, appWidgetId, size.toInt(), nowInstant, zoneId,
     )
     views.setImageViewBitmap(R.id.iv_background, bgBitmap)
 
